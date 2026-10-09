@@ -1367,9 +1367,15 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
         <h2>Engineer Summary</h2>
         <span id="transferEngineerCount" class="muted"></span>
       </div>
+      <div id="batchToolbar" style="display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:12px">
+        <button class="secondary" onclick="toggleBatchSelection()">Select / Deselect All Engineers</button>
+        <button class="primary" onclick="exportCombinedSelection()">Export Combined Excel</button>
+        <button class="primary" onclick="markCombinedSelection()">Mark Selected as Transferred</button>
+        <span id="batchSelectionSummary" class="muted">Select engineers to create a shared batch.</span>
+      </div>
       <div class="table-wrap" style="max-height:none;margin-top:10px">
         <table class="table">
-          <thead><tr><th>Engineer</th><th>Expenses</th><th>Total Amount</th><th>Status</th><th>View</th></tr></thead>
+          <thead><tr><th>Choose</th><th>Engineer / Batch</th><th>Expenses</th><th>Total Amount</th><th>Status</th><th>View</th></tr></thead>
           <tbody id="transferEngineerTable"></tbody>
         </table>
       </div>
@@ -1606,6 +1612,7 @@ function updateSummaryAfterDecision(decision){
 
 
 let transferViewRows=[];
+const batchSelectedEngineers=new Set();
 function applyPortalRequestedTab(){
  const v=new URLSearchParams(location.search).get('view');
  if(v==='transfers')showTab('transferTab');
@@ -1628,11 +1635,12 @@ async function loadTransferView(){
     if(r.expired)return expired();
     if(!r.ok)throw new Error(r.error);
     transferViewRows=r.rows||[];
+    batchSelectedEngineers.clear();
     const names=[...new Set(transferViewRows.map(x=>x.engineer).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
     $('transferEngineerList').innerHTML=names.map(n=>'<option value="'+esc(n)+'"></option>').join('');
     renderTransferEngineerSummary(status);
   }catch(e){
-    $('transferEngineerTable').innerHTML='<tr><td colspan="5" class="err">'+esc(e.message)+'</td></tr>';
+    $('transferEngineerTable').innerHTML='<tr><td colspan="6" class="err">'+esc(e.message)+'</td></tr>';
   }
 }
 function renderTransferEngineerSummary(status){
@@ -1640,24 +1648,25 @@ function renderTransferEngineerSummary(status){
   const engineerFilter=String($('transferEngineerFilter').value||'').trim().toLowerCase();
   const sourceRows=engineerFilter ? transferViewRows.filter(x=>String(x.engineer||'').toLowerCase().includes(engineerFilter)) : transferViewRows;
   $('transferViewTotal').textContent=sourceRows.reduce((s,x)=>s+Number(x.amount||0),0).toFixed(2)+' EGP';
+  $('batchToolbar').style.display=status==='Transferred'?'none':'flex';
   if(status==='Transferred'){
     const groups={};
     sourceRows.forEach(x=>{
       const key=x.transferBatchId||('LEGACY-'+x.engineer+'-'+(x.transferDate||''));
-      if(!groups[key])groups[key]={batchId:x.transferBatchId||'Legacy Transfer',engineer:x.engineer,date:x.transferDate||'',count:0,total:0};
-      groups[key].count++;groups[key].total+=Number(x.amount||0);
+      if(!groups[key])groups[key]={key:key,batchId:x.transferBatchId||'Legacy Transfer',engineers:new Set(),date:x.transferDate||'',count:0,total:0};
+      groups[key].engineers.add(x.engineer);groups[key].count++;groups[key].total+=Number(x.amount||0);
     });
     const items=Object.values(groups).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
     $('transferEngineerCount').textContent=items.length+' transfer batch(es)';
-    if(!items.length){body.innerHTML='<tr><td colspan="5" class="muted">No transferred batches.</td></tr>';return;}
+    if(!items.length){body.innerHTML='<tr><td colspan="6" class="muted">No transferred batches.</td></tr>';return;}
     items.forEach(g=>{
       const tr=document.createElement('tr');
-      tr.innerHTML='<td><b>'+esc(g.batchId)+'</b><div class="muted">'+esc(g.engineer)+'</div></td>'+
+      tr.innerHTML='<td>—</td><td><b>'+esc(g.batchId)+'</b><div class="muted">'+esc([...g.engineers].join(', '))+'</div></td>'+
         '<td>'+g.count+'</td><td><b>'+g.total.toFixed(2)+' EGP</b></td>'+
         '<td><span class="status">Transferred</span><div class="muted">'+esc(g.date)+'</div></td>'+
         '<td><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="secondary view-batch-btn">View Expenses</button><button class="primary export-batch-btn">Export Excel</button></div></td>';
-      tr.querySelector('.view-batch-btn').onclick=()=>showTransferBatchExpenses(g.batchId,g.engineer);
-      tr.querySelector('.export-batch-btn').onclick=()=>exportTransferBatchExcel(g.batchId,g.engineer);
+      tr.querySelector('.view-batch-btn').onclick=()=>showTransferBatchExpenses(g.key);
+      tr.querySelector('.export-batch-btn').onclick=()=>exportTransferBatchExcel(g.key);
       body.appendChild(tr);
     });
     return;
@@ -1670,15 +1679,17 @@ function renderTransferEngineerSummary(status){
   });
   const names=Object.keys(groups).sort((a,b)=>a.localeCompare(b));
   $('transferEngineerCount').textContent=names.length+' engineer(s)';
-  if(!names.length){body.innerHTML='<tr><td colspan="5" class="muted">No expenses with status '+esc(status)+'.</td></tr>';return;}
+  if(!names.length){body.innerHTML='<tr><td colspan="6" class="muted">No expenses with status '+esc(status)+'.</td></tr>';return;}
   names.forEach(name=>{
     const g=groups[name],tr=document.createElement('tr');
-    tr.innerHTML='<td><b>'+esc(name)+'</b></td><td>'+g.count+'</td><td><b>'+g.total.toFixed(2)+' EGP</b></td><td><span class="status">'+esc(status)+'</span></td>'+
+    tr.innerHTML='<td><input type="checkbox" class="batch-engineer-checkbox" '+(batchSelectedEngineers.has(name)?'checked':'')+'></td><td><b>'+esc(name)+'</b></td><td>'+g.count+'</td><td><b>'+g.total.toFixed(2)+' EGP</b></td><td><span class="status">'+esc(status)+'</span></td>'+
       '<td><div style="display:flex;gap:7px;flex-wrap:wrap"><button class="secondary view-expenses-btn">View Expenses</button><button class="primary export-excel-btn">Export Excel</button></div></td>';
+    tr.querySelector('.batch-engineer-checkbox').onchange=e=>{if(e.target.checked)batchSelectedEngineers.add(name);else batchSelectedEngineers.delete(name);updateBatchSelectionSummary();};
     tr.querySelector('.view-expenses-btn').onclick=()=>showEngineerTransferExpenses(name);
     tr.querySelector('.export-excel-btn').onclick=()=>exportEngineerExcel(name);
     body.appendChild(tr);
   });
+  updateBatchSelectionSummary();
 }
 function showEngineerTransferExpenses(name){
   const status=$('transferStatusFilter').value;
@@ -1708,9 +1719,12 @@ function toggleAllTransferExpenses(){
   const btn=$('selectAllTransferBtn');
   if(btn)btn.textContent=shouldCheck?'Deselect All':'Select All';
 }
-function showTransferBatchExpenses(batchId,engineer){
-  const rows=transferViewRows.filter(x=>(x.transferBatchId||'Legacy Transfer')===batchId && x.engineer===engineer);
-  $('transferExpenseTitle').textContent=batchId+' — '+engineer;
+function rowsForTransferBatch(key){
+  return transferViewRows.filter(x=>(x.transferBatchId||('LEGACY-'+x.engineer+'-'+(x.transferDate||'')))===key);
+}
+function showTransferBatchExpenses(key){
+  const rows=rowsForTransferBatch(key);
+  $('transferExpenseTitle').textContent=(rows[0]?.transferBatchId||'Legacy Transfer')+' — '+[...new Set(rows.map(x=>x.engineer))].join(', ');
   const body=$('transferExpenseTable');body.innerHTML='';
   rows.forEach(x=>{
     const tr=document.createElement('tr');
@@ -1723,12 +1737,66 @@ function showTransferBatchExpenses(batchId,engineer){
   $('transferExpenseCard').classList.remove('hidden');
   $('transferExpenseCard').scrollIntoView({behavior:'smooth',block:'start'});
 }
-async function exportTransferBatchExcel(batchId,engineer){
-  const original=transferViewRows;
-  const rows=original.filter(x=>(x.transferBatchId||'Legacy Transfer')===batchId && x.engineer===engineer);
-  if(!rows.length)return;
-  transferViewRows=rows;
-  try{await exportEngineerExcel(engineer);}finally{transferViewRows=original;}
+async function exportTransferBatchExcel(key){
+  const rows=rowsForTransferBatch(key);
+  if(rows.length)await exportCombinedRowsExcel(rows,rows[0].transferBatchId||'Legacy_Transfer');
+}
+function selectedBatchRows(){return transferViewRows.filter(x=>batchSelectedEngineers.has(x.engineer));}
+function updateBatchSelectionSummary(){
+  const rows=selectedBatchRows();
+  $('batchSelectionSummary').textContent=batchSelectedEngineers.size+' engineer(s), '+rows.length+' expense(s), '+rows.reduce((a,x)=>a+Number(x.amount||0),0).toFixed(2)+' EGP';
+}
+function toggleBatchSelection(){
+  const names=[...new Set(transferViewRows.map(x=>x.engineer).filter(Boolean))];
+  const filtered=String($('transferEngineerFilter').value||'').trim().toLowerCase();
+  const visible=names.filter(x=>x.toLowerCase().includes(filtered));
+  if(visible.every(x=>batchSelectedEngineers.has(x)))visible.forEach(x=>batchSelectedEngineers.delete(x));
+  else visible.forEach(x=>batchSelectedEngineers.add(x));
+  renderTransferEngineerSummary($('transferStatusFilter').value);
+}
+async function exportCombinedSelection(){
+  const rows=selectedBatchRows();
+  if(!rows.length)return msg('transferViewMsg','Select at least one engineer.','err');
+  await exportCombinedRowsExcel(rows,'Needs_Transfer_Combined');
+}
+async function exportCombinedRowsExcel(rows,label){
+  if(typeof ExcelJS==='undefined')return msg('transferViewMsg','Excel library did not load.','err');
+  try{
+    const wb=new ExcelJS.Workbook();
+    const ws=wb.addWorksheet('Transfer Expenses');
+    ws.columns=[
+      {header:'Batch Number',key:'batch',width:23},{header:'Engineer',key:'engineer',width:26},
+      {header:'Expense ID',key:'id',width:16},{header:'Date',key:'date',width:17},
+      {header:'Project',key:'project',width:18},{header:'Category',key:'category',width:26},
+      {header:'Description',key:'description',width:42},{header:'Amount (EGP)',key:'amount',width:19},
+      {header:'PM Status',key:'pm',width:18},{header:'Finance Status',key:'finance',width:18}
+    ];
+    rows.forEach(x=>ws.addRow({batch:x.transferBatchId||'',engineer:x.engineer||'',id:x.id||'',date:x.date||'',project:x.project||'',category:x.category||'',description:x.description||'',amount:Number(x.amount||0),pm:x.pmStatus||'',finance:x.financeStatus||''}));
+    ws.getRow(1).font={bold:true,color:{argb:'FFFFFFFF'}};
+    ws.getRow(1).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FF17253A'}};
+    ws.getColumn('amount').numFmt='#,##0.00';
+    const total=rows.reduce((sum,x)=>sum+Number(x.amount||0),0);
+    ws.addRow({description:'TOTAL',amount:total}).font={bold:true};
+    ws.autoFilter={from:'A1',to:'J1'};
+    ws.views=[{state:'frozen',ySplit:1}];
+    const buffer=await wb.xlsx.writeBuffer();
+    const url=URL.createObjectURL(new Blob([buffer],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+    const a=document.createElement('a');a.href=url;a.download=excelSafeName_(label)+'.xlsx';document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    msg('transferViewMsg','Exported '+rows.length+' expenses for '+[...new Set(rows.map(x=>x.engineer))].length+' engineers.','ok');
+  }catch(e){msg('transferViewMsg','Excel export failed: '+e.message,'err');}
+}
+async function markCombinedSelection(){
+  if($('transferStatusFilter').value!=='Needs Transfer')return msg('transferViewMsg','Select Needs Transfer status first.','err');
+  const rows=selectedBatchRows();
+  if(!rows.length)return msg('transferViewMsg','Select at least one engineer.','err');
+  if(!confirm('Mark '+rows.length+' expenses for '+batchSelectedEngineers.size+' engineers as ONE transfer batch?'))return;
+  try{
+    const r=await api('pmMarkTransferred',{pmToken: pmToken,ids:rows.map(x=>x.id),reference:''});
+    if(r.expired)return expired();if(!r.ok)throw new Error(r.error);
+    msg('transferViewMsg','Created batch '+r.batchId+' for '+r.count+' expenses.','ok');
+    await loadTransferView();
+  }catch(e){msg('transferViewMsg',e.message,'err');}
 }
 async function markTransferViewSelected(){
   const ids=Array.from(document.querySelectorAll('#transferExpenseTable input[type=checkbox]:checked')).map(x=>x.dataset.id);
