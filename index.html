@@ -609,16 +609,16 @@ async function centralLogin(name,pin){
 let currentPortalToken='';
 let currentPortalUser=null;
 const moduleUrls={
- kmEngineerStart:'https://kmpage.vercel.app/?view=start&portalLabel=Trips%20App&silentSso=1',
- kmEngineerHistory:'https://kmpage.vercel.app/?view=history&portalLabel=Trips%20History&silentSso=1',
+ kmEngineerStart:'https://kmaudit.vercel.app/?view=start&portalLabel=Trips%20App&silentSso=1',
+ kmEngineerHistory:'https://kmaudit.vercel.app/?view=history&portalLabel=Trips%20History&silentSso=1',
  kmBalances:'km-balances.html',
  kmPhotoAudit:'photo-audit.html',
  kmSolfa:'km-solfa.html',
  kmRent:'km-rent.html',
  kmAllowance:'allowance-audit.html',
  kmFinanceAudit:'km-finance-audit.html',
- custodyEngineerNew:'https://custodypage.vercel.app/?view=home&portalLabel=Custody%20App&silentSso=1',
- custodyEngineerHistory:'https://custodypage.vercel.app/?view=history&portalLabel=Custody%20History&silentSso=1',
+ custodyEngineerNew:'https://custodyaudit.vercel.app/?view=home&portalLabel=Custody%20App&silentSso=1',
+ custodyEngineerHistory:'https://custodyaudit.vercel.app/?view=history&portalLabel=Custody%20History&silentSso=1',
  custodyAdminEngineers:'custody-engineer-management.html',
  custodyAdminUsers:'custody-management-users.html',
  custodyAdminTransfers:'custody-finance-transfers.html',
@@ -694,7 +694,7 @@ function renderAttention(){
 
 function actionCard(title,desc,url){
  const href=withSSO(url);
- const group=String(url||'').includes('kmpage.vercel.app')?'qa-km':'qa-custody';
+ const group=String(url||'').includes('kmaudit.vercel.app')?'qa-km':'qa-custody';
  return `<a class="quick-action ${group}" href="${href}">
    <span class="qa-top"><span class="qa-dot"></span><b>${title}</b><span class="qa-arrow">›</span></span>
    <span class="qa-desc">${desc}</span>
