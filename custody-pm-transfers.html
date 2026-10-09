@@ -1238,7 +1238,44 @@ html.tmx-auth-resolving body::before{content:none!important;display:none!importa
 <style id="v838SilentSession">
 #portalSsoStatus,.sso-status,.portal-transition,.frame-loading{display:none!important}
 html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{content:none!important;display:none!important}
-</style></head>
+</style><style id="tmx-transfer-color-fix">
+/* TMX transfer detail readability fix — PM + Finance, scoped to transfers only. */
+#transferExpenseCard {
+  background: #ffffff !important;
+  color: #17253b !important;
+  border: 1px solid #dce4ef !important;
+  box-shadow: 0 4px 18px rgba(15,23,42,.09) !important;
+}
+#transferExpenseCard .review-head,
+#transferExpenseCard .review-head h2,
+#transferExpenseCard #transferExpenseTitle { color: #17253b !important; }
+#transferExpenseCard .table-wrap { background: #fff !important; }
+#transferExpenseCard .table { color: #17253b !important; background: #fff !important; }
+#transferExpenseCard .table thead th {
+  background: #202530 !important; color: #fff !important;
+  border-bottom: 1px solid #384253 !important;
+}
+#transferExpenseCard .table tbody tr,
+#transferExpenseCard .table tbody tr:nth-child(odd) {
+  background: #fff !important; color: #17253b !important;
+}
+#transferExpenseCard .table tbody tr:nth-child(even) {
+  background: #f3f6fb !important; color: #17253b !important;
+}
+#transferExpenseCard .table tbody tr:hover { background: #fce7f3 !important; }
+#transferExpenseCard .table tbody td,
+#transferExpenseCard .table tbody td b,
+#transferExpenseCard .table tbody td strong,
+#transferExpenseCard .table tbody td span {
+  color: #17253b !important;
+}
+#transferExpenseCard .table tbody td { border-bottom: 1px solid #e0e7f0 !important; }
+#transferExpenseCard .table tbody input[type=checkbox] { accent-color: #e6007e; }
+#transferExpenseCard label, #transferExpenseCard .muted { color: #526179 !important; }
+#transferExpenseCard button.secondary { background: #f1f5f9 !important; color: #17253b !important; border-color: #cbd5e1 !important; }
+#transferExpenseCard button.secondary:hover { background: #e2e8f0 !important; }
+</style>
+</head>
 <body>
 <div id="loginView" class="login">
   <div class="card">
