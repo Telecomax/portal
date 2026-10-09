@@ -1,0 +1,466 @@
+<!doctype html><html><head>
+<script id="tmxRentRouteGuardV8214">
+(function(){
+  if(/(?:^|[&#])sso=/.test(location.hash))return;
+  if(sessionStorage.getItem('tmx_km_pm_token')||sessionStorage.getItem('tmx_km_admin_token'))return;
+  function parse(v){try{return v?JSON.parse(v):null}catch(e){return null}}
+  let allowed=false;
+  for(const store of [sessionStorage,localStorage]){
+    for(let i=0;i<store.length;i++){
+      const x=parse(store.getItem(store.key(i))); if(!x||typeof x!=='object')continue;
+      const r=String(x.role||x.userRole||'').toLowerCase();
+      if(r==='pm'||r==='p'||r==='admin'||r==='a'){allowed=true;break}
+    }
+    if(allowed)break;
+  }
+  if(!allowed){document.documentElement.style.visibility='hidden';location.replace('./?reason=access')}
+})();
+</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Telecomax Operations — KM Rent</title><link rel="icon" href="icon-192.png"><style>
+:root{--bg:#f4f6f8;--panel:#fff;--panel2:#f8fafc;--line:#d9dee7;--text:#243042;--muted:#6f7b8c;--brand:#b52d7b;--soft:#f8eaf2;--good:#2f855a;--warn:#a66b18;--shadow:0 4px 16px rgba(31,45,61,.055)}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,Segoe UI,Arial,sans-serif}.top{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:20}.brand{font-size:22px;font-weight:850}.brand:before{content:"";display:inline-block;width:6px;height:24px;background:var(--brand);margin-right:12px;vertical-align:-5px;border-radius:4px}.brand small{font-size:14px;font-weight:500;color:var(--muted);margin-left:10px}.actions{margin-left:auto}.wrap{max-width:1540px;margin:auto;padding:26px}.login{max-width:440px;margin:90px auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:var(--shadow)}.dash{display:none}.btn{border:1px solid var(--line);background:#fff;color:#344054;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:750}.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}.btn.logout{background:var(--soft);border-color:#e7bdd4;color:#9c286a}.input,select{width:100%;height:44px;background:#fff;border:1px solid #ccd3dd;border-radius:10px;padding:0 12px;color:var(--text)}label{display:block;color:#697586;font-size:12px;font-weight:800;text-transform:uppercase;margin:12px 0 6px}.muted{color:var(--muted)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{padding:11px 16px}.tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}.panel{display:none}.panel.active{display:block}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}.filters{display:grid;grid-template-columns:repeat(4,minmax(170px,1fr)) auto;gap:12px;align-items:end}.search{position:relative}.opts{display:none;position:absolute;left:0;right:0;top:48px;max-height:260px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;z-index:30;box-shadow:0 12px 30px #0002}.opt{padding:10px 12px;cursor:pointer}.opt:hover{background:var(--soft)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}.stat .k{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:800}.stat .v{font-size:24px;font-weight:850;margin-top:4px}.accent .v{color:var(--brand)}.audit-list{display:flex;flex-direction:column;gap:18px}.audit{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}.summary{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid var(--line)}.cell{padding:12px;border-right:1px solid #edf0f3}.cell b{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}.metrics{display:grid;grid-template-columns:repeat(6,1fr);background:var(--panel2)}.metric{text-align:center;padding:12px}.metric b{display:block;font-size:10px;color:var(--muted);text-transform:uppercase}.photos{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:24px}.photo{text-align:center}.frame{height:390px;background:#eef1f5;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}.frame img{width:100%;height:100%;object-fit:contain;cursor:zoom-in}.empty{text-align:center;color:var(--muted);padding:35px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left}.table th{font-size:11px;text-transform:uppercase;color:var(--muted)}.totalcard{padding:18px;border-radius:14px;background:var(--soft);text-align:center;margin:14px 0}.totalcard .v{font-size:28px;font-weight:900;color:var(--brand)}.lightbox{display:none;position:fixed;inset:0;background:#111d;z-index:100;align-items:center;justify-content:center;padding:30px}.lightbox.open{display:flex}.lightbox img{max-width:94vw;max-height:90vh}.toast{display:none;position:fixed;right:20px;bottom:20px;background:#273142;color:#fff;padding:12px 16px;border-radius:10px;z-index:120}@media(max-width:900px){.filters,.grid2,.grid3,.photos{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.summary,.metrics{grid-template-columns:repeat(2,1fr)}.frame{height:320px}}
+
+/* Login buffering overlay */
+.login-buffer-overlay{
+  position:fixed;inset:0;z-index:99999;display:none;
+  align-items:center;justify-content:center;
+  background:rgba(15,23,42,.38);backdrop-filter:blur(2px);
+}
+.login-buffer-overlay.show{display:flex}
+.login-buffer-box{
+  min-width:220px;max-width:86vw;padding:24px 28px;border-radius:18px;
+  background:#fff;box-shadow:0 18px 55px rgba(15,23,42,.22);
+  text-align:center;color:#1f2937;font-weight:800;
+}
+.login-buffer-spinner{
+  width:42px;height:42px;margin:0 auto 14px;border-radius:50%;
+  border:4px solid #e5e7eb;border-top-color:#2563eb;
+  animation:loginSpin .75s linear infinite;
+}
+.login-buffer-text{font-size:15px}
+@keyframes loginSpin{to{transform:rotate(360deg)}}
+
+.audit-actions,.bulkbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 14px}.audit-actions{border-top:1px solid var(--line)}.bulkbar{position:sticky;bottom:8px;background:#fff;border:1px solid var(--line);border-radius:12px;justify-content:flex-end}.summary-table{width:100%;border-collapse:collapse}.summary-table th,.summary-table td{padding:9px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}.danger{border-color:#e6b4b4;color:#a52a2a}.audit[data-dirty="1"]{outline:2px solid #d29b2d}.deduction-note{font-weight:700;color:#a35a00}
+.photo-title{display:flex!important;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.photo-km{font-weight:900;color:#172b43;background:#fff;border:1px solid #d9e1e8;border-radius:8px;padding:3px 9px}.edited-km{display:block;font-size:11px;color:#147a45;margin-top:3px;font-weight:800}.audit-dialog-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}.audit-dialog-bg.open{display:flex}.audit-dialog{width:min(100%,440px);background:#fff;border-radius:18px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}.audit-dialog h3{margin:0 0 8px}.audit-dialog p{color:#667085;margin:0 0 15px}.audit-dialog .dlg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.audit-dialog input,.audit-dialog textarea{width:100%;box-sizing:border-box;padding:11px;border:1px solid #d6dde5;border-radius:10px;margin:5px 0 10px}.audit-dialog textarea{min-height:80px;resize:vertical}.audit-dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:8px}
+
+.sso-status{position:fixed;inset:0;z-index:999999;background:rgba(2,8,23,.92);display:flex;align-items:center;justify-content:center;padding:24px}
+.sso-status-box{max-width:430px;width:100%;padding:24px;border-radius:20px;background:#0b1020;border:1px solid rgba(255,255,255,.15);color:#fff;text-align:center}
+.sso-status-box b{display:block;font-size:20px;margin-bottom:8px}.sso-status-box span{color:#aab4c4}
+</style><script>
+if(location.hash.indexOf('sso=')>=0){
+ document.documentElement.classList.add('portal-sso-pending');
+}
+</script>
+<style>
+html.portal-sso-pending body{visibility:hidden!important}
+html.portal-sso-pending body::before{content:none!important;display:none!important}
+</style>
+<style id="telecomaxKmRentV77">
+:root{
+  --bg:#020713;--panel:#050A17;--panel2:#080D1C;--field:#090E1A;
+  --border:#17233B;--border2:#25314A;--text:#F5F6FA;--muted:#8992A8;
+  --blue:#1597D4;--magenta:#D60072;
+}
+html,body{
+  background:
+    radial-gradient(circle at 95% 82%,rgba(214,0,114,.08),transparent 34%),
+    radial-gradient(circle at 5% 45%,rgba(21,151,212,.06),transparent 34%),
+    var(--bg)!important;
+  color:var(--text)!important;
+}
+body{background:transparent!important}
+.tabs{display:none!important}
+#dash .panel{display:none!important}
+#dash #rent{display:block!important}
+header,.header,.topbar{
+  background:rgba(3,7,17,.96)!important;color:var(--text)!important;
+  border-color:#1B2639!important;box-shadow:none!important;
+}
+header h1,.header h1,.topbar h1{color:var(--text)!important}
+header .muted,.header .muted,.topbar .muted{color:#98A1B7!important}
+#rent .card,.card{
+  position:relative!important;overflow:visible!important;
+  background:linear-gradient(120deg,rgba(21,151,212,.035),rgba(214,0,114,.025)),var(--panel)!important;
+  color:var(--text)!important;border:1px solid var(--border)!important;box-shadow:none!important;
+}
+#rent .card::before{
+  content:""!important;position:absolute!important;left:0!important;top:0!important;bottom:0!important;
+  width:4px!important;background:linear-gradient(180deg,var(--blue),var(--magenta))!important;
+}
+#rent h1,#rent h2,#rent h3,.card h1,.card h2,.card h3{color:var(--text)!important}
+#rent label,label{color:#A3ABC0!important;font-weight:800!important}
+#rent input,#rent select,#rent textarea,#rent .input,
+input,select,textarea,.input{
+  background:var(--field)!important;color:var(--text)!important;
+  border:1px solid var(--border2)!important;box-shadow:none!important;
+}
+#rent input::placeholder,#rent textarea::placeholder{color:#7E879C!important}
+#rent input:focus,#rent select:focus,#rent textarea:focus{
+  border-color:#2B8DB8!important;box-shadow:0 0 0 2px rgba(21,151,212,.10)!important;outline:none!important;
+}
+.opts,.search .opts{background:#070D1A!important;color:var(--text)!important;border-color:var(--border2)!important}
+.opt:hover{background:#0C1627!important}
+.btn,button{background:#111827!important;color:var(--text)!important;border-color:#263249!important;box-shadow:none!important}
+.btn.primary,button.primary{
+  background:linear-gradient(135deg,#E00079,#C90069)!important;color:#fff!important;
+  border-color:#E00079!important;box-shadow:0 7px 20px rgba(214,0,114,.16)!important;
+}
+#rent .muted,.muted{color:var(--muted)!important}
+html.portal-sso-pending body{visibility:visible!important}
+html.portal-sso-pending body::before{content:none!important;display:none!important}
+body > button[onclick*="location.href='./'"]{
+  background:#111827!important;color:var(--text)!important;border-color:#263249!important;
+}
+@media(max-width:700px){
+  #rent .card{padding:20px!important;border-radius:20px!important}
+  #rent h2,#rent h3{font-size:25px!important;line-height:1.2!important}
+  #rent label{font-size:16px!important;line-height:1.25!important}
+  #rent input,#rent select,#rent textarea,#rent .input{
+    min-height:58px!important;padding:13px 16px!important;font-size:18px!important;border-radius:14px!important;
+  }
+  #rent .btn,#rent button{min-height:52px!important;padding:12px 18px!important;font-size:17px!important;font-weight:850!important;border-radius:13px!important}
+  #rent .grid2,#rent .grid3{grid-template-columns:1fr!important}
+}
+</style>
+<style id="telecomaxMobileFormSizingV771">
+/* Standard Telecomax operational-form mobile typography */
+@media(max-width:700px){
+  /* Form/module heading */
+  #solfa h2,#solfa h3,#rent h2,#rent h3{
+    font-size:24px!important;
+    line-height:1.2!important;
+  }
+
+  /* Field labels */
+  #solfa label,#rent label{
+    font-size:14px!important;
+    line-height:1.25!important;
+    font-weight:800!important;
+  }
+
+  /* Inputs / selects */
+  #solfa input,#solfa select,#solfa textarea,#solfa .input,
+  #rent input,#rent select,#rent textarea,#rent .input{
+    font-size:16px!important;
+  }
+
+  /* Placeholder */
+  #solfa input::placeholder,#solfa textarea::placeholder,
+  #rent input::placeholder,#rent textarea::placeholder{
+    font-size:15px!important;
+  }
+
+  /* Primary/action buttons */
+  #solfa .btn,#solfa button,
+  #rent .btn,#rent button{
+    font-size:15px!important;
+    font-weight:800!important;
+  }
+}
+</style>
+
+<style id="rentSilentSsoV8214">
+#v7Sso,.v7-sso,#portalSsoStatus,.portal-sso-status{display:none!important}
+</style>
+
+<style id="tmxUniversalAuthResolveV8221">
+html.tmx-auth-resolving body{visibility:hidden!important}
+html.tmx-auth-resolving body::before{content:none!important;display:none!important}
+</style>
+<script id="tmxUniversalAuthResolveStartV8221">
+(function(){
+  if(/(?:^|[&#])sso=/.test(location.hash) || sessionStorage.getItem('tmx_km_pm_token') || sessionStorage.getItem('tmx_km_admin_token')){
+    document.documentElement.classList.add('tmx-auth-resolving');
+  }
+})();
+</script>
+
+
+<style id="v837MultiMonthTheme">
+.tmx-mm-wrap{position:relative}
+.tmx-mm-input{cursor:pointer!important;background:var(--field,#0b1725)!important;color:var(--text,#f5f6fa)!important;border-color:var(--border,#263b55)!important}
+.tmx-mm-input::placeholder{color:var(--muted,#8992a8)!important;opacity:1}
+.tmx-mm-pop{display:none;position:absolute;z-index:9999;top:calc(100% + 6px);left:0;min-width:285px;max-width:360px;background:var(--panel,#0b1725)!important;color:var(--text,#f5f6fa)!important;border:1px solid var(--border,#263b55)!important;border-radius:12px;box-shadow:0 14px 35px #0008;padding:10px}
+.tmx-mm-pop.open{display:block}
+.tmx-mm-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;color:var(--text,#f5f6fa)!important}
+.tmx-mm-list{max-height:260px;overflow:auto;border-top:1px solid var(--border,#263b55)!important;border-bottom:1px solid var(--border,#263b55)!important;padding:5px 0}
+.tmx-mm-item{display:flex!important;align-items:center;gap:9px;padding:8px 6px;margin:0!important;text-transform:none!important;font-size:13px!important;color:var(--text,#f5f6fa)!important;cursor:pointer}
+.tmx-mm-item span{color:var(--text,#f5f6fa)!important}
+.tmx-mm-item input{width:auto!important;height:auto!important;accent-color:var(--brand,#ec008c)}
+.tmx-mm-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:9px}
+.tmx-mm-btn{border:1px solid var(--border,#263b55)!important;background:var(--field,#101c2b)!important;color:var(--text,#f5f6fa)!important;border-radius:8px;padding:7px 10px;font-weight:700;cursor:pointer}
+.tmx-mm-btn.primary{background:var(--brand,#ec008c)!important;color:#fff!important;border-color:var(--brand,#ec008c)!important}
+.tmx-mm-list::-webkit-scrollbar{width:8px}.tmx-mm-list::-webkit-scrollbar-thumb{background:#667085;border-radius:8px}.tmx-mm-list::-webkit-scrollbar-track{background:transparent}
+</style>
+<style id="v838SilentSession">
+#portalSsoStatus,.sso-status,.portal-transition,.frame-loading{display:none!important}
+html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{content:none!important;display:none!important}
+</style></head><body>
+
+<div id="loginBuffer" class="login-buffer-overlay" aria-hidden="true">
+  <div class="login-buffer-box" role="status" aria-live="polite">
+    <div class="login-buffer-spinner"></div>
+    <div id="loginBufferText" class="login-buffer-text">Logging in...</div>
+  </div>
+</div>
+<header class="top"><div class="brand">TELECOMAX <small>Admin Portal</small></div><div class="actions"><button id="logout" class="btn logout" style="display:none">Log out</button></div></header><main class="wrap">
+<section id="login" class="login"><h1>Management Login</h1><div class="muted">Admin and PM users can access this portal using their management Name + 6-digit PIN.</div><label>Name</label><input id="name" class="input" autocomplete="username" placeholder="Enter your name"><label>PIN</label><input id="pin" class="input" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN"><button id="loginBtn" class="btn primary" style="width:100%;margin-top:16px">Login</button></section>
+<section id="dash" class="dash"><div class="tabs"><button class="btn tab active" data-p="balances">Balances</button><button class="btn tab" data-p="audit">Photo Audit</button><button class="btn tab" data-p="summary">Summary</button><button class="btn tab" data-p="solfa">Solfa</button><button class="btn tab" data-p="rent">Rent</button></div>
+<div id="balances" class="panel active"><div class="card"><h2>Balances</h2><div class="grid3"><div><label>Engineer</label><div class="search"><input id="balEng" class="input" placeholder="Search or select engineer" autocomplete="off"><div id="balEngOpts" class="opts"></div></div></div><div><label>Months</label><input id="balMonth" class="input" type="text" data-multimonth></div><div><button id="balApply" class="btn primary">Apply</button> <button id="balClear" class="btn">Clear</button></div></div></div><div class="stats"><div class="stat"><div class="k">Total Received</div><div id="received" class="v">0.00 EGP</div></div><div class="stat"><div class="k">Total Spent</div><div id="spent" class="v">0.00 EGP</div></div><div class="stat accent"><div class="k">Total Balance</div><div id="balance" class="v">0.00 EGP</div></div></div><div class="card"><h3>Engineer Balances</h3><div id="balanceRows" class="empty">Load balances to view records.</div></div></div>
+<div id="audit" class="panel"><div class="card"><h2>Photo Audit</h2><div class="filters"><div><label>Engineer</label><div class="search"><input id="eng" class="input" placeholder="Search engineer" autocomplete="off"><div id="engOpts" class="opts"></div></div></div><div><label>Driver</label><div class="search"><input id="drv" class="input" placeholder="Search driver" autocomplete="off"><div id="drvOpts" class="opts"></div></div></div><div><label>Project</label><div class="search"><input id="proj" class="input" placeholder="Search project" autocomplete="off"><div id="projOpts" class="opts"></div></div></div><div><label>Months</label><input id="month" class="input" type="text" data-multimonth></div><div><label>Paid By</label><div class="search"><input id="paidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="paidByOpts" class="opts"></div></div></div><div><label>Status</label><select id="auditStatus" class="input"><option value="" selected>Non Selected</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></div><div><button id="auditApply" class="btn primary">Apply</button> <button id="auditClear" class="btn">Clear</button></div></div></div><div id="auditList" class="audit-list"><div class="empty">Apply filters to load trips.</div></div><div class="bulkbar"><span id="pendingChanges" class="muted">No unsaved changes</span><button id="selectAllAudit" class="btn">Select All</button><button id="saveAudit" class="btn">Save Changes</button><button id="approveAudit" class="btn primary">Approve Selected</button></div></div>
+<div id="summary" class="panel"><div class="card"><h2>Approved Summary</h2><div class="filters"><div><label>Engineer</label><div class="search"><input id="sEng" class="input" autocomplete="off" placeholder="Search or select engineer"><div id="sEngOpts" class="opts"></div></div></div><div><label>Driver</label><div class="search"><input id="sDrv" class="input" autocomplete="off" placeholder="Search or select driver"><div id="sDrvOpts" class="opts"></div></div></div><div><label>Project</label><div class="search"><input id="sProj" class="input" autocomplete="off" placeholder="Search or select project"><div id="sProjOpts" class="opts"></div></div></div><div><label>Months</label><input id="sMonth" class="input" type="text" data-multimonth></div><div><label>Paid By</label><div class="search"><input id="sPaidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="sPaidByOpts" class="opts"></div></div></div><div><button id="sApply" class="btn primary">Apply</button> <button id="sExport" class="btn">Export Excel</button></div></div></div><div id="summaryRows" class="card"><div class="empty">Load approved records.</div></div></div><div id="solfa" class="panel"><div class="card" style="max-width:700px"><h2>Add Solfa</h2><label>Engineer</label><div class="search"><input id="solfaEng" class="input" placeholder="Search or select engineer" autocomplete="off"><div id="solfaEngOpts" class="opts"></div></div><div class="grid2"><div><label>Date</label><input id="solfaDate" class="input" type="date"></div><div><label>Amount</label><input id="solfaAmount" class="input" type="number" min="0.01" step="0.01" placeholder="Enter amount"></div></div><button id="solfaUpload" class="btn primary" style="margin-top:16px">Upload Solfa</button></div></div>
+<div id="rent" class="panel"><div class="card" style="max-width:800px"><h2>Rent Payment</h2><label>Rent Trip</label><select id="rentTrip"><option value="">— Select Rent Trip —</option></select><div class="grid2"><div><label>Engineer</label><input id="rentEng" class="input" readonly></div><div><label>Benzine Amount</label><input id="benzine" class="input" readonly value="0"></div></div><div class="grid2"><div><label>Rent Amount</label><input id="rentAmount" class="input" type="number" min="0.01" step="0.01"></div><div><label>Rent Deduction</label><select id="deduction"><option value="">— Select —</option><option>On TMX</option><option>On Driver</option></select></div></div><label>Rent Deduction Driver</label><div class="search"><input id="deductionDriver" class="input" placeholder="Search or select driver (Optional)" autocomplete="off"><div id="deductionDriverOpts" class="opts"></div></div><button id="sum" class="btn" style="margin-top:14px">Sum</button><div class="totalcard"><div>Total Amount to Pay</div><div id="rentTotal" class="v">0.00 EGP</div></div><button id="rentUpload" class="btn primary">Upload Rent</button></div></div>
+</section></main><div id="lightbox" class="lightbox"><img id="lbImg"><button id="lbClose" class="btn" style="position:absolute;top:20px;right:20px">Close</button></div><div id="toast" class="toast"></div>
+<script>
+
+function showLoginBuffer(message='Logging in...'){
+  const box=document.getElementById('loginBuffer');
+  const txt=document.getElementById('loginBufferText');
+  if(txt)txt.textContent=message;
+  if(box){box.classList.add('show');box.setAttribute('aria-hidden','false');}
+}
+function hideLoginBuffer(){
+  const box=document.getElementById('loginBuffer');
+  if(box){box.classList.remove('show');box.setAttribute('aria-hidden','true');}
+}
+function showBuffer(message='Loading...'){showLoginBuffer(message)}
+function hideBuffer(){hideLoginBuffer()}
+
+const URL='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec', $=id=>document.getElementById(id);let managementToken=sessionStorage.getItem('tmx_km_admin_token')||sessionStorage.getItem('tmx_km_pm_token')||'', managementName=sessionStorage.getItem('tmx_km_admin_name')||sessionStorage.getItem('tmx_km_pm_name')||'', combos=[], engineers=[], drivers=[], rentTrips=[];
+function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}async function post(action,x={}){let r=await fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),t=await r.text(),d;try{d=JSON.parse(t)}catch(e){throw Error('bad-response')}if(!d.ok)throw Error(d.error||'server-error');return d}function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}function today(){let d=new Date(),o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,10)}
+function auth(on){$('login').style.display=on?'none':'block';$('dash').style.display=on?'block':'none';$('logout').style.display=on?'inline-block':'none';if(on){loadConfig();loadBalances();loadRent()}}async function login(){const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 6-digit PIN');showLoginBuffer('Logging in to Management Portal...');$('loginBtn').disabled=true;try{const d=await post('managementLogin',{name,pin,portalRole:'Admin'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_admin_token',managementToken);sessionStorage.setItem('tmx_km_admin_name',managementName);if(d.role==='PM'){sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName)}auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{$('loginBtn').disabled=false;hideLoginBuffer()}}$('loginBtn').onclick=login;$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')login()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_admin_token');sessionStorage.removeItem('tmx_km_admin_name');sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===b.dataset.p));if(b.dataset.p==='audit')loadAudit();if(b.dataset.p==='rent')loadRent()});
+function openRequestedAdminView(){
+ const v=new URLSearchParams(location.search).get('view');
+ if(!v)return;
+ const b=[...document.querySelectorAll('.tab')].find(x=>x.dataset.p===v);
+ if(b)setTimeout(()=>b.click(),0);
+}
+
+function wire(id,optsId,source){let inp=$(id),box=$(optsId);function draw(){let q=inp.value.toLowerCase(),arr=source();box.innerHTML=arr.filter(x=>x.toLowerCase().includes(q)).map(x=>`<div class="opt">${esc(x)}</div>`).join('');box.style.display=box.innerHTML?'block':'none';[...box.children].forEach(o=>o.onclick=()=>{inp.value=o.textContent;box.style.display='none';if(['eng','drv','proj'].includes(id))refreshRelated()})}inp.oninput=draw;inp.onfocus=draw;document.addEventListener('click',e=>{if(!inp.parentElement.contains(e.target))box.style.display='none'})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function uniq(a){return [...new Set(a.filter(Boolean))].sort((a,b)=>a.localeCompare(b))}function relCtx(prefix=''){
+ const ids=prefix?{engineer:'sEng',driver:'sDrv',project:'sProj',paidBy:'sPaidBy'}:{engineer:'eng',driver:'drv',project:'proj',paidBy:'paidBy'};
+ const q={};Object.keys(ids).forEach(k=>q[k]=String($(ids[k])?.value||'').trim().toLowerCase());return q;
+}
+function related(field,prefix=''){
+ const q=relCtx(prefix);
+ const rows=combos.filter(c=>{
+   for(const k of ['engineer','driver','project','paidBy'])if(k!==field&&q[k]&&String(c[k]||'').trim().toLowerCase()!==q[k])return false;
+   return true;
+ });
+ if(field==='paidBy'){
+   // Paid By master list ALWAYS comes from KM Config Column A.
+   // Driver/Engineer/Project selections may narrow that list to actual matching payers.
+   const hasOtherFilter=['engineer','driver','project'].some(k=>q[k]);
+   if(!hasOtherFilter)return uniq(engineers);
+   const allowed=new Set(rows.map(c=>String(c.paidBy||'').trim().toLowerCase()).filter(Boolean));
+   return uniq(engineers.filter(e=>allowed.has(String(e).trim().toLowerCase())));
+ }
+ return uniq(rows.map(c=>c[field]));
+}
+function refreshRelated(changed,prefix=''){
+ const ids=prefix?{engineer:'sEng',driver:'sDrv',project:'sProj',paidBy:'sPaidBy'}:{engineer:'eng',driver:'drv',project:'proj',paidBy:'paidBy'};
+ Object.keys(ids).forEach(k=>{if(k===changed)return;let el=$(ids[k]),v=el.value.trim();if(v&&!related(k,prefix).some(x=>x.toLowerCase()===v.toLowerCase()))el.value=''});
+}
+function wireRel(id,optsId,field,prefix=''){
+ let inp=$(id),box=$(optsId);function draw(){let q=inp.value.toLowerCase(),arr=related(field,prefix);box.innerHTML=arr.filter(x=>x.toLowerCase().includes(q)).map(x=>`<div class="opt">${esc(x)}</div>`).join('');box.style.display=box.innerHTML?'block':'none';[...box.children].forEach(o=>o.onclick=()=>{inp.value=o.textContent;box.style.display='none';refreshRelated(field,prefix)})}inp.oninput=draw;inp.onfocus=draw;document.addEventListener('click',e=>{if(!inp.parentElement.contains(e.target))box.style.display='none'})
+}
+async function loadConfig(){try{let [x,c]=await Promise.all([post('adminFilterOptions'),post('adminPortalConfig')]);combos=x.combinations||[];engineers=c.engineers||[];drivers=c.drivers||[];
+ [['eng','engOpts','engineer',''],['drv','drvOpts','driver',''],['proj','projOpts','project',''],['paidBy','paidByOpts','paidBy',''],
+  ['sEng','sEngOpts','engineer','s'],['sDrv','sDrvOpts','driver','s'],['sProj','sProjOpts','project','s'],['sPaidBy','sPaidByOpts','paidBy','s']]
+  .forEach(x=>wireRel(x[0],x[1],x[2],x[3]));
+ wire('balEng','balEngOpts',()=>engineers);wire('solfaEng','solfaEngOpts',()=>engineers);wire('deductionDriver','deductionDriverOpts',()=>drivers)
+}catch(e){toast('Could not load lists')}}
+async function loadBalances(){try{let d=await post('adminSummary',{filterEngineer:$('balEng').value.trim(),filterMonth:$('balMonth').value});$('received').textContent=money(d.totals?.totalSolfa);$('spent').textContent=money(d.totals?.totalSpent);$('balance').textContent=money(d.totals?.balance);let a=d.engineers||[];$('balanceRows').innerHTML=a.length?`<table class="table"><thead><tr><th>Engineer</th><th>Received</th><th>Spent</th><th>Balance</th><th>Trips</th></tr></thead><tbody>${a.map(x=>`<tr><td>${esc(x.name)}</td><td>${money(x.totalSolfa)}</td><td>${money(x.totalSpent)}</td><td>${money(x.balance)}</td><td>${x.tripCount||0}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No balance records.</div>'}catch(e){toast('Could not load balances')}}$('balApply').onclick=loadBalances;$('balClear').onclick=()=>{$('balEng').value='';$('balMonth').value='';loadBalances()};
+async function loadAudit(){showBuffer('Applying filters...');try{$('auditList').innerHTML='<div class="empty">Loading…</div>';let d=await post('adminTrips',{filterEngineer:$('eng').value.trim(),filterDriver:$('drv').value.trim(),filterProject:$('proj').value.trim(),filterMonth:$('month').value});
+    let paidBy=String($('paidBy').value||'').trim().toLowerCase(), auditStatus=String($('auditStatus').value||'Pending').trim().toLowerCase();
+    let a=(d.trips||[]).filter(t=>(!paidBy||String(t.paidBy||'').trim().toLowerCase()===paidBy)&&String(t.pmStatus||'Pending').trim().toLowerCase()===auditStatus);$('auditList').innerHTML=a.length?a.map(card).join(''):'<div class="empty">No matching trips.</div>';document.querySelectorAll('.frame img').forEach(i=>i.onclick=()=>{$('lbImg').src=i.dataset.full||i.src;$('lightbox').classList.add('open')})}catch(e){console.error('Photo Audit load failed:',e);$('auditList').innerHTML='<div class="empty">Could not load audit records: '+esc(e.message||'server-error')+'</div>';toast('Could not load audit records')}finally{hideBuffer()}}function card(t){let ph=(title,km,thumb,full,lat,lon,kind)=>`<div class="photo"><h3 class="photo-title">${title} <span class="photo-km" data-photo-km="${kind}">${esc(km||'—')}</span></h3><div class="frame">${thumb||full?`<img src="${esc(thumb||full)}" data-full="${esc(full||thumb)}">`:'<span class="muted">No photo</span>'}</div><div class="muted">GPS: ${esc(lat||'—')}, ${esc(lon||'—')}</div></div>`;return `<div class="audit" data-audit-trip="${esc(t.tripId)}"><div class="summary">${[['Date',t.date],['Engineer',t.engineer],['Driver',t.driver],['Project',t.projectName],['Area',t.area],['Task',t.task]].map(x=>`<div class="cell"><b>${x[0]}</b>${esc(x[1]||'—')}</div>`).join('')}</div><div class="metrics">${[['Start KM',t.startKm],['Finish KM',t.finishKm],['Trip KM',t.tripKm],['F&B',t.forthBack],['Total KM',t.totalKm],['Rate',t.rateDisplay||'22.25 EGP / 10 KM'],['Amount',money(t.amountSpent)]].map(x=>`<div class="metric"><b>${x[0]}</b>${esc(x[1])}</div>`).join('')}</div><div class="audit-actions"><input class="audit-check" type="checkbox" data-trip="${esc(t.tripId)}" ${t.pmStatus==='Approved'||t.pmStatus==='Rejected'?'disabled':''}><b>PM: ${esc(t.pmStatus||'Pending')}</b><span>Finance: ${esc(t.financeStatus||'Pending')}</span><button class="btn edit-km" data-trip="${esc(t.tripId)}" data-start="${t.startKm}" data-finish="${t.finishKm}">Edit KM</button><button class="btn deduct" data-trip="${esc(t.tripId)}">Deduct</button><button class="btn danger reject" data-trip="${esc(t.tripId)}">Reject</button></div><div class="photos">${ph('Start Photo',t.startKm,t.startPhotoThumb,t.startPhoto,t.startLatitude,t.startLongitude,'start')}${ph('Finish Photo',t.finishKm,t.finishPhotoThumb,t.finishPhoto,t.finishLatitude,t.finishLongitude,'finish')}</div></div>`}$('auditApply').onclick=loadAudit;$('auditClear').onclick=()=>{['eng','drv','proj','month','paidBy'].forEach(x=>$(x).value='');$('auditStatus').value='Pending';loadAudit()};$('lbClose').onclick=()=>$('lightbox').classList.remove('open');
+
+let auditDialogResolve=null;
+function auditDialog(title,text,fieldsHtml){
+  $('auditDialogTitle').textContent=title;$('auditDialogText').textContent=text||'';$('auditDialogFields').innerHTML=fieldsHtml||'';$('auditDialogBg').classList.add('open');
+  return new Promise(resolve=>auditDialogResolve=resolve);
+}
+function closeAuditDialog(value){$('auditDialogBg').classList.remove('open');if(auditDialogResolve){const r=auditDialogResolve;auditDialogResolve=null;r(value)}}
+document.addEventListener('click',e=>{
+  if(e.target&&e.target.id==='auditDialogCancel')closeAuditDialog(null);
+  if(e.target&&e.target.id==='auditDialogBg')closeAuditDialog(null);
+  if(e.target&&e.target.id==='auditDialogConfirm'){const vals={};$('auditDialogFields').querySelectorAll('[data-dlg]').forEach(x=>vals[x.dataset.dlg]=x.value);closeAuditDialog(vals)}
+});
+const stagedAudit={};
+function stagedCount(){return Object.keys(stagedAudit).length}
+function updatePendingLabel(){$('pendingChanges').textContent=stagedCount()?stagedCount()+' unsaved change(s)':'No unsaved changes'}
+function stageTrip(id,patch){stagedAudit[id]=Object.assign(stagedAudit[id]||{tripId:id},patch);updatePendingLabel();let c=auditCard(id);if(c)c.dataset.dirty='1'}
+function auditCard(id){return [...document.querySelectorAll('[data-audit-trip]')].find(x=>String(x.dataset.auditTrip)===String(id))||null}
+function markLocalStatus(id,status){let c=auditCard(id);if(!c)return;let b=[...c.querySelectorAll('.audit-actions b')][0];if(b)b.textContent='PM: '+status;let cb=c.querySelector('.audit-check');if(cb&&status==='Rejected'){cb.checked=false;cb.disabled=true}}
+async function saveStagedAudit(showToast=true){
+ const updates=Object.values(stagedAudit);if(!updates.length){if(showToast)toast('No changes to save');return true}
+ showBuffer('Saving changes...');
+ try{let r=await post('adminSaveAuditBatch',{updates});if(!r.ok)throw new Error(r.error||'Save failed');Object.keys(stagedAudit).forEach(k=>delete stagedAudit[k]);document.querySelectorAll('[data-dirty="1"]').forEach(c=>delete c.dataset.dirty);updatePendingLabel();if(showToast)toast('Changes saved');return true}catch(e){toast('Could not save changes');return false}finally{hideBuffer()}
+}
+$('selectAllAudit').onclick=()=>document.querySelectorAll('.audit-check:not(:disabled)').forEach(x=>x.checked=true);
+$('saveAudit').onclick=()=>saveStagedAudit(true);
+$('approveAudit').onclick=async()=>{
+ let ids=[...document.querySelectorAll('.audit-check:checked:not(:disabled)')].map(x=>x.dataset.trip);if(!ids.length)return toast('Select pending trips first');
+ let ok=await saveStagedAudit(false);if(!ok)return;
+ showBuffer('Approving selected trips...');
+ try{let r=await post('adminSaveAuditBatch',{updates:[],approvals:ids});if(!r.ok)throw new Error(r.error||'Approval failed');ids.forEach(id=>{let c=auditCard(id);if(c)c.remove()});toast(ids.length+' trips approved')}catch(e){toast('Could not approve selected trips')}finally{hideBuffer()}
+};
+$('auditList').addEventListener('click',async e=>{
+ let b=e.target.closest('button');if(!b)return;let id=b.dataset.trip,c=auditCard(id);if(!c)return;
+ if(b.classList.contains('reject')){
+   let v=await auditDialog('Reject Trip','Enter the reason for rejecting this trip.','<label>Reason</label><textarea data-dlg="reason" placeholder="Rejection reason"></textarea>');if(!v)return;
+   stageTrip(id,{status:'Rejected',reason:v.reason||''});markLocalStatus(id,'Rejected');toast('Rejected locally — click Save Changes');
+ } else if(b.classList.contains('deduct')){
+   let current=(stagedAudit[id]&&stagedAudit[id].deduction)||0;
+   let v=await auditDialog('Deduct Amount','Enter the amount to deduct from this trip.','<label>Deduction (EGP)</label><input data-dlg="deduction" type="number" min="0" step="0.01" value="'+current+'">');if(!v)return;
+   let d=Math.max(0,Number(v.deduction)||0);stageTrip(id,{status:'Pending',deduction:d});let note=c.querySelector('.deduction-note');if(!note){note=document.createElement('div');note.className='deduction-note muted';c.querySelector('.audit-actions').prepend(note)}note.textContent='Deduction: '+d.toFixed(2)+' EGP';toast('Deduction staged — click Save Changes');
+ } else if(b.classList.contains('edit-km')){
+   let v=await auditDialog('Edit KM','Correct the Start KM and/or Finish KM.','<div class="dlg-grid"><div><label>Start KM</label><input data-dlg="start" type="number" value="'+b.dataset.start+'"></div><div><label>Finish KM</label><input data-dlg="finish" type="number" value="'+b.dataset.finish+'"></div></div>');if(!v)return;
+   let oldStart=Number(b.dataset.start),oldFinish=Number(b.dataset.finish),st=Number(v.start),fn=Number(v.finish);if(!isFinite(st)||!isFinite(fn)||fn<st)return toast('Invalid KM values');
+   stageTrip(id,{status:'Pending',startKm:st,finishKm:fn});b.dataset.start=st;b.dataset.finish=fn;
+   let ms=[...c.querySelectorAll('.metric')];let set=(name,val,old)=>{let m=ms.find(x=>x.querySelector('b')?.textContent===name);if(m){let existing=m.querySelector('.edited-km');if(existing)existing.remove();let e=document.createElement('span');e.className='edited-km';e.textContent='Edited: '+val;m.appendChild(e)}};
+   set('Start KM',st,oldStart);set('Finish KM',fn,oldFinish);set('Trip KM',fn-st);
+   let sk=c.querySelector('[data-photo-km="start"]'),fk=c.querySelector('[data-photo-km="finish"]');if(sk)sk.textContent=st;if(fk)fk.textContent=fn;
+   toast('KM edit staged — click Save Changes');
+ }
+});
+let approvedRows=[];
+async function loadApproved(){showBuffer('Loading summary...');try{let d=await post('adminApprovedSummary',{filterEngineer:$('sEng').value.trim(),filterDriver:$('sDrv').value.trim(),filterProject:$('sProj').value.trim(),filterMonth:$('sMonth').value});let payer=String($('sPaidBy').value||'').trim().toLowerCase();approvedRows=(d.trips||[]).filter(t=>!payer||String(t.paidBy||'').trim().toLowerCase()===payer);$('summaryRows').innerHTML=approvedRows.length?'<table class="summary-table"><thead><tr><th>Date</th><th>Engineer</th><th>Driver</th><th>Vehicle</th><th>Project</th><th>Rate</th><th>Deduction</th><th>Final Amount</th></tr></thead><tbody>'+approvedRows.map(t=>`<tr><td>${esc(t.date)}</td><td>${esc(t.engineer)}</td><td>${esc(t.driver)}</td><td>${esc(t.vehicle||'—')}</td><td>${esc(t.projectName)}</td><td>${esc(t.rateDisplay)}</td><td>${money(t.deduction)}</td><td>${money(t.finalAmount)}</td></tr>`).join('')+'</tbody></table>':'<div class="empty">No fully approved records.</div>'}finally{hideBuffer()}}
+$('sApply').onclick=loadApproved;$('sExport').onclick=()=>exportApprovedXlsx(approvedRows);
+$('solfaDate').value=today();$('solfaUpload').onclick=async()=>{let engineer=$('solfaEng').value.trim(),date=$('solfaDate').value,amount=$('solfaAmount').value;if(!engineer||!date||!amount)return toast('Complete Solfa fields');try{await post('adminSolfa',{engineer,date,amount});$('solfaAmount').value='';toast('Solfa uploaded');loadBalances()}catch(e){toast('Could not upload Solfa')}};
+async function loadRent(){try{let d=await post('adminRentTrips');rentTrips=d.trips||[];$('rentTrip').innerHTML='<option value="">— Select Rent Trip —</option>'+rentTrips.map(t=>`<option value="${esc(t.tripId)}">${esc(t.date)} · ${esc(t.engineer)} · ${esc(t.area)} · ${esc(t.task)}</option>`).join('')}catch(e){toast('Could not load Rent trips')}}$('rentTrip').onchange=()=>{let t=rentTrips.find(x=>String(x.tripId)===String($('rentTrip').value));$('rentEng').value=t?.engineer||'';$('benzine').value=t?.benzineAmount||0;$('rentAmount').value='';$('deduction').value='';$('deductionDriver').value='';sumRent()};function sumRent(){$('rentTotal').textContent=money((+$('benzine').value||0)+(+ $('rentAmount').value||0))}$('sum').onclick=sumRent;$('rentAmount').oninput=sumRent;$('rentUpload').onclick=async()=>{let tripId=$('rentTrip').value,rent=$('rentAmount').value,rentDeduction=$('deduction').value,rentDeductionDriver=$('deductionDriver').value.trim();if(!tripId||!rent||!rentDeduction)return toast('Complete Rent fields');try{await post('adminRent',{tripId,rent,rentDeduction,rentDeductionDriver});toast('Rent uploaded');$('rentTrip').value='';$('rentEng').value='';$('benzine').value='0';$('rentAmount').value='';$('deduction').value='';$('deductionDriver').value='';sumRent();loadRent();loadBalances()}catch(e){toast('Could not upload Rent')}};
+if(managementToken){$('name').value=managementName;post('adminSummary',{}).then(()=>auth(true)).catch(()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_admin_token');sessionStorage.removeItem('tmx_km_admin_name');auth(false)})}else auth(false);
+
+function exportApprovedXlsx(rows){
+ if(!rows||!rows.length)return toast('No fully approved rows to export');
+ const E=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'),C=n=>{let s='';while(n){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s};
+ const sh=rs=>'<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+rs.map((r,i)=>'<row>'+r.map((v,j)=>typeof v==='number'?'<c r="'+C(j+1)+(i+1)+'"><v>'+v+'</v></c>':'<c r="'+C(j+1)+(i+1)+'" t="inlineStr"><is><t>'+E(v)+'</t></is></c>').join('')+'</row>').join('')+'</sheetData></worksheet>';
+ let g={};rows.forEach(t=>{let k=t.engineer+'|'+t.projectName+'|'+t.rateDisplay;if(!g[k])g[k]=[t.engineer,0,t.projectName,t.rateDisplay];g[k][1]+=Number(t.finalAmount)||0});
+ let cover=[['Engineer Name','Amount','Project','Rate'],...Object.values(g)],det=[['Date','Engineer','Driver','Vehicle ID','Project','Area','Task','Start KM','Finish KM','Trip KM','F&B','Total KM','Rate','Calculated Amount','Deduction','Final Amount'],...rows.map(t=>[t.date,t.engineer,t.driver,t.vehicle||'',t.projectName,t.area,t.task,Number(t.startKm)||0,Number(t.finishKm)||0,Number(t.tripKm)||0,Number(t.forthBack)||0,Number(t.totalKm)||0,t.rateDisplay,Number(t.amountSpent)||0,Number(t.deduction)||0,Number(t.finalAmount)||0])];
+ const enc=new TextEncoder(),u16=n=>[n&255,n>>>8&255],u32=n=>[n&255,n>>>8&255,n>>>16&255,n>>>24&255],crc=b=>{let c=0xffffffff;for(let x of b){c^=x;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1}return(c^0xffffffff)>>>0};
+ let f=[['[Content_Types].xml','<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'],['_rels/.rels','<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'],['xl/workbook.xml','<?xml version="1.0"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Cover" sheetId="1" r:id="rId1"/><sheet name="In Details" sheetId="2" r:id="rId2"/></sheets></workbook>'],['xl/_rels/workbook.xml.rels','<?xml version="1.0"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/></Relationships>'],['xl/worksheets/sheet1.xml',sh(cover)],['xl/worksheets/sheet2.xml',sh(det)]],parts=[],cen=[],off=0;
+ for(let [n,d] of f){let nb=enc.encode(n),db=enc.encode(d),c=crc(db),l=new Uint8Array([...u32(0x04034b50),...u16(20),0,0,0,0,0,0,0,0,...u32(c),...u32(db.length),...u32(db.length),...u16(nb.length),0,0,...nb,...db]);parts.push(l);cen.push(new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),0,0,0,0,0,0,0,0,...u32(c),...u32(db.length),...u32(db.length),...u16(nb.length),0,0,0,0,0,0,0,0,0,0,0,0,...u32(off),...nb]));off+=l.length}
+ let cs=cen.reduce((a,b)=>a+b.length,0),end=new Uint8Array([...u32(0x06054b50),0,0,0,0,...u16(f.length),...u16(f.length),...u32(cs),...u32(off),0,0]),blob=new Blob([...parts,...cen,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),fr=new FileReader();fr.onload=()=>{let a=document.createElement('a');a.href=fr.result;a.download='KM-Approved-Summary.xlsx';a.click()};fr.readAsDataURL(blob)
+}
+</script><div id="auditDialogBg" class="audit-dialog-bg"><div class="audit-dialog"><h3 id="auditDialogTitle">Audit Action</h3><p id="auditDialogText"></p><div id="auditDialogFields"></div><div class="audit-dialog-actions"><button id="auditDialogCancel" class="btn">Cancel</button><button id="auditDialogConfirm" class="btn primary">Confirm</button></div></div></div><script>
+function portalSSOStatus_(title,detail){ document.documentElement.classList.remove('portal-sso-pending');
+ let x=document.getElementById('portalSsoStatus');
+ if(!x){x=document.createElement('div');x.id='portalSsoStatus';x.className='sso-status';document.body.appendChild(x)}
+ x.innerHTML='<div class="sso-status-box"><b>'+title+'</b><span>'+detail+'</span></div>';
+}
+(async function portalAutoLogin(){
+ const m=location.hash.match(/(?:^|[&#])sso=([^&]+)/); if(!m)return;
+ const portalToken=decodeURIComponent(m[1]); history.replaceState(null,'',location.pathname+location.search);
+ try{
+  const r=await fetch(URL,{method:'POST',body:JSON.stringify({action:'portalSSO',portalToken,portalRole:'Admin'})});
+  const text=await r.text(); let d; try{d=JSON.parse(text)}catch(_){throw Error('KM SSO backend returned a non-JSON response');}
+  if(!d.ok||!d.token){portalSSOStatus_('Single Sign-On failed',d.error||'The module rejected the portal session.');return;}
+  managementToken=d.token; managementName=d.name||'';
+  sessionStorage.setItem('tmx_km_admin_token',managementToken);
+  sessionStorage.setItem('tmx_km_admin_name',managementName);
+  if(d.role==='PM'){
+    sessionStorage.setItem('tmx_km_pm_token',managementToken);
+    sessionStorage.setItem('tmx_km_pm_name',managementName);
+  }
+  const x=document.getElementById('portalSsoStatus'); if(x)x.remove();
+  document.documentElement.classList.remove('portal-sso-pending');
+  $('name').value=managementName;
+  auth(true);
+ }catch(e){portalSSOStatus_('Single Sign-On connection error',String(e&&e.message||e));console.error('Portal SSO failed',e)}
+})();
+</script>
+<script id="kmRentNativeBootstrapV77">
+(function(){
+ const incoming=/(?:^|[&#])sso=/.test(location.hash);
+ if(incoming)return;
+ if(managementToken){
+   $('name').value=managementName||'';
+   auth(true);
+ }
+})();
+</script>
+<button type="button" onclick="location.href='./'" style="position:fixed;right:12px;bottom:12px;z-index:9998;border:1px solid #263249;border-radius:10px;background:#111827;color:#F5F6FA;padding:8px 11px;font-weight:800">← Operations</button>
+
+<script id="tmxUniversalAuthResolveEndV8221">
+(function(){
+ const root=document.documentElement;
+ if(!root.classList.contains('tmx-auth-resolving')) return;
+ function hasSession(){ return !!(sessionStorage.getItem('tmx_km_pm_token') || sessionStorage.getItem('tmx_km_admin_token')); }
+ function loginVisible(){
+   const ids=['login', 'loginBtn', 'loginBuffer', 'loginBufferText'];
+   for(const id of ids){
+     const e=document.getElementById(id);
+     if(e && getComputedStyle(e).display!=='none' && getComputedStyle(e).visibility!=='hidden') return true;
+   }
+   return false;
+ }
+ function revealIfReady(){
+   if(hasSession()){
+     // Wait one frame so the page's own auth routine can switch from login to app.
+     requestAnimationFrame(()=>requestAnimationFrame(()=>root.classList.remove('tmx-auth-resolving')));
+     return true;
+   }
+   return false;
+ }
+ if(!revealIfReady()){
+   const mo=new MutationObserver(()=>{if(revealIfReady())mo.disconnect()});
+   if(document.body) mo.observe(document.body,{subtree:true,childList:true,attributes:true});
+   // Genuine auth failure: restore existing legacy login fallback.
+   setTimeout(()=>{root.classList.remove('tmx-auth-resolving');mo.disconnect()},12000);
+ }
+})();
+</script>
+
+
+<script id="v836MultiMonthJs">
+(function(){
+ function labelMonth(v){const [y,m]=v.split('-').map(Number);return new Date(y,m-1,1).toLocaleString('en',{month:'short',year:'numeric'});}
+ function months(){
+   const out=[],d=new Date(); d.setDate(1); d.setMonth(d.getMonth()+3);
+   for(let i=0;i<40;i++){out.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'));d.setMonth(d.getMonth()-1)}
+   return out;
+ }
+ function init(inp){
+   if(inp.dataset.mmReady)return; inp.dataset.mmReady='1'; inp.type='text'; inp.readOnly=true;
+   inp.classList.add('tmx-mm-input'); inp.placeholder='Select one or more months';
+   const wrap=document.createElement('div');wrap.className='tmx-mm-wrap';
+   inp.parentNode.insertBefore(wrap,inp);wrap.appendChild(inp);
+   const pop=document.createElement('div');pop.className='tmx-mm-pop';wrap.appendChild(pop);
+   function selected(){return new Set(String(inp.value||'').split(',').map(x=>x.trim()).filter(Boolean))}
+   function draw(){
+     const sel=selected(), vals=months();
+     pop.innerHTML='<div class="tmx-mm-head"><b>Select months</b><button type="button" class="tmx-mm-btn mm-clear">Clear</button></div>'+
+       '<div class="tmx-mm-list">'+vals.map(v=>'<label class="tmx-mm-item"><input type="checkbox" value="'+v+'" '+(sel.has(v)?'checked':'')+'><span>'+labelMonth(v)+'</span></label>').join('')+'</div>'+
+       '<div class="tmx-mm-actions"><button type="button" class="tmx-mm-btn mm-cancel">Cancel</button><button type="button" class="tmx-mm-btn primary mm-done">Done</button></div>';
+     pop.querySelector('.mm-clear').onclick=()=>{pop.querySelectorAll('input').forEach(x=>x.checked=false)};
+     pop.querySelector('.mm-cancel').onclick=()=>pop.classList.remove('open');
+     pop.querySelector('.mm-done').onclick=()=>{
+       inp.value=[...pop.querySelectorAll('input:checked')].map(x=>x.value).sort().reverse().join(',');
+       pop.classList.remove('open');inp.dispatchEvent(new Event('change',{bubbles:true}));
+     };
+   }
+   inp.addEventListener('click',e=>{e.stopPropagation();draw();pop.classList.toggle('open')});
+   pop.addEventListener('click',e=>e.stopPropagation());
+   document.addEventListener('click',()=>pop.classList.remove('open'));
+ }
+ function boot(){document.querySelectorAll('input[data-multimonth]').forEach(init)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+
+<script id="v8323UnifiedPortalLogout">
+(function(){
+ const PORTAL_LOGIN='https://telecomaxportal.vercel.app/?logout=1';
+ function isLogoutTarget(el){
+   const b=el&&el.closest?el.closest('button,a'):null;if(!b)return false;
+   const id=String(b.id||'').toLowerCase(),txt=String(b.textContent||'').trim().toLowerCase();
+   return id==='logout'||id==='logoutbtn'||id==='navadmlogout'||txt==='log out'||txt==='logout'||txt==='admin log out';
+ }
+ document.addEventListener('click',function(e){
+   if(!isLogoutTarget(e.target))return;
+   e.preventDefault();e.stopImmediatePropagation();
+   try{sessionStorage.clear();}catch(_e){}
+   location.replace(PORTAL_LOGIN);
+ },true);
+})();
+</script>
+</body></html>

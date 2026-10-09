@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Telecomax Operations</title>
+<style>
+:root{--bg:#020817;--card:rgba(8,10,15,.80);--line:rgba(255,255,255,.12);--text:#f7f8fa;--muted:#9ca8b8;--pink:#d63391;--purple:#31005f;--blue:#69c8f2;--green:#74d6a0}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:var(--text);min-height:100vh;background:radial-gradient(circle at 8% 16%,rgba(0,153,204,.17),transparent 34%),radial-gradient(circle at 92% 10%,rgba(65,44,150,.22),transparent 36%),radial-gradient(circle at 74% 88%,rgba(214,51,145,.12),transparent 32%),linear-gradient(145deg,#00111e,#030817 48%,#120719)}
+.wrap{max-width:1180px;margin:auto;padding:28px 18px 60px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px}.brand{font-size:22px;font-weight:800}.brand span{color:var(--pink)}.pill{padding:8px 12px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:13px;background:rgba(255,255,255,.03)}
+.card{background:linear-gradient(145deg,rgba(9,11,16,.88),rgba(9,10,15,.70));border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 45px rgba(0,0,0,.28);backdrop-filter:blur(18px)}
+.login{max-width:520px;margin:7vh auto 0;padding:28px}.login h1{margin:0 0 8px;font-size:30px}.muted{color:var(--muted)}label{display:block;margin:18px 0 8px;font-weight:700}input{width:100%;height:56px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:#2b2b2b;color:white;padding:0 16px;font-size:16px}button{border:0;border-radius:14px;min-height:52px;padding:0 18px;color:white;font-weight:800;cursor:pointer}.primary{width:100%;margin-top:20px;background:linear-gradient(100deg,#b0005b,#750047 45%,#31005f)}.ghost{background:rgba(255,255,255,.07);border:1px solid var(--line)}.hidden{display:none!important}.msg{margin-top:14px;min-height:22px;color:#ff9dbd}.hero{padding:24px;margin-bottom:18px}.hero h1{margin:0 0 6px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.module{padding:22px;min-height:230px;display:flex;flex-direction:column}.module h2{margin:8px 0}.module .tag{font-size:12px;font-weight:800;letter-spacing:.08em}.km .tag{color:var(--pink)}.custody .tag{color:var(--blue)}.links{display:grid;gap:10px;margin-top:auto}.links a{text-decoration:none;color:white;padding:13px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--line)}.links a:hover{border-color:var(--pink)}.disabled{opacity:.38;pointer-events:none}.role{color:var(--green);font-weight:800}.actions{display:flex;gap:10px;align-items:center}
+
+.workspace{display:none}
+.workspace.active{display:block}
+.workspace-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px}
+.back{background:rgba(255,255,255,.07);border:1px solid var(--line)}
+.quickgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.quick{padding:20px;min-height:180px;display:flex;flex-direction:column}
+.quick h3{margin:8px 0 6px;font-size:20px}
+.quick p{margin:0 0 18px}
+.quick button{margin-top:auto;background:linear-gradient(100deg,#b0005b,#750047 45%,#31005f)}
+.quick.blue button{background:linear-gradient(100deg,#0f709d,#165f86,#244a75)}
+.quick.green button{background:linear-gradient(100deg,#19704a,#17603f,#194c39)}
+@media(max-width:900px){.quickgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.appshell{display:none}
+.appshell.active{display:block}
+.appbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.appbar-left{display:flex;align-items:center;gap:10px;min-width:0}
+.appbar-title{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appbar-actions{display:flex;gap:8px}
+.appframe-wrap{position:relative;height:calc(100vh - 145px);min-height:620px;border:1px solid var(--line);border-radius:22px;overflow:hidden;background:#050914;box-shadow:0 18px 45px rgba(0,0,0,.28)}
+.appframe{width:100%;height:100%;border:0;background:#050914}
+.frame-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#020817;color:white;z-index:2;font-weight:800}
+.frame-loading.hidden{display:none}
+@media(max-width:720px){.appframe-wrap{height:calc(100vh - 125px);min-height:560px;border-radius:16px}.appbar-title{font-size:14px}.appbar .pill{display:none}}
+@media(max-width:720px){.grid,.quickgrid{grid-template-columns:1fr}.top{align-items:flex-start}.brand{font-size:19px}.hero{padding:20px}}
+
+/* V6 unified dashboard */
+.v6-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:18px 0}
+.v6-kpi{background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:16px;padding:16px;min-height:112px;cursor:pointer;transition:.18s}
+.v6-kpi:hover{transform:translateY(-2px);border-color:rgba(236,0,140,.55)}
+.v6-kpi .k{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.v6-kpi .v{font-size:28px;font-weight:800;margin:7px 0 2px}.v6-kpi .s{font-size:12px;color:var(--muted)}
+.v6-section{margin-top:24px}.v6-section h2{font-size:17px;margin:0 0 12px}
+.v6-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.v6-action{border:1px solid var(--border);background:var(--card);border-radius:14px;padding:14px;cursor:pointer}
+.v6-action:hover{border-color:rgba(236,0,140,.55)}
+.v6-action b{display:block;margin-bottom:5px}.v6-action span{font-size:12px;color:var(--muted)}
+.v6-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:5px 9px;border-radius:999px;border:1px solid var(--border);color:var(--muted);margin-left:8px}
+.v6-live{color:#68d391}.v6-warn{color:#f6c85f}
+@media(max-width:900px){.v6-grid{grid-template-columns:repeat(2,1fr)}.v6-actions{grid-template-columns:1fr}}
+@media(max-width:520px){.v6-grid{grid-template-columns:1fr}}
+
+/* V6.2 mobile-first dashboard refinement */
+@media(max-width:700px){
+  body{font-size:14px}
+  .wrap{width:100%;max-width:none;padding:16px 14px 28px}
+  header{padding:8px 0 14px;gap:10px}
+  .brand{font-size:18px}
+  .top-actions{gap:7px}
+  .top-actions .pill{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  button,.back{min-height:44px}
+  .card.hero{padding:18px;border-radius:20px;margin-bottom:16px}
+  .card.hero h1{font-size:27px;line-height:1.08;margin:4px 0 8px}
+  .card.hero>div:last-child{font-size:13px;line-height:1.45}
+  .v6-section{margin-top:18px}
+  .v6-section h2{display:flex;align-items:center;gap:8px;font-size:18px;margin:0 0 12px}
+  .v6-section h2 .ghost{margin-left:auto!important;min-height:38px;padding:7px 11px!important}
+  .v6-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0 18px}
+  .v6-kpi{min-height:116px;padding:14px;border-radius:16px;display:flex;flex-direction:column;justify-content:center}
+  .v6-kpi .k{font-size:11px;line-height:1.25;letter-spacing:.45px}
+  .v6-kpi .v{font-size:27px;line-height:1.05;margin:7px 0 5px}
+  .v6-kpi .s{font-size:11.5px;line-height:1.3}
+  #dash>.grid{grid-template-columns:1fr!important;gap:12px}
+  .card.module{padding:18px;border-radius:20px}
+  .card.module h2{font-size:23px;margin:8px 0}
+  .card.module p{font-size:13px;line-height:1.45;margin:8px 0 14px}
+  .links{gap:8px}
+  .links a{min-height:46px;display:flex;align-items:center;padding:11px 13px;border-radius:12px}
+  #dash>p.muted{font-size:11px;line-height:1.4;margin:14px 2px 0!important}
+  .workspace{padding-top:4px}
+  .workspace-head{gap:10px;align-items:flex-start}
+  .workspace-head h1{font-size:24px}
+  .quickgrid{grid-template-columns:1fr!important;gap:10px}
+  .quickcard{min-height:96px;padding:15px;border-radius:15px}
+}
+@media(max-width:390px){
+  .wrap{padding-left:11px;padding-right:11px}
+  .brand{font-size:16px}
+  .v6-grid{gap:8px}
+  .v6-kpi{padding:12px;min-height:110px}
+  .v6-kpi .v{font-size:24px}
+}
+
+/* V6.3 polished mobile dashboard */
+@media(max-width:700px){
+  header{min-height:58px}
+  .card.hero{padding:15px 16px;margin-bottom:12px}
+  .card.hero .muted{font-size:11px}
+  .card.hero h1{font-size:25px;margin:3px 0 6px}
+  .card.hero>div:last-child{font-size:12px;line-height:1.35}
+  .v6-section{margin-top:14px}
+  .v6-section h2{font-size:17px;margin-bottom:10px}
+  .v6-badge{font-size:9px;padding:3px 6px}
+  .v6-section h2 .ghost{font-size:12px;min-height:36px!important;padding:6px 10px!important}
+  .v6-grid{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-rows:auto!important;
+    align-items:stretch!important;
+    gap:9px!important;
+    margin:8px 0 14px!important;
+  }
+  .v6-kpi{
+    box-sizing:border-box!important;
+    min-height:104px!important;
+    height:auto!important;
+    margin:0!important;
+    padding:12px 13px!important;
+    border:1px solid rgba(255,255,255,.10)!important;
+    border-radius:15px!important;
+    background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018))!important;
+    display:flex!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    box-shadow:0 8px 22px rgba(0,0,0,.12);
+    -webkit-tap-highlight-color:transparent;
+  }
+  .v6-kpi:active{transform:scale(.98);background:rgba(255,255,255,.075)!important}
+  .v6-kpi .k{font-size:10px!important;line-height:1.2!important;min-height:24px;color:#9ba5b8}
+  .v6-kpi .v{font-size:25px!important;line-height:1!important;margin:4px 0 5px!important}
+  .v6-kpi .s{font-size:10.5px!important;line-height:1.25!important;min-height:26px}
+  #dash>.grid{gap:10px!important;margin-top:0!important}
+  .card.module{
+    min-height:0!important;
+    height:auto!important;
+    padding:15px 16px!important;
+    border-radius:18px!important;
+  }
+  .card.module .tag{font-size:10px;margin-bottom:4px}
+  .card.module h2{font-size:21px!important;line-height:1.15;margin:5px 0!important}
+  .card.module p{font-size:12px!important;line-height:1.35!important;margin:8px 0 11px!important;min-height:0!important}
+  .card.module .links{margin-top:0!important}
+  .card.module .links a{min-height:42px!important;padding:9px 11px!important;font-size:13px}
+}
+@media(max-width:390px){
+  .v6-kpi{min-height:100px!important;padding:11px!important}
+  .v6-kpi .v{font-size:23px!important}
+  .card.hero h1{font-size:23px}
+}
+
+/* V6.4 card-first navigation */
+#dash>.grid{display:none!important}
+.quick-actions-section{margin-top:14px}
+.quick-actions-section h2{font-size:17px;margin:0 0 10px}
+.quick-actions-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.quick-action{
+ border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.028);
+ border-radius:15px;padding:13px;min-height:86px;cursor:pointer;
+ display:flex;flex-direction:column;justify-content:center;transition:.16s;
+}
+.quick-action:hover{border-color:rgba(236,0,140,.5);transform:translateY(-1px)}
+.quick-action:active{transform:scale(.985)}
+.quick-action b{font-size:13px;margin-bottom:5px}.quick-action span{font-size:10.5px;color:var(--muted);line-height:1.3}
+@media(max-width:700px){
+ .quick-actions-section{margin-top:12px}
+ .quick-actions-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .quick-action{min-height:84px;padding:12px}
+ .quick-action b{font-size:12px}.quick-action span{font-size:10px}
+}
+
+/* V6.4.1 action-card interaction + visual grouping */
+.quick-action{
+ appearance:none;-webkit-appearance:none;width:100%;text-align:left;color:var(--text);
+ font:inherit;position:relative;overflow:hidden;
+}
+.quick-action::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;opacity:.95}
+.quick-action.qa-km::before{background:#ec008c}
+.quick-action.qa-custody::before{background:#43c7ef}
+.quick-action.qa-km{background:linear-gradient(135deg,rgba(236,0,140,.055),rgba(255,255,255,.018))}
+.quick-action.qa-custody{background:linear-gradient(135deg,rgba(67,199,239,.055),rgba(255,255,255,.018))}
+.qa-top{display:flex;align-items:center;gap:8px;width:100%}
+.qa-top b{flex:1;margin:0!important}
+.qa-dot{width:8px;height:8px;border-radius:50%;flex:0 0 8px}
+.qa-km .qa-dot{background:#ec008c;box-shadow:0 0 10px rgba(236,0,140,.45)}
+.qa-custody .qa-dot{background:#43c7ef;box-shadow:0 0 10px rgba(67,199,239,.4)}
+.qa-arrow{font-size:22px;line-height:1;color:var(--muted);transition:.15s}
+.quick-action:hover .qa-arrow{transform:translateX(2px);color:var(--text)}
+.qa-desc{display:block;margin:6px 0 0 16px;font-size:10.5px;color:var(--muted);line-height:1.3}
+.quick-action:focus-visible{outline:2px solid rgba(255,255,255,.65);outline-offset:2px}
+@media(max-width:700px){
+ .quick-action{min-height:92px!important;padding:13px 12px 12px 14px!important}
+ .qa-top b{font-size:12.5px!important}
+ .qa-desc{font-size:10px;margin-left:16px}
+}
+
+/* V6.4.2 reliable anchor navigation + stronger action titles */
+a.quick-action{text-decoration:none!important;color:var(--text)!important}
+.quick-action .qa-top b{
+ font-size:15px!important;
+ font-weight:800!important;
+ color:#f7f9ff!important;
+ letter-spacing:-.1px;
+}
+.quick-action .qa-desc{color:#9da7bb!important}
+.quick-action.qa-km{border-color:rgba(236,0,140,.22)!important}
+.quick-action.qa-custody{border-color:rgba(67,199,239,.20)!important}
+.quick-action.qa-km::before{background:#ec008c!important}
+.quick-action.qa-custody::before{background:#43c7ef!important}
+.quick-action.qa-km .qa-dot{background:#ec008c!important}
+.quick-action.qa-custody .qa-dot{background:#43c7ef!important}
+@media(max-width:700px){
+ .quick-action .qa-top b{font-size:14px!important;font-weight:800!important}
+}
+
+/* V6.5 unified app transition */
+.portal-transition{position:fixed;inset:0;z-index:99999;background:linear-gradient(145deg,#001521,#08071c 58%,#18051a);display:flex;align-items:center;justify-content:center;padding:24px}
+.portal-transition.hidden{display:none}
+.portal-transition-box{text-align:center;max-width:320px}
+.portal-spinner{width:38px;height:38px;margin:0 auto 18px;border-radius:50%;border:3px solid rgba(255,255,255,.14);border-top-color:#ec008c;animation:portalSpin .7s linear infinite}
+@keyframes portalSpin{to{transform:rotate(360deg)}}
+.portal-transition-brand{font-size:13px;font-weight:900;letter-spacing:.8px;color:#fff;margin-bottom:14px}
+.portal-transition-brand span{color:#ec008c}
+.portal-transition-title{font-size:22px;font-weight:800;color:#f8f9ff}
+.portal-transition-sub{font-size:11px;color:#8e99ad;margin-top:7px}
+
+/* V6.6 Attention Center */
+.attention-section{margin-top:16px}
+.attention-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:10px}
+.attention-head h2{font-size:17px;margin:0;display:flex;align-items:center;gap:8px}
+.attention-note{font-size:10.5px;color:var(--muted)}
+.attention-count{display:inline-flex;align-items:center;justify-content:center;min-width:23px;height:23px;padding:0 7px;border-radius:999px;background:rgba(236,0,140,.14);border:1px solid rgba(236,0,140,.32);font-size:11px;color:#ff70c2}
+.attention-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.attention-item{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.025);border-radius:14px;padding:12px 13px;min-height:66px;position:relative;overflow:hidden}
+.attention-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#ec008c}
+.attention-item.custody::before{background:#43c7ef}
+.attention-icon{width:34px;height:34px;flex:0 0 34px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:rgba(236,0,140,.10);font-weight:900;font-size:13px}
+.attention-item.custody .attention-icon{background:rgba(67,199,239,.10)}
+.attention-copy{min-width:0;flex:1}
+.attention-copy b{display:block;font-size:12.5px;color:#f7f9ff;margin-bottom:3px}
+.attention-copy span{display:block;font-size:10.5px;color:var(--muted);line-height:1.25}
+.attention-value{font-size:18px;font-weight:850;color:#fff;white-space:nowrap}
+.attention-empty{border:1px solid rgba(104,211,145,.18);background:rgba(104,211,145,.04);border-radius:14px;padding:13px;color:#9dd9b4;font-size:12px}
+@media(max-width:700px){
+ .attention-section{margin-top:13px}
+ .attention-head{align-items:center}
+ .attention-note{display:none}
+ .attention-list{grid-template-columns:1fr}
+ .attention-item{min-height:62px;padding:11px 12px}
+ .attention-copy b{font-size:12px}
+ .attention-value{font-size:17px}
+}
+</style>
+<style id="photoAuditDirectOpenV826">
+html.tmx-opening-photo-audit [id*="opening" i],
+html.tmx-opening-photo-audit [class*="opening" i],
+html.tmx-opening-photo-audit [id*="launch" i],
+html.tmx-opening-photo-audit [class*="launch" i]{display:none!important}
+</style>
+<script id="photoAuditDirectOpenV826">
+(function(){
+  document.addEventListener('click',function(e){
+    const a=e.target.closest('a,[data-route],[data-url],[onclick]');
+    if(!a)return;
+    const txt=((a.getAttribute('href')||'')+' '+(a.getAttribute('data-route')||'')+' '+(a.getAttribute('data-url')||'')+' '+(a.getAttribute('onclick')||'')+' '+(a.textContent||'')).toLowerCase();
+    if(txt.includes('photo-audit')||txt.includes('photo audit')){
+      document.documentElement.classList.add('tmx-opening-photo-audit');
+      document.documentElement.classList.add('tmx-photo-audit-launch');
+    }
+  },true);
+})();
+</script>
+<style id="photoAuditNoPortalMessageV827">
+/* Exact final cleanup: the portal launch layer marks itself with its rendered text.
+   Hide only while KM Odometer Audit is the active launch target. */
+html.tmx-photo-audit-launch .launch-overlay,
+html.tmx-photo-audit-launch .opening-overlay,
+html.tmx-photo-audit-launch #launchOverlay,
+html.tmx-photo-audit-launch #openingOverlay,
+html.tmx-photo-audit-launch .route-loading,
+html.tmx-photo-audit-launch #routeLoading{display:none!important}
+</style>
+<style id="allowanceNoPortalMessageV828">
+html.tmx-allowance-launch .launch-overlay,
+html.tmx-allowance-launch .opening-overlay,
+html.tmx-allowance-launch #launchOverlay,
+html.tmx-allowance-launch #openingOverlay,
+html.tmx-allowance-launch .route-loading,
+html.tmx-allowance-launch #routeLoading{display:none!important}
+</style>
+<script id="allowancePortalMessageKillV828">
+(function(){
+ function kill(){
+   for(const el of document.querySelectorAll('body *')){
+     if(el.children.length>6)continue;
+     const t=(el.textContent||'').replace(/\s+/g,' ').trim();
+     if(/^Telecomax Operations\s*Opening .*Allowance/i.test(t)||/^Opening .*Allowance/i.test(t))
+       el.style.setProperty('display','none','important');
+   }
+ }
+ document.addEventListener('click',e=>{
+   const a=e.target.closest('a,[data-route],[data-url],[onclick]'); if(!a)return;
+   const t=((a.textContent||'')+' '+(a.getAttribute('href')||'')+' '+(a.getAttribute('data-route')||'')+' '+(a.getAttribute('onclick')||'')).toLowerCase();
+   if(t.includes('allowance')){
+     document.documentElement.classList.add('tmx-allowance-launch'); kill();
+     new MutationObserver(kill).observe(document.body,{subtree:true,childList:true,characterData:true});
+   }
+ },true);
+})();
+</script>
+
+<style id="balancesNoPortalMessageV8212">
+html.tmx-balances-launch .launch-overlay,
+html.tmx-balances-launch .opening-overlay,
+html.tmx-balances-launch #launchOverlay,
+html.tmx-balances-launch #openingOverlay,
+html.tmx-balances-launch .route-loading,
+html.tmx-balances-launch #routeLoading{display:none!important}
+</style>
+<script id="balancesPortalMessageKillV8212">
+(function(){
+ function kill(){
+   for(const el of document.querySelectorAll('body *')){
+     if(el.children.length>8)continue;
+     const t=(el.textContent||'').replace(/\s+/g,' ').trim();
+     if(/^Telecomax Operations\s*Opening .*Balances/i.test(t)||/^Opening .*Balances/i.test(t))
+       el.style.setProperty('display','none','important');
+   }
+ }
+ document.addEventListener('click',e=>{
+   const a=e.target.closest('a,[data-route],[data-url],[onclick]'); if(!a)return;
+   const t=((a.textContent||'')+' '+(a.getAttribute('href')||'')+' '+(a.getAttribute('data-route')||'')+' '+(a.getAttribute('onclick')||'')).toLowerCase();
+   if(t.includes('km-balances')||t.includes('balances')){
+     document.documentElement.classList.add('tmx-balances-launch');
+     kill();
+     new MutationObserver(kill).observe(document.body,{subtree:true,childList:true,characterData:true});
+   }
+ },true);
+})();
+</script>
+
+
+<style id="solfaNoPortalMessageV8213">
+html.tmx-solfa-launch .launch-overlay,
+html.tmx-solfa-launch .opening-overlay,
+html.tmx-solfa-launch #launchOverlay,
+html.tmx-solfa-launch #openingOverlay,
+html.tmx-solfa-launch .route-loading,
+html.tmx-solfa-launch #routeLoading{display:none!important}
+</style>
+<script id="solfaPortalMessageKillV8213">
+(function(){
+ function kill(){
+   for(const el of document.querySelectorAll('body *')){
+     if(el.children.length>8)continue;
+     const t=(el.textContent||'').replace(/\s+/g,' ').trim();
+     if(/^Telecomax Operations\s*Opening .*Add Solfa/i.test(t)||/^Opening .*Add Solfa/i.test(t))
+       el.style.setProperty('display','none','important');
+   }
+ }
+ document.addEventListener('click',e=>{
+   const a=e.target.closest('a,[data-route],[data-url],[onclick]'); if(!a)return;
+   const t=((a.textContent||'')+' '+(a.getAttribute('href')||'')+' '+(a.getAttribute('data-route')||'')+' '+(a.getAttribute('onclick')||'')).toLowerCase();
+   if(t.includes('km-solfa')||t.includes('solfa')){
+     document.documentElement.classList.add('tmx-solfa-launch');
+     kill();
+     new MutationObserver(kill).observe(document.body,{subtree:true,childList:true,characterData:true});
+   }
+ },true);
+})();
+</script>
+
+
+<style id="rentNoPortalMessageV8214">
+html.tmx-rent-launch .launch-overlay,
+html.tmx-rent-launch .opening-overlay,
+html.tmx-rent-launch #launchOverlay,
+html.tmx-rent-launch #openingOverlay,
+html.tmx-rent-launch .route-loading,
+html.tmx-rent-launch #routeLoading{display:none!important}
+</style>
+<script id="rentPortalMessageKillV8214">
+(function(){
+ function kill(){
+   for(const el of document.querySelectorAll('body *')){
+     if(el.children.length>8)continue;
+     const t=(el.textContent||'').replace(/\s+/g,' ').trim();
+     if(/^Telecomax Operations\s*Opening .*Pay Cars Rent/i.test(t)||/^Opening .*Pay Cars Rent/i.test(t))
+       el.style.setProperty('display','none','important');
+   }
+ }
+ document.addEventListener('click',e=>{
+   const a=e.target.closest('a,[data-route],[data-url],[onclick]'); if(!a)return;
+   const t=((a.textContent||'')+' '+(a.getAttribute('href')||'')+' '+(a.getAttribute('data-route')||'')+' '+(a.getAttribute('onclick')||'')).toLowerCase();
+   if(t.includes('km-rent')||/\brent\b/.test(t)){
+     document.documentElement.classList.add('tmx-rent-launch');
+     kill();
+     new MutationObserver(kill).observe(document.body,{subtree:true,childList:true,characterData:true});
+   }
+ },true);
+})();
+</script>
+
+
+<style id="custodyPMReviewNoPortalMessageV8215">
+html.tmx-pm-review-launch .launch-overlay,
+html.tmx-pm-review-launch .opening-overlay,
+html.tmx-pm-review-launch #launchOverlay,
+html.tmx-pm-review-launch #openingOverlay,
+html.tmx-pm-review-launch .route-loading,
+html.tmx-pm-review-launch #routeLoading{display:none!important}
+</style>
+<script id="custodyPMReviewPortalMessageKillV8215">
+(function(){
+ function kill(){
+   for(const el of document.querySelectorAll('body *')){
+     if(el.children.length>8)continue;
+     const t=(el.textContent||'').replace(/\s+/g,' ').trim();
+     if(/^Telecomax Operations\s*Opening .*Custody Review/i.test(t)||/^Opening .*Custody Review/i.test(t))
+       el.style.setProperty('display','none','important');
+   }
+ }
+ document.addEventListener('click',e=>{
+   const a=e.target.closest('a,[data-route],[data-url],[onclick]'); if(!a)return;
+   const t=((a.textContent||'')+' '+(a.getAttribute('href')||'')+' '+(a.getAttribute('data-route')||'')+' '+(a.getAttribute('onclick')||'')).toLowerCase();
+   if((t.includes('receipt')&&t.includes('review'))||t.includes('custody-pm-review')){
+     document.documentElement.classList.add('tmx-pm-review-launch'); kill();
+     new MutationObserver(kill).observe(document.body,{subtree:true,childList:true,characterData:true});
+   }
+ },true);
+})();
+</script>
+
+
+<style id="custodyPMTransfersNoPortalMessageV8216">
+html.tmx-pm-transfers-launch .launch-overlay,
+html.tmx-pm-transfers-launch .opening-overlay,
+html.tmx-pm-transfers-launch #launchOverlay,
+html.tmx-pm-transfers-launch #openingOverlay,
+html.tmx-pm-transfers-launch .route-loading,
+html.tmx-pm-transfers-launch #routeLoading{display:none!important}
+</style>
+<script id="custodyPMTransfersPortalMessageKillV8216">
+(function(){
+ function kill(){
+   for(const el of document.querySelectorAll('body *')){
+     if(el.children.length>8)continue;
+     const t=(el.textContent||'').replace(/\s+/g,' ').trim();
+     if(/^Telecomax Operations\s*Opening .*Transfers/i.test(t)||/^Opening .*Transfers/i.test(t))
+       el.style.setProperty('display','none','important');
+   }
+ }
+ document.addEventListener('click',e=>{
+   const a=e.target.closest('a,[data-route],[data-url],[onclick]'); if(!a)return;
+   const t=((a.textContent||'')+' '+(a.getAttribute('href')||'')+' '+(a.getAttribute('data-route')||'')+' '+(a.getAttribute('onclick')||'')).toLowerCase();
+   if(t.includes('custody-pm-transfers')){
+     document.documentElement.classList.add('tmx-pm-transfers-launch'); kill();
+     new MutationObserver(kill).observe(document.body,{subtree:true,childList:true,characterData:true});
+   }
+ },true);
+})();
+</script>
+
+
+<style id="v835NoPortalTransition">
+#portalTransition,.portal-transition,.frame-loading{display:none!important}
+</style><style id="v838EngineerCleanup">
+body.portal-engineer #attentionSection{display:none!important}
+</style><style id="v838SilentSession">
+#portalSsoStatus,.sso-status,.portal-transition,.frame-loading{display:none!important}
+html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{content:none!important;display:none!important}
+</style>
+<script id="v8323PortalLogoutLanding">
+(function(){
+  const q=new URLSearchParams(location.search);
+  if(q.get('logout')!=='1')return;
+  try{
+    sessionStorage.clear();
+    localStorage.removeItem('tmx_portal_user_persist');
+    localStorage.removeItem('tmx_portal_user');
+  }catch(e){}
+  history.replaceState(null,'',location.pathname);
+})();
+</script>
+<style id="v8324LoginBranding">
+#loginView .login-logo-wrap{display:flex;justify-content:center;align-items:center;margin:24px auto 22px}
+#loginView .login-logo{display:block;width:min(410px,90%);height:auto;object-fit:contain;filter:none}
+</style>
+</head>
+<body><div class="wrap">
+<div class="top"><div class="brand">TELECOMAX <span>OPERATIONS</span></div><div class="actions"><span id="who" class="pill">Not signed in</span><button id="logout" class="ghost hidden">Log out</button></div></div>
+
+<section id="loginView" class="card login">
+<div class="login-logo-wrap"><img class="login-logo" src="telecomax-login-logo-white.png" alt="Telecomax"></div>
+<label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name">
+<label>6-digit PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="••••••">
+<button id="login" class="primary">Log in</button><div id="msg" class="msg"></div>
+</section>
+
+<section id="dash" class="hidden">
+<div class="card hero"><div class="muted">TELECOMAX OPERATIONS</div><h1 id="hello">Dashboard</h1><div>Role: <span id="role" class="role">—</span> · </div></div>
+<div class="v6-section"><h2>Live Operations <span class="v6-badge v6-live">LIVE</span> <button class="ghost" style="padding:6px 10px;margin-left:8px" onclick="loadLiveDashboard()">Refresh</button></h2><div id="liveKpis" class="v6-grid"><div class="muted">Loading live KM + Custody data…</div></div></div>
+<div id="attentionSection" class="attention-section">
+  <div class="attention-head">
+    <h2>Attention Required <span id="attentionCount" class="attention-count">0</span></h2>
+    <span class="attention-note">Items needing action now</span>
+  </div>
+  <div id="attentionList" class="attention-list"><div class="muted">Loading attention items…</div></div>
+</div>
+<div class="quick-actions-section"><h2>Actions</h2><div id="quickActions" class="quick-actions-grid"></div></div>
+<div class="grid">
+<div id="kmCard" class="card module km"><div class="tag">KM & BENZINE</div><h2>🚗 KM Operations</h2><p class="muted">Trips, KM review, allowances and finance audit.</p><div id="kmLinks" class="links"></div></div>
+<div id="custodyCard" class="card module custody"><div class="tag">CUSTODY</div><h2>💳 Custody Expenses</h2><p class="muted">Expense submission, PM review, Finance review and transfers.</p><div id="custodyLinks" class="links"></div></div>
+</div>
+
+</section>
+
+<section id="workspace" class="workspace">
+ <div class="workspace-head">
+  <div><div class="muted" id="workspaceKicker">TELECOMAX OPERATIONS</div><h1 id="workspaceTitle" style="margin:4px 0 0">Workspace</h1></div>
+  <button class="back" onclick="closeWorkspace()">← Dashboard</button>
+ </div>
+ <div id="workspaceGrid" class="quickgrid"></div>
+</section>
+
+<section id="appshell" class="appshell">
+ <div class="appbar">
+  <div class="appbar-left">
+   <button class="back" onclick="closeApp()">←</button>
+   <div><div class="muted" style="font-size:11px">TELECOMAX OPERATIONS</div><div id="appTitle" class="appbar-title">Module</div></div>
+  </div>
+  <div class="appbar-actions"><span class="pill">Single Sign-On</span><button class="ghost" onclick="openExternal()">↗</button></div>
+ </div>
+ <div class="appframe-wrap">
+   <div id="frameLoading" class="frame-loading">Opening secure workspace…</div>
+   <iframe id="appFrame" class="appframe" title="Telecomax module"></iframe>
+ </div>
+</section>
+</div>
+<script>
+const CUSTODY_API='https://script.google.com/macros/s/AKfycbzA-CXfl2-BgUx-xi48SUikxryD6WH92bdN95vOMyoG0TuX444h3b4-q8zXD9F4amR0Hw/exec';
+const KM_API='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec';
+const $=id=>document.getElementById(id);
+async function post(url,payload){const r=await fetch(url,{method:'POST',body:JSON.stringify(payload)});return JSON.parse(await r.text())}
+async function custody(action,data){return post(CUSTODY_API,{action,data})}
+async function kmPost(payload){return post(KM_API,payload)}
+let liveDashboard={km:null,custody:null,loading:false,error:''};
+function fmtEgp(v){return new Intl.NumberFormat('en-EG',{maximumFractionDigits:0}).format(Number(v||0))+' EGP'}
+async function loadLiveDashboard(){
+ if(!currentPortalToken||liveDashboard.loading)return;
+ liveDashboard.loading=true; liveDashboard.error='';
+ try{
+   const [kmr,cur]=await Promise.all([
+     kmPost({action:'portalDashboardSummary',portalToken:currentPortalToken}),
+     custody('portalDashboardSummary',{portalToken:currentPortalToken})
+   ]);
+   liveDashboard.km=kmr&&kmr.ok?kmr:null;
+   liveDashboard.custody=cur&&cur.ok?cur:null;
+   if(!liveDashboard.km&&!liveDashboard.custody) liveDashboard.error='Live summary endpoints are not deployed yet.';
+ }catch(e){liveDashboard.error='Could not load live operational data.'}
+ finally{
+   liveDashboard.loading=false;
+   const el=document.getElementById('liveKpis');
+   if(el) renderLiveKpis();
+ }
+}
+function liveCard(label,value,sub,url){
+ return `<div class="v6-kpi" onclick="go(${JSON.stringify(url)},${JSON.stringify(label)})"><div class="k">${label}</div><div class="v">${value}</div><div class="s">${sub}</div></div>`;
+}
+function renderLiveKpis(){
+ const el=document.getElementById('liveKpis');if(!el)return;
+ if(liveDashboard.loading){el.innerHTML='<div class="muted">Loading live KM + Custody data…</div>';return;}
+ if(liveDashboard.error){el.innerHTML=`<div class="msg err">${liveDashboard.error}</div>`;const ae=$('attentionList');if(ae)ae.innerHTML='<div class="msg err">Attention data is temporarily unavailable.</div>';return;}
+ const k=liveDashboard.km||{},c=liveDashboard.custody||{},role=String(currentPortalUser?.role||'');
+ let h='';
+ if(role==='Admin'||role==='PM'){
+   h+=liveCard('KM KM Odometer Audit',k.pmAuditPending??'—','Pending PM audit',moduleUrls.kmPhotoAudit);
+   h+=liveCard('Allowance Acceptance',k.allowancePendingCount??'—',fmtEgp(k.allowancePendingAmount||0)+' pending this month',moduleUrls.kmAllowance);
+   h+=liveCard('Custody PM Review',c.pmPending??'—','Pending receipt reviews',moduleUrls.custodyPMReview);
+   h+=liveCard('Needs Transfer',c.needsTransferCount??'—',fmtEgp(c.needsTransferAmount||0),moduleUrls.custodyPMTransfers);
+ }else if(role==='Finance'){
+   h+=liveCard('KM Finance Audit',k.financeAuditPending??'—','Approved by PM, pending Finance',moduleUrls.kmFinanceAudit);
+   h+=liveCard('Custody Finance Review',c.financePending??'—','Pending Finance verification',moduleUrls.custodyFinanceReview);
+   h+=liveCard('Needs Transfer',c.needsTransferCount??'—',fmtEgp(c.needsTransferAmount||0),moduleUrls.custodyFinanceTransfers);
+   h+=liveCard('Transferred',c.transferredCount??'—',fmtEgp(c.transferredAmount||0)+' total',moduleUrls.custodyFinanceTransfers);
+ }else{
+   h+=liveCard('KM Trips This Month',k.myTripsThisMonth??'—',new Intl.NumberFormat('en-EG',{maximumFractionDigits:1}).format(k.myKmThisMonth||0)+' KM',moduleUrls.kmEngineerHistory);
+   h+=liveCard('My Expenses',c.myExpenseCount??'—',fmtEgp(c.myExpenseAmount||0)+' submitted',moduleUrls.custodyEngineerHistory);
+   h+=liveCard('Trips App','Open','KM trip workflow',moduleUrls.kmEngineerStart);
+   h+=liveCard('Custody App','Open','Custody expense submission',moduleUrls.custodyEngineerNew);
+ }
+ el.innerHTML=h||'<div class="muted">No live KPIs available for this role.</div>';
+ renderAttention();
+}
+async function centralLogin(name,pin){
+  const r=await custody('portalLogin',{name,pin});
+  if(!r || !r.ok) return null;
+  return {
+    kind:r.kind,
+    name:r.name||name,
+    role:r.role||'Engineer',
+    km:!!r.kmAccess,
+    custody:!!r.custodyAccess,
+    portalToken:r.portalToken||'',
+    custodyToken:r.custodyToken||''
+  };
+}
+let currentPortalToken='';
+let currentPortalUser=null;
+const moduleUrls={
+ kmEngineerStart:'https://kmpage.vercel.app/?view=start&portalLabel=Trips%20App&silentSso=1',
+ kmEngineerHistory:'https://kmpage.vercel.app/?view=history&portalLabel=Trips%20History&silentSso=1',
+ kmBalances:'km-balances.html',
+ kmPhotoAudit:'photo-audit.html',
+ kmSolfa:'km-solfa.html',
+ kmRent:'km-rent.html',
+ kmAllowance:'allowance-audit.html',
+ kmFinanceAudit:'km-finance-audit.html',
+ custodyEngineerNew:'https://custodypage.vercel.app/?view=home&portalLabel=Custody%20App&silentSso=1',
+ custodyEngineerHistory:'https://custodypage.vercel.app/?view=history&portalLabel=Custody%20History&silentSso=1',
+ custodyAdminEngineers:'custody-engineer-management.html',
+ custodyAdminUsers:'custody-management-users.html',
+ custodyAdminTransfers:'custody-finance-transfers.html',
+ custodyPMReview:'custody-pm-review.html',
+ custodyPMTransfers:'custody-pm-transfers.html',
+ custodyFinanceReview:'custody-finance-review.html',
+ custodyFinanceTransfers:'custody-finance-transfers.html'
+};
+let currentModuleUrl='';
+function withSSO(url){
+ const clean=String(url||'').replace(/#.*$/,'');
+ const page=(()=>{try{return new URL(clean,location.href).pathname.split('/').pop()}catch(e){return ''}})();
+ const isCustody=/^custody-/.test(page);
+ const token=(isCustody && currentPortalUser?.custodyToken)
+   ? currentPortalUser.custodyToken
+   : currentPortalToken;
+ return token ? clean+'#sso='+encodeURIComponent(token) : clean;
+}
+function go(url,title){
+ currentModuleUrl=withSSO(url);
+ // Audit/working screens intentionally use the full browser viewport.
+ location.href=currentModuleUrl;
+}
+function closeApp(){ history.back(); }
+function openExternal(){if(currentModuleUrl) window.open(currentModuleUrl,'_blank','noopener')}
+
+function link(label,url){return `<a href="#" onclick="event.preventDefault();go(${JSON.stringify(url)},${JSON.stringify(label)})">${label} →</a>`}
+function workspaceLink(label,key){return `<a href="#" onclick="event.preventDefault();openWorkspace('${key}')">${label} →</a>`}
+
+
+
+function attentionItem(title,sub,value,url,kind='km'){
+ const href=withSSO(url);
+ return `<a class="attention-item ${kind==='custody'?'custody':''}" href="${href}">
+   <span class="attention-icon">!</span>
+   <span class="attention-copy"><b>${title}</b><span>${sub}</span></span>
+   <span class="attention-value">${value}</span>
+ </a>`;
+}
+function renderAttention(){
+ const el=$('attentionList'),countEl=$('attentionCount');
+ if(!el||!countEl)return;
+ if(liveDashboard.loading){el.innerHTML='<div class="muted">Loading attention items…</div>';countEl.textContent='…';return;}
+ const k=liveDashboard.km||{},c=liveDashboard.custody||{};
+ const role=String(currentPortalUser?.role||'');
+ const kind=String(currentPortalUser?.kind||'');
+ let items=[], total=0;
+ const add=(n,title,sub,url,type='km',display)=>{
+   n=Number(n||0); if(n<=0)return;
+   total+=n; items.push(attentionItem(title,sub,display||String(n),url,type));
+ };
+ if(kind==='engineer'){
+   // Engineer dashboard is intentionally action-focused; there are no approval queues for this role.
+   el.innerHTML='<div class="attention-empty">No approval items are waiting for you. Use the Actions cards below for trips and expenses.</div>';
+   countEl.textContent='0';
+   return;
+ }
+ if(role==='Admin'||role==='PM'){
+   add(k.pmAuditPending,'KM KM Odometer Audit','Trips waiting for management audit',moduleUrls.kmPhotoAudit,'km');
+   add(k.allowancePendingCount,'Allowance Acceptance','Current-month allowances pending approval',moduleUrls.kmAllowance,'km');
+   add(c.pmPending,'Custody Custody Review','Expenses waiting for PM review',moduleUrls.custodyPMReview,'custody');
+   add(c.needsTransferCount,'Custody Transfer',fmtEgp(c.needsTransferAmount||0)+' ready to transfer',moduleUrls.custodyPMTransfers,'custody');
+   add(c.clarification,'Needs Clarification','Custody expenses requiring clarification',moduleUrls.custodyPMReview,'custody');
+ }else if(role==='Finance'){
+   add(k.financeAuditPending,'KM Finance Audit','KM records approved by PM, waiting for Finance',moduleUrls.kmFinanceAudit,'km');
+   add(c.financePending,'Custody Finance Review','Expenses waiting for Finance verification',moduleUrls.custodyFinanceReview,'custody');
+   add(c.needsTransferCount,'Needs Transfer',fmtEgp(c.needsTransferAmount||0)+' ready to transfer',moduleUrls.custodyFinanceTransfers,'custody');
+   add(c.clarification,'Needs Clarification','Custody expenses requiring clarification',moduleUrls.custodyFinanceReview,'custody');
+ }
+ countEl.textContent=String(total);
+ el.innerHTML=items.length?items.join(''):'<div class="attention-empty">Nothing currently requires action.</div>';
+}
+
+function actionCard(title,desc,url){
+ const href=withSSO(url);
+ const group=String(url||'').includes('kmpage.vercel.app')?'qa-km':'qa-custody';
+ return `<a class="quick-action ${group}" href="${href}">
+   <span class="qa-top"><span class="qa-dot"></span><b>${title}</b><span class="qa-arrow">›</span></span>
+   <span class="qa-desc">${desc}</span>
+ </a>`;
+}
+function renderQuickActions(u){
+ const el=$('quickActions'); if(!el)return;
+ let h='';
+ if(u.kind==='engineer'){
+   if(u.km){
+     h+=actionCard('Trips App','Open KM trip workflow.',moduleUrls.kmEngineerStart);
+     h+=actionCard('Trips History','Trips, KM and previous records.',moduleUrls.kmEngineerHistory);
+   }
+   if(u.custody){
+     h+=actionCard('Custody App','Submit a Custody expense.',moduleUrls.custodyEngineerNew);
+     h+=actionCard('Custody History','Review submitted expenses.',moduleUrls.custodyEngineerHistory);
+   }
+ }else if(u.role==='Finance'){
+   if(u.km) h+=actionCard('KM Odometer Audit','Finance KM evidence review.',moduleUrls.kmFinanceAudit);
+   if(u.custody){
+     h+=actionCard('Custody Review','Finance expense verification.',moduleUrls.custodyFinanceReview);
+     h+=actionCard('Custody Transfer','Transfer-ready and completed expenses.',moduleUrls.custodyFinanceTransfers);
+   }
+ }else if(u.role==='PM'){
+   if(u.km){
+     h+=actionCard('Engineers Balance','Engineer KM balances.',moduleUrls.kmBalances);
+     h+=actionCard('KM Odometer Audit','Review trip evidence.',moduleUrls.kmPhotoAudit);
+     h+=actionCard('Add Solfa','Engineer advances.',moduleUrls.kmSolfa);
+     h+=actionCard('Pay Cars Rent','Pay Cars Rent trips and deductions.',moduleUrls.kmRent);
+     h+=actionCard('Allowance Acceptance','Monthly allowance approvals.',moduleUrls.kmAllowance);
+   }
+   if(u.custody){
+     h+=actionCard('Custody Review','PM expense approvals.',moduleUrls.custodyPMReview);
+     h+=actionCard('Custody Transfer','Track approved expenses.',moduleUrls.custodyPMTransfers);
+   }
+ }else{
+   if(u.km){
+     h+=actionCard('Engineers Balance','Engineer KM balances.',moduleUrls.kmBalances);
+     h+=actionCard('KM Odometer Audit','Review trip evidence.',moduleUrls.kmPhotoAudit);
+     h+=actionCard('Add Solfa','Engineer advances.',moduleUrls.kmSolfa);
+     h+=actionCard('Pay Cars Rent','Pay Cars Rent trips and deductions.',moduleUrls.kmRent);
+     h+=actionCard('Allowance Acceptance','Monthly allowance approvals.',moduleUrls.kmAllowance);
+   }
+   if(u.custody){
+     h+=actionCard('Engineer Management','Engineers, PINs and limits.',moduleUrls.custodyAdminEngineers);
+     h+=actionCard('Management Users','PM, Finance and Admin access.',moduleUrls.custodyAdminUsers);
+     h+=actionCard('Custody Review','Admin expense review.',moduleUrls.custodyPMReview);
+     h+=actionCard('Custody Transfer','Approved expense transfers.',moduleUrls.custodyAdminTransfers);
+   }
+ }
+ el.innerHTML=h||'<div class="muted">No actions available for this role.</div>';
+}
+
+function render(u){
+ // New Portal authentication owns the tab. Remove any old native-module auth first,
+ // so every module must consume the newly issued SSO token from this login.
+ [
+   'tmx_km_pm_token','tmx_km_pm_name',
+   'tmx_km_admin_token','tmx_km_admin_name',
+   'tmx_km_finance_token','tmx_km_finance_name',
+   'custody.pm','custody.finance','custody.admin',
+   'tmx_custody_pm_token','tmx_custody_finance_token','tmx_custody_admin_token'
+ ].forEach(k=>sessionStorage.removeItem(k));
+
+ currentPortalUser=u;
+ document.body.classList.toggle('portal-engineer',u.kind==='engineer');
+ currentPortalToken=u.portalToken||'';
+ liveDashboard={km:null,custody:null,loading:false,error:''};
+ $('loginView').classList.add('hidden');$('dash').classList.remove('hidden');$('logout').classList.remove('hidden');
+ $('who').textContent=u.name;$('hello').textContent='Hello, '+u.name;$('role').textContent=u.role;
+ let km='',cu='';
+ if(u.km){
+  if(u.kind==='engineer') km+=workspaceLink('Open KM Workspace','kmEngineer');
+  else if(u.role==='Finance') km+=workspaceLink('Open Finance Workspace','kmFinance');
+  else {km+=workspaceLink('Open KM Management','kmManagement')}
+ } else $('kmCard').classList.add('disabled');
+ if(u.custody){
+  if(u.kind==='engineer') cu+=workspaceLink('Open Custody Workspace','custodyEngineer');
+  else if(u.role==='Finance') cu+=workspaceLink('Open Finance Workspace','custodyFinance');
+  else if(u.role==='PM') cu+=workspaceLink('Open PM Workspace','custodyPM');
+  else {cu+=workspaceLink('Open Custody Admin','custodyAdmin');cu+=workspaceLink('Open PM Workspace','custodyPM');cu+=workspaceLink('Open Finance Workspace','custodyFinance')}
+ } else $('custodyCard').classList.add('disabled');
+ $('kmLinks').innerHTML=km;$('custodyLinks').innerHTML=cu;
+ renderQuickActions(u);
+ sessionStorage.setItem('tmx_portal_user',JSON.stringify(u));localStorage.setItem('tmx_portal_user_persist',JSON.stringify(u));
+
+ // V6.1.1: load live summaries only after the authenticated dashboard is fully rendered.
+ const liveEl=$('liveKpis');
+ if(liveEl) liveEl.innerHTML='<div class="muted">Loading live KM + Custody data…</div>';
+ const attentionEl=$('attentionList');
+ if(attentionEl) attentionEl.innerHTML='<div class="muted">Loading attention items…</div>';
+ const attentionCount=$('attentionCount');
+ if(attentionCount) attentionCount.textContent='…';
+ setTimeout(()=>loadLiveDashboard(),0);
+}
+$('login').onclick=async()=>{
+ const name=$('name').value.trim(),pin=$('pin').value.trim();$('msg').textContent='';
+ if(!name||!/^\d{6}$/.test(pin)){ $('msg').textContent='Enter your name and 6-digit PIN.';return}
+ $('login').disabled=true;$('login').textContent='Checking access…';
+ try{
+  let u=await centralLogin(name,pin);
+  if(!u){$('msg').textContent='Wrong name/PIN or no active KM/Custody access.';return}
+  render(u);
+ }catch(e){$('msg').textContent='Connection problem. Please try again.'}
+ finally{$('login').disabled=false;$('login').textContent='Log in'}
+};
+$('pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('login').click()});
+
+const workspaceDefinitions={
+ kmEngineer:{title:'KM Engineer',items:[
+  ['Trips App','Create and complete KM trips with odometer evidence.','kmEngineerStart',''],
+  ['Trip History','Review your KM records and balances.','kmEngineerHistory','blue']
+ ]},
+ kmManagement:{title:'KM Management',items:[
+  ['Balances','Review received, spent and remaining engineer balances.','kmBalances',''],
+  ['KM Odometer Audit','Review KM records against start/finish photos.','kmPhotoAudit','blue'],
+  ['Add Solfa','Create and review engineer advances.','kmSolfa','green'],
+  ['Pay Cars Rent','Process completed rent trips and deductions.','kmRent',''],
+  ['Allowance Acceptance','Review and approve monthly allowances.','kmAllowance','blue']
+ ]},
+ kmFinance:{title:'KM Finance',items:[
+  ['KM Odometer Audit','Review trip evidence, KM and amount spent.','kmFinanceAudit','green']
+ ]},
+ custodyEngineer:{title:'Custody Engineer',items:[
+  ['Custody App','Submit a new expense with receipt evidence.','custodyEngineerNew',''],
+  ['Custody History','Review submitted expenses and their status.','custodyEngineerHistory','blue']
+ ]},
+ custodyPM:{title:'Custody Project Management',items:[
+  ['Custody Review','Review pending expenses and supporting receipts.','custodyPMReview',''],
+  ['Transfers','Follow approved expenses through the transfer workflow.','custodyPMTransfers','blue']
+ ]},
+ custodyFinance:{title:'Custody Finance',items:[
+  ['Custody Review','Perform Finance verification of submitted expenses.','custodyFinanceReview','green'],
+  ['Transfers','Review transfer-ready and transferred expenses.','custodyFinanceTransfers','blue']
+ ]},
+ custodyAdmin:{title:'Custody Administration',items:[
+  ['Engineer Management','Manage engineers, PINs, activation and custody limits.','custodyAdminEngineers',''],
+  ['Management Users','Manage PM, Finance and Admin access.','custodyAdminUsers','blue'],
+  ['Transfers','Manage approved expenses and transfer references.','custodyAdminTransfers','green']
+ ]}
+};
+function openWorkspace(key){
+ const w=workspaceDefinitions[key]; if(!w)return;
+ window._lastWorkspace=key;
+ $('dash').classList.add('hidden'); $('workspace').classList.add('active');
+ $('workspaceTitle').textContent=w.title;
+ $('workspaceGrid').innerHTML=w.items.map(i=>`<div class="card quick ${i[3]||''}"><div class="tag">TELECOMAX</div><h3>${i[0]}</h3><p class="muted">${i[1]}</p><button onclick="go(moduleUrls['${i[2]}'],'${i[0].replace(/'/g,"&#39;")}')">Open →</button></div>`).join('');
+ scrollTo(0,0);
+}
+function closeWorkspace(){ $('workspace').classList.remove('active'); $('dash').classList.remove('hidden'); scrollTo(0,0); }
+
+$('logout').onclick=()=>{
+ currentPortalUser=null;currentPortalToken='';liveDashboard={km:null,custody:null,loading:false,error:''};
+
+ // A Portal logout must also invalidate every native module session in this tab.
+ // Otherwise a later Portal login can collide with the previous PM/Admin/Finance
+ // module token before the new #sso handoff finishes.
+ [
+   'tmx_portal_user',
+   'tmx_km_pm_token','tmx_km_pm_name',
+   'tmx_km_admin_token','tmx_km_admin_name',
+   'tmx_km_finance_token','tmx_km_finance_name',
+   'custody.pm','custody.finance','custody.admin',
+   'tmx_custody_pm_token','tmx_custody_finance_token','tmx_custody_admin_token'
+ ].forEach(k=>sessionStorage.removeItem(k));
+ localStorage.removeItem('tmx_portal_user_persist');
+ location.replace(location.pathname+location.search);
+
+};
+try{
+ const raw=sessionStorage.getItem('tmx_portal_user')||localStorage.getItem('tmx_portal_user_persist')||'null';
+ const u=JSON.parse(raw);if(u){sessionStorage.setItem('tmx_portal_user',JSON.stringify(u));render(u)}
+}catch(e){}
+
+document.addEventListener('click',function(e){
+ const a=e.target.closest('a.quick-action');
+ if(!a || !a.href)return;
+ const box=document.getElementById('portalTransition');
+ const title=document.getElementById('portalTransitionTitle');
+ if(title) title.textContent='Opening '+(a.querySelector('b')?.textContent||'workspace')+'…';
+ if(box) box.classList.add('hidden');
+},{capture:true});
+window.addEventListener('pageshow',()=>{
+ try{const raw=sessionStorage.getItem('tmx_portal_user')||localStorage.getItem('tmx_portal_user_persist');if(raw){const u=JSON.parse(raw);if(u)render(u)}}catch(e){}
+
+ const box=document.getElementById('portalTransition');
+ if(box) box.classList.add('hidden');
+});
+
+</script><div id="portalTransition" class="portal-transition hidden" aria-live="polite">
+  <div class="portal-transition-box">
+    <div class="portal-spinner"></div>
+    <div class="portal-transition-brand">TELECOMAX <span>OPERATIONS</span></div>
+    <div id="portalTransitionTitle" class="portal-transition-title">Opening…</div>
+    <div class="portal-transition-sub">Secure session handoff</div>
+  </div>
+</div>
+<script id="tmxAccessNoticeV82">
+window.addEventListener('DOMContentLoaded',()=>{
+ const q=new URLSearchParams(location.search);
+ if(q.get('reason')==='access'){
+   history.replaceState(null,'',location.pathname);
+   const host=document.querySelector('.login-card,.login-panel,#loginCard,#loginView');
+   if(host){const n=document.createElement('div');n.textContent='This page is not available for your current role or access permissions.';n.style.cssText='margin:10px 0;padding:10px 12px;border:1px solid #3a2841;border-radius:10px;color:#d6b5c8;background:#170c16;font-size:13px';host.prepend(n)}
+ }
+});
+</script>
+<script id="photoAuditPortalMessageKillV827">
+(function(){
+ function kill(){
+   const nodes=document.querySelectorAll('body *');
+   for(const el of nodes){
+     if(el.children.length>6) continue;
+     const t=(el.textContent||'').replace(/\s+/g,' ').trim();
+     if(/^Telecomax Operations\s*Opening KM Odometer Audit/i.test(t) || /^Opening KM Odometer Audit/i.test(t)){
+       el.style.setProperty('display','none','important');
+     }
+   }
+ }
+ document.addEventListener('click',e=>{
+   const a=e.target.closest('a,[data-route],[data-url],[onclick]');
+   if(!a)return;
+   const t=((a.textContent||'')+' '+(a.getAttribute('href')||'')+' '+(a.getAttribute('data-route')||'')+' '+(a.getAttribute('onclick')||'')).toLowerCase();
+   if(t.includes('photo audit')||t.includes('photo-audit')){
+     document.documentElement.classList.add('tmx-photo-audit-launch');
+     kill();
+     new MutationObserver(kill).observe(document.body,{subtree:true,childList:true,characterData:true});
+   }
+ },true);
+})();
+</script>
+
+
+
+</body></html>

@@ -13,4 +13,3 @@ Deploy
 
 Important
 V1 is the safe shell milestone. It verifies credentials/access centrally but opens the existing apps on their current domains. Because browser sessionStorage cannot be shared across different Vercel domains, those existing apps may request login again. True one-login SSO is the next phase and requires adding a portal-issued session handoff to both applications.
-

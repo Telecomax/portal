@@ -1,0 +1,508 @@
+<!doctype html><html><head>
+<script id="tmxAllowanceRouteGuardV828">
+(function(){
+  if(/(?:^|[&#])sso=/.test(location.hash))return;
+  if(sessionStorage.getItem('tmx_km_pm_token'))return;
+  function parse(v){try{return v?JSON.parse(v):null}catch(e){return null}}
+  let allowed=false;
+  for(const store of [sessionStorage,localStorage]){
+    for(let i=0;i<store.length;i++){
+      const x=parse(store.getItem(store.key(i))); if(!x||typeof x!=='object')continue;
+      const r=String(x.role||x.userRole||'').toLowerCase();
+      if(r==='pm'||r==='p'||r==='admin'||r==='a'){allowed=true;break}
+    }
+    if(allowed)break;
+  }
+  if(!allowed){document.documentElement.style.visibility='hidden';location.replace('./?reason=access')}
+})();
+
+const v8311AllowanceMonth=$('month');
+if(v8311AllowanceMonth)v8311AllowanceMonth.addEventListener('change',()=>{sanitizeRelated('month');refreshAllCombos();});
+</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Telecomax Operations — Allowance Audit</title><style>
+:root{--bg:#f3f6f8;--card:#fff;--text:#24313a;--muted:#71808b;--line:#dfe6ea;--brand:#c52b83;--green:#21865a;--red:#b83b47;--amber:#a66a00}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial;background:var(--bg);color:var(--text)}header{background:#fff;border-bottom:1px solid var(--line);padding:16px 22px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}.brand{font-weight:900;font-size:20px}.brand span{color:var(--brand)}button,input,select,textarea{font:inherit}.btn{border:0;border-radius:10px;padding:11px 15px;font-weight:750;cursor:pointer}.primary{background:var(--brand);color:#fff}.ghost{background:#eef2f4;color:var(--text)}main{max-width:1250px;margin:auto;padding:24px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 8px 24px #25323a0b}.login{max-width:440px;margin:70px auto}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase}.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;min-width:0}
+.combo{position:relative}.combo input{width:100%;padding-right:34px}.combo:after{content:'⌄';position:absolute;right:11px;bottom:11px;color:var(--muted);pointer-events:none}.combo-list{display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);max-height:230px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px #25323a20;z-index:30;padding:5px}.combo.open .combo-list{display:block}.combo-option{padding:9px 10px;border-radius:7px;cursor:pointer;font-size:13px}.combo-option.multi{display:flex;align-items:center;gap:8px}.combo-option.multi input{width:auto}.chips{position:absolute;left:0;right:0;top:100%;display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;z-index:6;pointer-events:none}.chips .chip{pointer-events:auto}.chip{background:#f8eaf2;color:var(--brand);border-radius:99px;padding:3px 8px;font-size:11px;font-weight:700}.combo-option:hover,.combo-option.active{background:#f8eaf2;color:var(--brand)}.combo-empty{padding:10px;color:var(--muted);font-size:12px}.filters{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr 1fr auto auto;gap:10px;align-items:end}
+.filters>.field{align-self:end}.filters .field>input,.filters .field>select{height:46px}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.metric{background:#f8fafb;border:1px solid var(--line);border-radius:14px;padding:15px}.metric b{font-size:22px;display:block;margin-top:5px}.metric small{color:var(--muted)}.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}.bulkbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}.bulkbar .spacer{flex:1}.records{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}.audit-table{width:100%;border-collapse:collapse;min-width:1000px}.audit-table th{background:#f4f7f8;text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}.audit-table td{padding:7px 8px;border-bottom:1px solid #edf1f3;vertical-align:middle;font-size:12.5px}.audit-table tr:hover td{background:#fbfcfd}.audit-table tr:last-child td{border-bottom:0}.check{width:17px;height:17px;accent-color:var(--brand)}.name{font-weight:850}.meta{font-size:13px;color:var(--muted);margin-top:4px}.amount{font-size:19px;font-weight:900}.status{font-weight:800}.Pending{color:var(--amber)}.Approved{color:var(--green)}.Rejected{color:var(--red)}.actions{display:flex;gap:6px;flex-wrap:wrap}.approve{background:#e9f7f0;color:var(--green)}.reject{background:#fdecef;color:var(--red)}.pending{background:#fff4db;color:var(--amber)}.empty{text-align:center;color:var(--muted);padding:35px}.toast{position:fixed;right:20px;bottom:20px;background:#26323a;color:#fff;padding:12px 16px;border-radius:10px;display:none;z-index:20}.note{font-size:13px;color:var(--muted);line-height:1.5}.tabs{display:flex;gap:8px;margin-bottom:14px}.tab{background:#edf1f3}.tab.active{background:var(--brand);color:#fff}@media(max-width:1000px){main{padding:16px}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.filters .btn{min-height:44px}.summary{grid-template-columns:1fr 1fr}.card{padding:15px}.bulkbar{align-items:stretch}.bulkbar .spacer{display:none}.bulkbar #selectedCount{margin-left:auto;align-self:center}}@media(max-width:700px){
+body{overflow-x:hidden}header{padding:11px 12px}.brand{font-size:17px}main{padding:10px;width:100%;max-width:100%}.card{padding:12px;border-radius:13px;margin-bottom:10px}.filters{grid-template-columns:1fr;gap:9px}.filters .field>input,.filters .field>select{height:44px;width:100%}.chips{position:static;margin-top:4px}.summary{grid-template-columns:1fr 1fr;gap:7px}.metric{padding:8px 9px;border-radius:10px}.metric b{font-size:17px}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.tabs .btn{padding:9px 5px}.bulkbar{display:grid;grid-template-columns:1fr 1fr;gap:6px}.bulkbar .spacer{display:none}.bulkbar #selectedCount{grid-column:1/-1;margin:0;text-align:center}.bulkbar .btn{width:100%;padding:9px 7px}.records{border:0;background:transparent;overflow:visible}.audit-table{min-width:0}.audit-table,.audit-table tbody,.audit-table tr,.audit-table td{display:block;width:100%}.audit-table thead{display:none}.audit-table tr{background:#fff;border:1px solid var(--line);border-radius:10px;margin-bottom:7px;padding:6px}.audit-table td{border:0;padding:4px 6px;display:flex;justify-content:space-between;gap:10px;overflow-wrap:anywhere}.audit-table td:before{content:attr(data-label);font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;flex:0 0 34%}.audit-table td.select-cell{justify-content:flex-start}.audit-table td.select-cell:before{content:'Select'}.actions{justify-content:flex-end}.combo-list{position:fixed;left:10px;right:10px;top:auto;max-height:45vh;z-index:100}}
+.buffer{position:fixed;inset:0;background:rgba(245,248,250,.72);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:9999}.buffer.show{display:flex}.buffer-box{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 50px #26323b25;padding:20px 28px;min-width:220px;text-align:center;font-weight:800}.spinner{width:34px;height:34px;border:4px solid #eadde5;border-top-color:var(--brand);border-radius:50%;margin:0 auto 11px;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.sso-status{position:fixed;inset:0;z-index:999999;background:rgba(2,8,23,.92);display:flex;align-items:center;justify-content:center;padding:24px}
+.sso-status-box{max-width:430px;width:100%;padding:24px;border-radius:20px;background:#0b1020;border:1px solid rgba(255,255,255,.15);color:#fff;text-align:center}
+.sso-status-box b{display:block;font-size:20px;margin-bottom:8px}.sso-status-box span{color:#aab4c4}
+</style><script>
+if(location.hash.indexOf('sso=')>=0){
+ document.documentElement.classList.add('portal-sso-pending');
+}
+</script>
+<style>
+html.portal-sso-pending body{visibility:hidden!important}
+html.portal-sso-pending body::before{content:none!important;display:none!important}
+</style>
+<style id="v72UnifiedAllowance">
+:root{--bg:#050b14!important;--card:#0b1523!important;--text:#f5f8fc!important;--muted:#9aa8bc!important;--line:#26364b!important;--brand:#ec008c!important;--green:#58d18d!important;--red:#ef8094!important;--amber:#e9b84e!important}
+body{background:radial-gradient(circle at 12% 0%,#11152b 0,#050b14 40%)!important;color:var(--text)!important;font-size:14px;line-height:1.4;-webkit-font-smoothing:antialiased}
+header{background:#081321!important;border-color:#26364b!important;padding:12px 18px!important;height:60px}
+.brand{color:#fff!important;font-size:19px!important}.brand span{color:#fff!important}.brand small{font-size:12px;color:#aebbd0;font-weight:700;margin-left:8px}.header-actions{display:flex;gap:7px}
+main{max-width:1650px!important;padding:14px 18px 80px!important}.card{background:#0b1523!important;border-color:#26364b!important;box-shadow:0 10px 28px rgba(0,0,0,.18)!important;padding:14px!important;margin-bottom:12px!important;border-radius:14px!important}
+.field label{color:#aebbd0!important;font-size:10px!important;letter-spacing:.04em}.field input,.field select,.field textarea{background:#101c2b!important;color:#f7f9fd!important;border-color:#304158!important;padding:8px 10px!important}.filters{gap:8px!important}.filters .field>input,.filters .field>select{height:38px!important}.btn{background:#132033;color:#f5f8fc;border:1px solid #304158;padding:8px 11px!important;min-height:36px;font-weight:800}.primary,.tab.active{background:#ec008c!important;border-color:#ec008c!important;color:#fff!important}.ghost{background:#111d2c!important;color:#eef3fa!important}.combo-list{background:#101c2b!important;border-color:#304158!important}.combo-option:hover,.combo-option.active{background:#251229!important;color:#ff77c5!important}
+.summary{gap:8px!important}.metric{background:#0e1a29!important;border-color:#26364b!important;border-radius:11px!important;padding:9px 11px!important}.metric small{color:#9eacc0!important;font-size:10px;font-weight:800}.metric b{font-size:18px!important;margin-top:2px!important;color:#f7f9fd}.metric:nth-child(2) b{color:#58d18d}.metric:nth-child(3) b{color:#e9b84e}.metric:nth-child(4) b{color:#ef8094}
+.tabs{margin-bottom:8px!important;gap:6px!important}.bulkbar{margin-bottom:8px!important;gap:6px!important}.note{color:#9aa8bc!important}.records{background:#081321!important;border-color:#26364b!important}.audit-table{min-width:1050px}.audit-table th{background:#0f1b2a!important;color:#a9b6c9!important;border-color:#26364b!important;padding:7px 8px!important}.audit-table td{border-color:#1f2d40!important;padding:7px 8px!important;color:#f4f7fb!important}.audit-table tr:hover td{background:#101d2c!important}.meta{color:#8798af!important;font-size:11px!important}.status{display:inline-flex;padding:3px 8px;border-radius:999px;border:1px solid currentColor;font-size:11px}.approve{background:#10251c!important;color:#73d9a3!important}.reject{background:#28131a!important;color:#ef8a9c!important}.pending{background:#261f10!important;color:#e9bd5c!important}
+.buffer{background:rgba(3,8,14,.72)!important}.buffer-box{background:#0b1523!important;color:#fff!important;border-color:#304158!important}.toast{background:#172337!important}
+/* Native page SSO overlay styling from the proven allowance SSO implementation */
+.sso-status{position:fixed;inset:0;z-index:10000;background:#050b14;display:flex;align-items:center;justify-content:center;padding:20px}.sso-status-box{text-align:center;background:#0b1523;border:1px solid #26364b;border-radius:16px;padding:22px 28px;min-width:260px}.sso-status-box b{display:block;font-size:18px}.sso-status-box span{display:block;color:#9aa8bc;font-size:12px;margin-top:6px}
+@media(max-width:700px){header{height:55px;padding:9px 10px!important}.brand{font-size:16px!important}.brand small{display:block;margin:1px 0 0;font-size:9px}.header-actions .btn{padding:5px 7px!important;font-size:10px;min-height:30px}main{padding:8px 8px 72px!important}.card{padding:9px!important;margin-bottom:8px!important}.filters{grid-template-columns:1fr 1fr!important;gap:6px!important}.filters .field>input,.filters .field>select{height:36px!important;font-size:12px}.filters>.btn{min-height:34px!important;padding:6px!important;font-size:11px}.summary{grid-template-columns:1fr 1fr!important;gap:5px!important}.metric{padding:6px 8px!important}.metric b{font-size:15px!important}.tabs .btn{min-height:33px!important;padding:6px 3px!important;font-size:11px}.bulkbar{grid-template-columns:1fr 1fr!important;gap:5px!important}.bulkbar .btn{min-height:34px!important;padding:6px!important;font-size:10.5px}.audit-table tr{background:#091522!important;border-color:#26364b!important;padding:5px!important;margin-bottom:6px!important}.audit-table td{padding:3px 5px!important;font-size:12px!important}.audit-table td:before{color:#91a0b5!important;font-size:8.5px!important;flex-basis:30%!important}.actions .btn{min-height:30px!important;padding:5px 8px!important;font-size:10.5px!important}}
+</style><style id="allowanceSilentSsoV828">
+#v7Sso,.v7-sso,#portalSsoStatus,.portal-sso-status{display:none!important}
+</style>
+
+
+
+
+<style id="tmxUniversalAuthResolveV8221">
+html.tmx-auth-resolving body{visibility:hidden!important}
+html.tmx-auth-resolving body::before{content:none!important;display:none!important}
+</style>
+<script id="tmxUniversalAuthResolveStartV8221">
+(function(){
+  if(/(?:^|[&#])sso=/.test(location.hash) || sessionStorage.getItem('tmx_km_pm_token') || sessionStorage.getItem('tmx_km_admin_token')){
+    document.documentElement.classList.add('tmx-auth-resolving');
+  }
+})();
+</script>
+
+<style id="v830PagerStyle">
+.v830-pager{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:18px 0 28px}
+.v830-pager .v830-count{color:#64748b;font-weight:700;margin-right:6px}
+.v830-pager button{min-width:140px}
+</style>
+<style id="v837MultiMonthTheme">
+.tmx-mm-wrap{position:relative}
+.tmx-mm-input{cursor:pointer!important;background:var(--field,#0b1725)!important;color:var(--text,#f5f6fa)!important;border-color:var(--border,#263b55)!important}
+.tmx-mm-input::placeholder{color:var(--muted,#8992a8)!important;opacity:1}
+.tmx-mm-pop{display:none;position:absolute;z-index:9999;top:calc(100% + 6px);left:0;min-width:285px;max-width:360px;background:var(--panel,#0b1725)!important;color:var(--text,#f5f6fa)!important;border:1px solid var(--border,#263b55)!important;border-radius:12px;box-shadow:0 14px 35px #0008;padding:10px}
+.tmx-mm-pop.open{display:block}
+.tmx-mm-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;color:var(--text,#f5f6fa)!important}
+.tmx-mm-list{max-height:260px;overflow:auto;border-top:1px solid var(--border,#263b55)!important;border-bottom:1px solid var(--border,#263b55)!important;padding:5px 0}
+.tmx-mm-item{display:flex!important;align-items:center;gap:9px;padding:8px 6px;margin:0!important;text-transform:none!important;font-size:13px!important;color:var(--text,#f5f6fa)!important;cursor:pointer}
+.tmx-mm-item span{color:var(--text,#f5f6fa)!important}
+.tmx-mm-item input{width:auto!important;height:auto!important;accent-color:var(--brand,#ec008c)}
+.tmx-mm-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:9px}
+.tmx-mm-btn{border:1px solid var(--border,#263b55)!important;background:var(--field,#101c2b)!important;color:var(--text,#f5f6fa)!important;border-radius:8px;padding:7px 10px;font-weight:700;cursor:pointer}
+.tmx-mm-btn.primary{background:var(--brand,#ec008c)!important;color:#fff!important;border-color:var(--brand,#ec008c)!important}
+.tmx-mm-list::-webkit-scrollbar{width:8px}.tmx-mm-list::-webkit-scrollbar-thumb{background:#667085;border-radius:8px}.tmx-mm-list::-webkit-scrollbar-track{background:transparent}
+</style>
+<style id="v838SilentSession">
+#portalSsoStatus,.sso-status,.portal-transition,.frame-loading{display:none!important}
+html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{content:none!important;display:none!important}
+</style><style id="v8312AllowanceFilterTheme">
+.tmx-mm-input{background:#101c2b!important;color:#f7f9fd!important;border-color:#304158!important}
+.tmx-mm-pop{background:#101c2b!important;color:#f7f9fd!important;border-color:#304158!important}
+.tmx-mm-head,.tmx-mm-item,.tmx-mm-item span{color:#f7f9fd!important}
+.tmx-mm-list{border-color:#304158!important}
+.tmx-mm-btn{background:#0e1a29!important;color:#f7f9fd!important;border-color:#304158!important}
+.tmx-mm-btn.primary{background:#d60072!important;color:#fff!important;border-color:#d60072!important}
+</style><style id="v8322AllowanceFilterUX">
+.combo:after{display:none!important}.combo input{padding-right:40px!important}
+.combo-arrow{position:absolute;right:4px;bottom:4px;width:32px;height:30px;min-height:0!important;padding:0!important;border:0!important;border-left:1px solid #304158!important;border-radius:0 8px 8px 0!important;background:transparent!important;color:#b8c5d8!important;font-size:18px!important;z-index:3;cursor:pointer}
+.combo-arrow:hover{color:#fff!important;background:#17263a!important}
+</style></head><body><header><div class="brand"><span>TELECOMAX</span> <small>Operations / Allowance Audit</small></div><div class="header-actions"><button class="btn ghost" type="button" onclick="location.href='./'">← Operations</button><button id="logout" class="btn ghost" style="display:none">Logout</button></div></header><main>
+<section id="login" class="card login" style="display:none"><h2>PM Login</h2><p class="note">Use your management Name + 6-digit PIN.</p><div class="field"><label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name"></div><br><div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN"></div><br><button id="loginBtn" class="btn primary">Login</button></section>
+<section id="app" style="display:none"><div class="card"><div class="section-title"><div><h2 style="margin:0">Monthly Allowance Audit</h2></div></div><br><div class="filters">
+<div class="field"><label>Months</label><input id="month" type="text" data-multimonth></div>
+<div class="field combo" id="engineerCombo"><label>Engineer</label><input id="engineer" autocomplete="off" placeholder="Search or select engineer"><button type="button" class="combo-arrow" id="engineerArrow" aria-label="Show engineer options">⌄</button><div id="engineerList" class="combo-list"></div></div>
+<div class="field combo" id="driverCombo"><label>Driver</label><input id="driver" autocomplete="off" placeholder="Search or select driver"><button type="button" class="combo-arrow" id="driverArrow" aria-label="Show driver options">⌄</button><div id="driverList" class="combo-list"></div></div>
+<div class="field combo" id="projectCombo"><label>Project</label><input id="project" autocomplete="off" placeholder="Search or select project"><button type="button" class="combo-arrow" id="projectArrow" aria-label="Show project options">⌄</button><div id="projectList" class="combo-list"></div></div>
+<div class="field"><label>Status</label><select id="status"><option value="" selected>Non Selected</option><option value="Pending">Pending</option><option value="Approved">Approved</option><option value="Rejected">Rejected</option></select></div>
+<button id="apply" class="btn primary">Apply</button><button id="clear" class="btn ghost">Clear</button></div></div>
+<div class="summary"><div class="metric"><small>Calculated</small><b id="calculated">0 EGP</b></div><div class="metric"><small>Approved</small><b id="approved">0 EGP</b></div><div class="metric"><small>Pending</small><b id="pending">0 EGP</b></div><div class="metric"><small>Rejected</small><b id="rejected">0 EGP</b></div></div><br>
+<div class="card"><div class="tabs"><button class="btn tab active" data-type="All">All</button><button class="btn tab" data-type="Engineer">Engineers</button><button class="btn tab" data-type="Driver">Drivers</button></div>
+<div class="bulkbar"><button id="selectAll" class="btn ghost">Select All</button><button id="clearSelection" class="btn ghost">Clear Selection</button><div class="spacer"></div><span id="selectedCount" class="note">0 selected</span><button id="approveSelected" class="btn primary">Approve Selected</button><button id="exportExcel" class="btn ghost">Export Excel</button></div>
+<div id="records" class="records"></div></div>
+</section></main>
+<div id="toast" class="toast"></div>
+<div id="buffer" class="buffer" aria-live="polite" aria-busy="true">
+  <div class="buffer-box"><div class="spinner"></div><div id="bufferText">Loading...</div></div>
+</div>
+<script>
+const URL='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec',$=x=>document.getElementById(x);let managementToken=sessionStorage.getItem('tmx_km_pm_token')||'',managementName=sessionStorage.getItem('tmx_km_pm_name')||'',data=null,filterSource={},typeView='All';
+function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}function showBuffer(t='Loading...'){const b=$('buffer'),x=$('bufferText');if(x)x.textContent=t;if(b)b.classList.add('show')}function hideBuffer(){const b=$('buffer');if(b)b.classList.remove('show')}function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}async function post(action,x={}){const r=await fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),d=await r.json();if(!d.ok)throw Error(d.error||'Server error');return d}function auth(on){$('login').style.display=on?'none':'block';$('app').style.display=on?'block':'none';$('logout').style.display=on?'block':'none';if(on){$('status').value='';data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();loadAllowanceFilterSource()}}
+async function loadAllowanceFilterSource(){try{filterSource=await post('allowanceFilterOptions',{filterMonth:$('month').value});refreshAllCombos()}catch(e){toast('Could not load filter lists')}}
+function monthNow(){let d=new Date(),o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,7)}$('month').value=monthNow();
+$('loginBtn').onclick=async()=>{const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 6-digit PIN');showBuffer('Logging in...');try{const d=await post('managementLogin',{name,pin,portalRole:'PM'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName);auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{hideBuffer()}};$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
+function uniq(a){return [...new Set((a||[]).filter(Boolean))].sort((x,y)=>x.localeCompare(y))}
+function eq(a,b){return String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase()}
+function filterState(){return {engineer:$('engineer').value.trim(),driver:$('driver').value.trim(),project:$('project').value.trim(),status:$('status').value.trim(),months:String($('month').value||'').split(',').map(x=>x.trim()).filter(Boolean)}}
+function relationalRows(excludeKind=''){
+ const q=filterState();
+ return (filterSource.combinations||[]).filter(c=>{
+   if(q.months.length&&!q.months.includes(String(c.month||'')))return false;
+   if(excludeKind!=='status'&&q.status&&!eq(c.status,q.status))return false;
+   if(excludeKind!=='engineer'&&q.engineer&&!eq(c.engineer,q.engineer))return false;
+   if(excludeKind!=='driver'&&q.driver&&!eq(c.driver,q.driver))return false;
+   if(excludeKind!=='project'&&q.project&&!eq(c.project,q.project))return false;
+   return true;
+ });
+}
+function relationalOptions(kind){
+ const q=filterState(),rows=relationalRows(kind);
+ if(kind==='engineer'){const cfg=uniq(filterSource.engineers||[]),allowed=uniq(rows.map(c=>c.engineer));return (q.months.length||q.driver||q.project||q.status)?cfg.filter(e=>allowed.some(v=>eq(v,e))):cfg}
+ if(kind==='driver'){const cfg=uniq((filterSource.drivers||[]).filter(x=>String(x).toLowerCase()!=='rent')),allowed=uniq(rows.map(c=>c.driver).filter(x=>String(x).toLowerCase()!=='rent'));return (q.months.length||q.engineer||q.project||q.status)?cfg.filter(d=>allowed.some(v=>eq(v,d))):cfg}
+ const cfg=uniq(filterSource.projects||[]),allowed=uniq(rows.map(c=>c.project));return (q.months.length||q.engineer||q.driver||q.status)?cfg.filter(p=>allowed.some(v=>eq(v,p))):cfg;
+}
+function renderCombo(kind,showAll=false){
+ const input=$(kind),list=$(kind+'List'),q=showAll?'':input.value.trim().toLowerCase(),options=relationalOptions(kind).filter(x=>!q||x.toLowerCase().includes(q));
+ list.innerHTML=options.length?options.map(x=>`<div class="combo-option" data-value="${x.replace(/"/g,'&quot;')}">${x}</div>`).join(''):'<div class="combo-empty">No related matches</div>';
+ list.querySelectorAll('.combo-option').forEach(o=>o.onclick=e=>{e.preventDefault();input.value=o.dataset.value;$(kind+'Combo').classList.remove('open');sanitizeRelated(kind);refreshAllCombos()});
+}
+function availableStatuses(){const rows=relationalRows('status');return ['Pending','Approved','Rejected'].filter(st=>rows.some(c=>eq(c.status,st)))}
+function refreshStatusOptions(){const sel=$('status'),cur=sel.value,allowed=availableStatuses();[...sel.options].forEach(o=>{if(o.value)o.disabled=!allowed.includes(o.value)});if(cur&&!allowed.includes(cur))sel.value=''}
+function sanitizeRelated(changed){
+ for(const kind of ['engineer','driver','project']){if(kind===changed)continue;const input=$(kind),v=input.value.trim();if(v&&!relationalOptions(kind).some(x=>eq(x,v)))input.value=''}
+ const st=$('status').value;if(st&&!availableStatuses().includes(st))$('status').value='';
+}
+function refreshAllCombos(){['engineer','driver','project'].forEach(k=>renderCombo(k,false));refreshStatusOptions()}
+function setupCombo(kind){
+ const input=$(kind),box=$(kind+'Combo'),arrow=$(kind+'Arrow'),open=(all=false)=>{box.classList.add('open');renderCombo(kind,all)};
+ input.addEventListener('focus',()=>open(false));input.addEventListener('click',()=>open(false));input.addEventListener('input',()=>open(false));
+ arrow.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();open(true);input.focus()});
+ input.addEventListener('keydown',e=>{if(e.key==='ArrowDown'){e.preventDefault();open(true)}if(e.key==='Escape'){box.classList.remove('open');input.blur()}});
+}
+['engineer','driver','project'].forEach(setupCombo);
+$('status').addEventListener('change',()=>{sanitizeRelated('status');refreshAllCombos()});
+$('month').addEventListener('change',()=>{sanitizeRelated('month');refreshAllCombos()});
+document.addEventListener('click',e=>{['engineer','driver','project'].forEach(k=>{if(!$(k+'Combo').contains(e.target))$(k+'Combo').classList.remove('open')})});
+let v830AllowanceTotal=0,v830AllowanceHasMore=false;
+async function load(mode='reset'){
+ if(!$('status').value){data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();return;}
+ showBuffer(mode==='all'?'Loading all matching allowances...':mode==='more'?'Loading 31 more allowances...':'Applying filters...');
+ try{
+   if(!filterSource||!Object.keys(filterSource).length)filterSource=await post('allowanceFilterOptions');
+   const offset=mode==='more'?(data.records||[]).length:0;
+   const r=await post('allowanceData',{filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:$('status').value,offset,limit:31,loadAll:mode==='all'});
+   if(!r.ok)throw new Error(r.error||'server-error');
+   if(mode==='more'){data=Object.assign({},r,{records:(data.records||[]).concat(r.records||[])})}else data=r;
+   v830AllowanceTotal=Number(r.totalMatched||0);v830AllowanceHasMore=!!r.hasMore;
+   refreshAllCombos();render();v830RenderAllowancePager();
+ }catch(e){toast(e.message)}finally{hideBuffer()}
+}
+function v830RenderAllowancePager(){
+ let x=document.getElementById('v830AllowancePager');if(x)x.remove();
+ const wrap=document.createElement('div');wrap.id='v830AllowancePager';wrap.className='v830-pager';
+ wrap.innerHTML='<span class="v830-count">Showing '+(data.records||[]).length+' of '+v830AllowanceTotal+' records</span>'+
+ (v830AllowanceHasMore?'<button class="btn" onclick="load(&quot;more&quot;)">Load More 31</button><button class="btn" onclick="v830LoadAllAllowance()">Load All</button>':'');
+ $('records').insertAdjacentElement('afterend',wrap);
+}
+function v830LoadAllAllowance(){if(v830AllowanceTotal>500&&!confirm('Load all '+v830AllowanceTotal+' matching allowance records?'))return;load('all')}
+function recalcVisibleSummary(){
+ let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView), sm={calculated:0,approved:0,pending:0,rejected:0};
+ rows.forEach(r=>{sm.calculated+=Number(r.amount)||0;if(r.status==='Approved')sm.approved+=Number(r.amount)||0;else if(r.status==='Pending')sm.pending+=Number(r.amount)||0;else if(r.status==='Rejected')sm.rejected+=Number(r.amount)||0});
+ data.summary=sm;
+}
+function render(){let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView);let sm=data.summary||{calculated:0,approved:0,pending:0,rejected:0};$('calculated').textContent=money(sm.calculated);$('approved').textContent=money(sm.approved);$('pending').textContent=money(sm.pending);$('rejected').textContent=money(sm.rejected);let body=rows.map(r=>{let key=encodeURIComponent(JSON.stringify({type:r.type,name:r.name,date:r.date,amount:r.amount})),actions=[];if(r.status!=='Approved')actions.push(`<button class="btn approve" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Approved','')">Approve</button>`);if(r.status!=='Pending')actions.push(`<button class="btn pending" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Pending','')">Set Pending</button>`);if(r.status!=='Rejected')actions.push(`<button class="btn reject" onclick="rejectDay('${r.type}','${esc(r.name)}','${r.date}',${r.amount})">Reject</button>`);return `<tr><td class="select-cell" data-label="Select">${r.status==='Pending'?`<input class="check rowCheck" type="checkbox" data-key="${key}">`:''}</td><td data-label="Person"><b>${r.type}</b> · ${r.name}</td><td data-label="Date">${r.date}<div class="meta">${r.day}</div></td><td data-label="Area"><b>${r.area}</b><div class="meta">Base: ${r.baseCity||'Not set'}</div></td><td data-label="Project">${r.projects.join(', ')||'—'}</td><td data-label="Details">${r.type==='Engineer'?`Working days: <b>${r.workingDays}</b>`:`Related: ${r.related.join(', ')||'—'}`}${r.autoApproved?'<div class="meta">GPS task-location allowance</div>':''}</td><td data-label="Allowance"><b>${money(r.amount)}</b></td><td data-label="Status"><span class="status ${r.status}">${r.status}</span></td><td data-label="Action"><div class="actions">${actions.join('')}</div></td></tr>`}).join('');$('records').innerHTML=rows.length?`<table class="audit-table"><thead><tr><th></th><th>Person</th><th>Date</th><th>Area</th><th>Project</th><th>Details</th><th>Allowance</th><th>Status</th><th>Action</th></tr></thead><tbody>${body}</tbody></table>`:'<div class="empty">No allowance records match these filters.</div>';document.querySelectorAll('.rowCheck').forEach(x=>x.addEventListener('change',updateSelectedCount));updateSelectedCount()}
+function selectedRecords(){return [...document.querySelectorAll('.rowCheck:checked')].map(x=>JSON.parse(decodeURIComponent(x.dataset.key)))}
+function updateSelectedCount(){$('selectedCount').textContent=`${selectedRecords().length} selected`}
+$('selectAll').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=true);updateSelectedCount()};
+$('clearSelection').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=false);updateSelectedCount()};
+$('approveSelected').onclick=async()=>{let items=selectedRecords();if(!items.length){toast('Select at least one pending day.');return}if(!confirm(`Approve ${items.length} selected allowance day(s)?`))return;showBuffer('Approving selected allowances...');let b=$('approveSelected');b.disabled=true;b.textContent='Approving...';try{for(const r of items)await post('allowanceAudit',{type:r.type,name:r.name,date:r.date,calculatedAmount:r.amount,status:'Approved',reason:''});toast(`${items.length} day(s) approved.`);await load()}catch(e){toast(e.message)}finally{hideBuffer();b.disabled=false;b.textContent='Approve Selected'}}
+function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+async function audit(type,name,date,amount,status,reason=''){showBuffer(status==='Rejected'?'Rejecting allowance...':'Approving allowance...');try{await post('allowanceAudit',{type,name,date,calculatedAmount:amount,status,reason});await load()}catch(e){toast(e.message)}finally{hideBuffer()}}function rejectDay(type,name,date,amount){let reason=prompt('Reason for rejection (optional):','');if(reason===null)return;audit(type,name,date,amount,'Rejected',reason)}
+function xlsxEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function xlsxCol(n){let s='';while(n){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s}
+function xlsxSheet(rows){
+ let xmlRows=rows.map((row,ri)=>'<row r="'+(ri+1)+'">'+row.map((v,ci)=>{
+   let ref=xlsxCol(ci+1)+(ri+1);
+   if(typeof v==='number'&&isFinite(v))return '<c r="'+ref+'"><v>'+v+'</v></c>';
+   return '<c r="'+ref+'" t="inlineStr"><is><t>'+xlsxEsc(v)+'</t></is></c>';
+ }).join('')+'</row>').join('');
+ return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+xmlRows+'</sheetData></worksheet>';
+}
+function crc32(bytes){
+ let table=crc32.table||(crc32.table=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})());
+ let c=0xffffffff;for(let b of bytes)c=table[(c^b)&255]^(c>>>8);return (c^0xffffffff)>>>0;
+}
+function u16(n){return [n&255,(n>>>8)&255]} function u32(n){return [n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]}
+function makeZip(files){
+ const enc=new TextEncoder(),parts=[],central=[];let offset=0;
+ for(const f of files){
+  const name=enc.encode(f.name),data=enc.encode(f.data),crc=crc32(data);
+  const local=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...name,...data]);
+  parts.push(local);
+  const cen=new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(offset),...name]);
+  central.push(cen);offset+=local.length;
+ }
+ const csize=central.reduce((a,b)=>a+b.length,0),end=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(csize),...u32(offset),...u16(0)]);
+ return new Blob([...parts,...central,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+$('exportExcel').onclick=async()=>{
+ try{
+  showBuffer('Preparing full allowance Excel export...');
+  const exportData=await post('allowanceData',{filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:'Approved',offset:0,limit:31,loadAll:true});
+  if(!exportData.ok)throw new Error(exportData.error||'server-error');
+  const rows=(exportData.records||[]).filter(r=>typeView==='All'||r.type===typeView);
+  if(!rows.length){toast('No approved allowances to export for the current filters.');return}
+  const groups={};
+  rows.forEach(r=>(r.projects&&r.projects.length?r.projects:['—']).forEach(pr=>{
+   const k=r.type+'|'+r.name+'|'+pr;if(!groups[k])groups[k]={name:r.name,project:pr,total:0};groups[k].total+=Number(r.amount)||0;
+  }));
+  const engGroups={},drvGroups={};
+  rows.forEach(r=>(r.projects&&r.projects.length?r.projects:['—']).forEach(pr=>{
+   const target=r.type==='Engineer'?engGroups:drvGroups;
+   const k=r.name+'|'+pr;if(!target[k])target[k]={name:r.name,project:pr,total:0};target[k].total+=Number(r.amount)||0;
+  }));
+  const engCover=[['Engineer Name','Total Amount','Project'],...Object.values(engGroups).map(x=>[x.name,x.total,x.project])];
+  const drvCover=[['Driver Name','Total Amount','Project'],...Object.values(drvGroups).map(x=>[x.name,x.total,x.project])];
+  const engDetails=[['Engineer Name','Date','Day','Area','Base City','Project','Allowance Amount','Status'],
+   ...rows.filter(r=>r.type==='Engineer').flatMap(r=>(r.projects&&r.projects.length?r.projects:['—']).map(pr=>[r.name,r.date,r.day,r.area,r.baseCity||'',pr,Number(r.amount)||0,r.status]))];
+  const drvDetails=[['Driver Name','Date','Day','Area','Base City','Project','Allowance Amount','Status'],
+   ...rows.filter(r=>r.type==='Driver').flatMap(r=>(r.projects&&r.projects.length?r.projects:['—']).map(pr=>[r.name,r.date,r.day,r.area,r.baseCity||'',pr,Number(r.amount)||0,r.status]))];
+  const files=[
+   {name:'[Content_Types].xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet4.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'},
+   {name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+   {name:'xl/workbook.xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Engineers Cover" sheetId="1" r:id="rId1"/><sheet name="Driver Cover" sheetId="2" r:id="rId2"/><sheet name="In Details Engineers" sheetId="3" r:id="rId3"/><sheet name="In Details Drivers" sheetId="4" r:id="rId4"/></sheets></workbook>'},
+   {name:'xl/_rels/workbook.xml.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet4.xml"/></Relationships>'},
+   {name:'xl/worksheets/sheet1.xml',data:xlsxSheet(engCover)},
+   {name:'xl/worksheets/sheet2.xml',data:xlsxSheet(drvCover)},
+   {name:'xl/worksheets/sheet3.xml',data:xlsxSheet(engDetails)},
+   {name:'xl/worksheets/sheet4.xml',data:xlsxSheet(drvDetails)}
+  ];
+  const blob=makeZip(files);
+  const reader=new FileReader();
+  reader.onload=()=>{const a=document.createElement('a');a.href=reader.result;a.download=`Allowance-Audit-${$('month').value||'All'}-${typeView}.xlsx`;a.style.display='none';document.body.appendChild(a);a.click();a.remove();toast('Excel workbook created with 4 allowance tabs.')};
+  reader.onerror=()=>toast('Could not create Excel workbook.');
+  reader.readAsDataURL(blob);
+ }catch(err){console.error(err);toast('Excel export failed: '+(err.message||err))}finally{hideBuffer()}
+};
+$('apply').onclick=async()=>{showBuffer('Applying relational filters...');try{filterSource=await post('allowanceFilterOptions',{filterMonth:$('month').value});sanitizeRelated('apply');refreshAllCombos();await load()}catch(e){toast(e.message||'Could not apply filters')}finally{hideBuffer()}};$('clear').onclick=()=>{$('engineer').value='';$('driver').value='';$('project').value='';$('status').value='';refreshAllCombos();load()};document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');typeView=b.dataset.type;render()});
+const portalSsoIncoming=/(?:^|[&#])sso=/.test(location.hash);
+if(portalSsoIncoming){
+  // Portal SSO owns authentication. Do not let validation of an older PM token race it.
+}else if(managementToken){
+ $('name').value=managementName;
+ post('allowanceFilterOptions',{}).then(()=>auth(true)).catch(()=>{
+  sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');
+  managementToken='';managementName='';auth(false)
+ });
+}else auth(false);
+</script><script>
+function portalSSOStatus_(title,detail){ document.documentElement.classList.remove('portal-sso-pending');
+ let x=document.getElementById('portalSsoStatus');
+ if(!x){x=document.createElement('div');x.id='portalSsoStatus';x.className='sso-status';document.body.appendChild(x)}
+ x.innerHTML='<div class="sso-status-box"><b>'+title+'</b><span>'+detail+'</span></div>';
+}
+(async function portalAutoLogin(){
+ const m=location.hash.match(/(?:^|[&#])sso=([^&]+)/); if(!m)return;
+ const portalToken=decodeURIComponent(m[1]);
+ history.replaceState(null,'',location.pathname+location.search);
+ try{
+  const r=await fetch(URL,{method:'POST',body:JSON.stringify({action:'portalSSO',portalToken,portalRole:'PM'})});
+  const d=await r.json();
+  if(!d.ok||!d.token){portalSSOStatus_('Single Sign-On failed',d.error||'The KM module rejected the portal session.');return;}
+  managementToken=d.token; managementName=d.name||'';
+  sessionStorage.setItem('tmx_km_pm_token',managementToken);
+  sessionStorage.setItem('tmx_km_pm_name',managementName);
+  // portalSso already validated the portal token and created this PM session.
+  // Do not call allowanceData here: that API requires a month.
+  const x=document.getElementById('portalSsoStatus'); if(x)x.remove();
+  document.documentElement.classList.remove('portal-sso-pending');
+  $('name').value=managementName;
+  auth(true);
+ }catch(e){portalSSOStatus_('Single Sign-On connection error',String(e&&e.message||e));console.error('Portal SSO failed',e)}
+})();
+</script>
+
+
+<style id="v721AllowanceMobileFix">
+@media(max-width:700px){
+  /* The loaded table header must not become a mobile record card */
+  #records .audit-table{
+    min-width:0!important;
+    width:100%!important;
+    display:block!important;
+  }
+  #records .audit-table thead{
+    display:none!important;
+  }
+  #records .audit-table tbody{
+    display:block!important;
+    width:100%!important;
+  }
+  #records .audit-table tbody tr{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    width:100%!important;
+    padding:7px!important;
+    margin:0 0 7px!important;
+    border:1px solid #26364b!important;
+    border-radius:12px!important;
+    background:#091522!important;
+  }
+  #records .audit-table tbody td{
+    display:block!important;
+    min-width:0!important;
+    padding:5px 7px!important;
+    border:0!important;
+    font-size:12px!important;
+  }
+  #records .audit-table tbody td::before{
+    content:attr(data-label)!important;
+    display:block!important;
+    margin-bottom:2px!important;
+    color:#91a0b5!important;
+    font-size:8.5px!important;
+    font-weight:900!important;
+    letter-spacing:.035em!important;
+  }
+  #records .audit-table tbody td.select-cell{
+    grid-column:1 / -1!important;
+    display:flex!important;
+    justify-content:flex-end!important;
+    padding:2px 5px 0!important;
+  }
+  #records .audit-table tbody td.select-cell::before{
+    margin-right:auto!important;
+  }
+  #records .audit-table tbody td[data-label="Details"],
+  #records .audit-table tbody td[data-label="Action"]{
+    grid-column:1 / -1!important;
+  }
+  #records .audit-table tbody td[data-label="Allowance"] b{
+    color:#58d18d!important;
+    font-size:14px!important;
+  }
+  #records .audit-table tbody td[data-label="Action"] .actions{
+    justify-content:flex-end!important;
+  }
+  #records .empty{
+    padding:20px 10px!important;
+    text-align:center!important;
+  }
+}
+</style>
+
+<style id="v722AllowanceCardReadability">
+@media(max-width:700px){
+ #records .audit-table tbody tr{
+   padding:9px!important;
+   gap:2px 0!important;
+ }
+ #records .audit-table tbody td{
+   padding:6px 8px!important;
+   font-size:14px!important;
+   line-height:1.28!important;
+   color:#f7f9fd!important;
+ }
+ #records .audit-table tbody td::before{
+   margin-bottom:3px!important;
+   font-size:10px!important;
+   line-height:1!important;
+   color:#aab6c9!important;
+ }
+ #records .audit-table tbody td b{
+   font-size:14px!important;
+   font-weight:900!important;
+ }
+ #records .audit-table tbody .meta{
+   margin-top:2px!important;
+   font-size:11.5px!important;
+   line-height:1.2!important;
+   color:#94a3b8!important;
+ }
+ #records .audit-table tbody .status{
+   padding:4px 9px!important;
+   font-size:12px!important;
+   font-weight:850!important;
+ }
+ #records .audit-table tbody td[data-label="Allowance"] b{
+   font-size:16px!important;
+   color:#58d18d!important;
+ }
+ #records .audit-table tbody td[data-label="Action"] .btn{
+   min-height:34px!important;
+   padding:6px 11px!important;
+   font-size:12px!important;
+ }
+}
+</style>
+
+<script id="tmxUniversalAuthResolveEndV8221">
+(function(){
+ const root=document.documentElement;
+ if(!root.classList.contains('tmx-auth-resolving')) return;
+ function hasSession(){ return !!(sessionStorage.getItem('tmx_km_pm_token') || sessionStorage.getItem('tmx_km_admin_token')); }
+ function loginVisible(){
+   const ids=['login', 'loginBtn'];
+   for(const id of ids){
+     const e=document.getElementById(id);
+     if(e && getComputedStyle(e).display!=='none' && getComputedStyle(e).visibility!=='hidden') return true;
+   }
+   return false;
+ }
+ function revealIfReady(){
+   if(hasSession()){
+     // Wait one frame so the page's own auth routine can switch from login to app.
+     requestAnimationFrame(()=>requestAnimationFrame(()=>root.classList.remove('tmx-auth-resolving')));
+     return true;
+   }
+   return false;
+ }
+ if(!revealIfReady()){
+   const mo=new MutationObserver(()=>{if(revealIfReady())mo.disconnect()});
+   if(document.body) mo.observe(document.body,{subtree:true,childList:true,attributes:true});
+   // Genuine auth failure: restore existing legacy login fallback.
+   setTimeout(()=>{root.classList.remove('tmx-auth-resolving');mo.disconnect()},12000);
+ }
+})();
+</script>
+
+
+<script id="v836MultiMonthJs">
+(function(){
+ function labelMonth(v){const [y,m]=v.split('-').map(Number);return new Date(y,m-1,1).toLocaleString('en',{month:'short',year:'numeric'});}
+ function months(){
+   const out=[],d=new Date(); d.setDate(1); d.setMonth(d.getMonth()+3);
+   for(let i=0;i<40;i++){out.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'));d.setMonth(d.getMonth()-1)}
+   return out;
+ }
+ function init(inp){
+   if(inp.dataset.mmReady)return; inp.dataset.mmReady='1'; inp.type='text'; inp.readOnly=true;
+   inp.classList.add('tmx-mm-input'); inp.placeholder='Select one or more months';
+   const wrap=document.createElement('div');wrap.className='tmx-mm-wrap';
+   inp.parentNode.insertBefore(wrap,inp);wrap.appendChild(inp);
+   const pop=document.createElement('div');pop.className='tmx-mm-pop';wrap.appendChild(pop);
+   function selected(){return new Set(String(inp.value||'').split(',').map(x=>x.trim()).filter(Boolean))}
+   function draw(){
+     const sel=selected(), vals=months();
+     pop.innerHTML='<div class="tmx-mm-head"><b>Select months</b><button type="button" class="tmx-mm-btn mm-clear">Clear</button></div>'+
+       '<div class="tmx-mm-list">'+vals.map(v=>'<label class="tmx-mm-item"><input type="checkbox" value="'+v+'" '+(sel.has(v)?'checked':'')+'><span>'+labelMonth(v)+'</span></label>').join('')+'</div>'+
+       '<div class="tmx-mm-actions"><button type="button" class="tmx-mm-btn mm-cancel">Cancel</button><button type="button" class="tmx-mm-btn primary mm-done">Done</button></div>';
+     pop.querySelector('.mm-clear').onclick=()=>{pop.querySelectorAll('input').forEach(x=>x.checked=false)};
+     pop.querySelector('.mm-cancel').onclick=()=>pop.classList.remove('open');
+     pop.querySelector('.mm-done').onclick=()=>{
+       inp.value=[...pop.querySelectorAll('input:checked')].map(x=>x.value).sort().reverse().join(',');
+       pop.classList.remove('open');inp.dispatchEvent(new Event('change',{bubbles:true}));
+     };
+   }
+   inp.addEventListener('click',e=>{e.stopPropagation();draw();pop.classList.toggle('open')});
+   pop.addEventListener('click',e=>e.stopPropagation());
+   document.addEventListener('click',()=>pop.classList.remove('open'));
+ }
+ function boot(){document.querySelectorAll('input[data-multimonth]').forEach(init)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+
+<script id="v8323UnifiedPortalLogout">
+(function(){
+ const PORTAL_LOGIN='https://telecomaxportal.vercel.app/?logout=1';
+ function isLogoutTarget(el){
+   const b=el&&el.closest?el.closest('button,a'):null;if(!b)return false;
+   const id=String(b.id||'').toLowerCase(),txt=String(b.textContent||'').trim().toLowerCase();
+   return id==='logout'||id==='logoutbtn'||id==='navadmlogout'||txt==='log out'||txt==='logout'||txt==='admin log out';
+ }
+ document.addEventListener('click',function(e){
+   if(!isLogoutTarget(e.target))return;
+   e.preventDefault();e.stopImmediatePropagation();
+   try{sessionStorage.clear();}catch(_e){}
+   location.replace(PORTAL_LOGIN);
+ },true);
+})();
+</script>
+</body></html>
