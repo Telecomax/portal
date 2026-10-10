@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "Telecomax Operations",
+  "short_name": "Telecomax",
+  "description": "Telecomax Managed Services Operations Portal",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080f21",
+  "theme_color": "#080f21",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
