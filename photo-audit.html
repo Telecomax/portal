@@ -448,6 +448,16 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
   content:"✓";color:#ffffff!important;font-size:11px!important;font-weight:900!important;line-height:1!important;
 }
 </style>
+<style id="tmx-inline-pm-audit-20261010">
+/* Compact one-line label/value pairs on wide screens; retain mobile stacking. */
+@media (min-width:1101px){
+ body #auditList .summary{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+ body #auditList .metrics{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+ body #auditList .cell,body #auditList .metric{min-width:0!important;min-height:0!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;padding:9px 10px!important;text-align:left!important}
+ body #auditList .cell b,body #auditList .metric b{display:inline!important;flex:0 0 auto!important;margin:0!important;font-size:10px!important;white-space:nowrap!important}
+ body #auditList .cell span{min-width:0!important;overflow-wrap:anywhere!important;line-height:1.25!important}
+}
+</style>
 </head><body>
 
 <div id="loginBuffer" class="login-buffer-overlay" aria-hidden="true">
