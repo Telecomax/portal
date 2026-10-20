@@ -159,7 +159,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 </div>
 <script>
 const URL='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec',$=x=>document.getElementById(x);let managementToken=sessionStorage.getItem('tmx_km_pm_token')||'',managementName=sessionStorage.getItem('tmx_km_pm_name')||'',data=null,filterSource={},typeView='All';
-function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}function showBuffer(t='Loading...'){const b=$('buffer'),x=$('bufferText');if(x)x.textContent=t;if(b)b.classList.add('show')}function hideBuffer(){const b=$('buffer');if(b)b.classList.remove('show')}function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}async function post(action,x={}){const r=await fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),d=await r.json();if(!d.ok)throw Error(d.error||'Server error');return d}function auth(on){$('login').style.display=on?'none':'block';$('app').style.display=on?'block':'none';$('logout').style.display=on?'block':'none';if(on){$('status').value='';data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();loadAllowanceFilterSource()}}
+function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}function showBuffer(t='Loading...'){const b=$('buffer'),x=$('bufferText');if(x)x.textContent=t;if(b)b.classList.add('show')}function hideBuffer(){const b=$('buffer');if(b)b.classList.remove('show')}function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}async function post(action,x={}){const r=await fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),d=await r.json();if(!d.ok)throw Error(d.error||'Server error');return d}function auth(on){$('login').style.display=on?'none':'block';$('app').style.display=on?'block':'none';$('logout').style.display=on?'block':'none';if(on){data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();loadAllowanceFilterSource()}}
 async function loadAllowanceFilterSource(){try{filterSource=await post('allowanceFilterOptions',{filterMonth:$('month').value});refreshAllCombos()}catch(e){toast('Could not load filter lists')}}
 function monthNow(){let d=new Date(),o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,7)}$('month').value=monthNow();
 $('loginBtn').onclick=async()=>{const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 6-digit PIN');showBuffer('Logging in...');try{const d=await post('managementLogin',{name,pin,portalRole:'PM'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName);auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{hideBuffer()}};$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
@@ -188,11 +188,12 @@ function renderCombo(kind,showAll=false){
  list.innerHTML=options.length?options.map(x=>`<div class="combo-option" data-value="${x.replace(/"/g,'&quot;')}">${x}</div>`).join(''):'<div class="combo-empty">No related matches</div>';
  list.querySelectorAll('.combo-option').forEach(o=>o.onclick=e=>{e.preventDefault();input.value=o.dataset.value;$(kind+'Combo').classList.remove('open');sanitizeRelated(kind);refreshAllCombos()});
 }
-function availableStatuses(){const rows=relationalRows('status');return ['Pending','Approved','Rejected'].filter(st=>rows.some(c=>eq(c.status,st)))}
-function refreshStatusOptions(){const sel=$('status'),cur=sel.value,allowed=availableStatuses();[...sel.options].forEach(o=>{if(o.value)o.disabled=!allowed.includes(o.value)});if(cur&&!allowed.includes(cur))sel.value=''}
+function availableStatuses(){return ['Pending','Approved','Rejected']}
+function refreshStatusOptions(){const sel=$('status');[...sel.options].forEach(o=>{o.disabled=false})}
 function sanitizeRelated(changed){
- for(const kind of ['engineer','driver','project']){if(kind===changed)continue;const input=$(kind),v=input.value.trim();if(v&&!relationalOptions(kind).some(x=>eq(x,v)))input.value=''}
- const st=$('status').value;if(st&&!availableStatuses().includes(st))$('status').value='';
+ // Keep user-selected filters stable; zero matches are a valid result.
+
+ // Status options remain selectable even when there are zero matching records.
 }
 function refreshAllCombos(){['engineer','driver','project'].forEach(k=>renderCombo(k,false));refreshStatusOptions()}
 function setupCombo(kind){
@@ -202,10 +203,10 @@ function setupCombo(kind){
  input.addEventListener('keydown',e=>{if(e.key==='ArrowDown'){e.preventDefault();open(true)}if(e.key==='Escape'){box.classList.remove('open');input.blur()}});
 }
 ['engineer','driver','project'].forEach(setupCombo);
-$('status').addEventListener('change',()=>{sanitizeRelated('status');refreshAllCombos()});
+$('status').addEventListener('change',()=>{refreshAllCombos()});
 $('month').addEventListener('change',()=>{sanitizeRelated('month');refreshAllCombos()});
 document.addEventListener('click',e=>{['engineer','driver','project'].forEach(k=>{if(!$(k+'Combo').contains(e.target))$(k+'Combo').classList.remove('open')})});
-let v830AllowanceTotal=0,v830AllowanceHasMore=false;
+let v830AllowanceTotal=0,v830AllowanceHasMore=false,allSummaryRecords=[],summaryRequestId=0;
 async function load(mode='reset'){
  showBuffer(mode==='all'?'Loading all matching allowances...':mode==='more'?'Loading 31 more allowances...':'Applying filters...');
  try{
@@ -215,7 +216,16 @@ async function load(mode='reset'){
    if(!r.ok)throw new Error(r.error||'server-error');
    if(mode==='more'){data=Object.assign({},r,{records:(data.records||[]).concat(r.records||[])})}else data=r;
    v830AllowanceTotal=Number(r.totalMatched||0);v830AllowanceHasMore=!!r.hasMore;
-   refreshAllCombos();render();v830RenderAllowancePager();
+   refreshAllCombos();
+   // Summary uses all matching records, not just the current 31-row page.
+   const requestId=++summaryRequestId;
+   if(mode==='all'||!v830AllowanceHasMore){allSummaryRecords=(data.records||[]).slice();render()}
+   else {
+     allSummaryRecords=[];render();
+     const q={filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:$('status').value,offset:0,limit:31,loadAll:true};
+     post('allowanceData',q).then(full=>{if(requestId!==summaryRequestId)return;allSummaryRecords=full.records||[];render()}).catch(err=>{if(requestId===summaryRequestId){console.warn('Full summary unavailable',err);allSummaryRecords=[];render()}});
+   }
+   v830RenderAllowancePager();
  }catch(e){toast(e.message)}finally{hideBuffer()}
 }
 function v830RenderAllowancePager(){
@@ -231,7 +241,7 @@ function recalcVisibleSummary(){
  rows.forEach(r=>{sm.calculated+=Number(r.amount)||0;if(r.status==='Approved')sm.approved+=Number(r.amount)||0;else if(r.status==='Pending')sm.pending+=Number(r.amount)||0;else if(r.status==='Rejected')sm.rejected+=Number(r.amount)||0});
  data.summary=sm;
 }
-function render(){let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView);let sm=data.summary||{calculated:0,approved:0,pending:0,rejected:0};$('calculated').textContent=money(sm.calculated);$('approved').textContent=money(sm.approved);$('pending').textContent=money(sm.pending);$('rejected').textContent=money(sm.rejected);let body=rows.map(r=>{let key=encodeURIComponent(JSON.stringify({type:r.type,name:r.name,date:r.date,amount:r.amount})),actions=[];if(r.status!=='Approved')actions.push(`<button class="btn approve" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Approved','')">Approve</button>`);if(r.status!=='Pending')actions.push(`<button class="btn pending" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Pending','')">Set Pending</button>`);if(r.status!=='Rejected')actions.push(`<button class="btn reject" onclick="rejectDay('${r.type}','${esc(r.name)}','${r.date}',${r.amount})">Reject</button>`);return `<tr><td class="select-cell" data-label="Select">${r.status==='Pending'?`<input class="check rowCheck" type="checkbox" data-key="${key}">`:''}</td><td data-label="Person"><b>${r.type}</b> · ${r.name}</td><td data-label="Date">${r.date}<span class="allowance-weekday">${r.day||''}</span></td><td data-label="Area"><b>${r.area}</b></td><td data-label="Project">${r.projects.join(', ')||'—'}</td><td data-label="Details">${r.type==='Engineer'?`Working days: <b>${r.workingDays}</b>`:`Related: ${r.related.join(', ')||'—'}`}</td><td data-label="Allowance"><b>${money(r.amount)}</b></td><td data-label="Status"><span class="status ${r.status}">${r.status}</span></td><td data-label="Action"><div class="actions">${actions.join('')}</div></td></tr>`}).join('');$('records').innerHTML=rows.length?`<table class="audit-table"><thead><tr><th></th><th>Person</th><th>Date</th><th>Area</th><th>Project</th><th>Details</th><th>Allowance</th><th>Status</th><th>Action</th></tr></thead><tbody>${body}</tbody></table>`:'<div class="empty">No allowance records match these filters.</div>';document.querySelectorAll('.rowCheck').forEach(x=>x.addEventListener('change',updateSelectedCount));updateSelectedCount()}
+function render(){let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView);let summaryRows=allSummaryRecords.length?allSummaryRecords:((!v830AllowanceHasMore)?(data.records||[]):null);let sm={calculated:0,approved:0,pending:0,rejected:0};if(summaryRows){summaryRows.filter(r=>typeView==='All'||r.type===typeView).forEach(r=>{const amount=Number(r.amount)||0;sm.calculated+=amount;if(r.status==='Approved')sm.approved+=amount;else if(r.status==='Pending')sm.pending+=amount;else if(r.status==='Rejected')sm.rejected+=amount})}else if(typeView==='All'){sm=data.summary||sm}else{sm={calculated:0,approved:0,pending:0,rejected:0}};$('calculated').textContent=money(sm.calculated);$('approved').textContent=money(sm.approved);$('pending').textContent=money(sm.pending);$('rejected').textContent=money(sm.rejected);let body=rows.map(r=>{let key=encodeURIComponent(JSON.stringify({type:r.type,name:r.name,date:r.date,amount:r.amount})),actions=[];if(r.status!=='Approved')actions.push(`<button class="btn approve" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Approved','')">Approve</button>`);if(r.status!=='Pending')actions.push(`<button class="btn pending" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Pending','')">Set Pending</button>`);if(r.status!=='Rejected')actions.push(`<button class="btn reject" onclick="rejectDay('${r.type}','${esc(r.name)}','${r.date}',${r.amount})">Reject</button>`);return `<tr><td class="select-cell" data-label="Select">${r.status==='Pending'?`<input class="check rowCheck" type="checkbox" data-key="${key}">`:''}</td><td data-label="Person"><b>${r.type}</b> · ${r.name}</td><td data-label="Date">${r.date}<span class="allowance-weekday">${r.day||''}</span></td><td data-label="Area"><b>${r.area}</b></td><td data-label="Project">${r.projects.join(', ')||'—'}</td><td data-label="Details">${r.type==='Engineer'?`Working days: <b>${r.workingDays}</b>`:`Related: ${r.related.join(', ')||'—'}`}</td><td data-label="Allowance"><b>${money(r.amount)}</b></td><td data-label="Status"><span class="status ${r.status}">${r.status}</span></td><td data-label="Action"><div class="actions">${actions.join('')}</div></td></tr>`}).join('');$('records').innerHTML=rows.length?`<table class="audit-table"><thead><tr><th></th><th>Person</th><th>Date</th><th>Area</th><th>Project</th><th>Details</th><th>Allowance</th><th>Status</th><th>Action</th></tr></thead><tbody>${body}</tbody></table>`:'<div class="empty">No allowance records match these filters.</div>';document.querySelectorAll('.rowCheck').forEach(x=>x.addEventListener('change',updateSelectedCount));updateSelectedCount()}
 function selectedRecords(){return [...document.querySelectorAll('.rowCheck:checked')].map(x=>JSON.parse(decodeURIComponent(x.dataset.key)))}
 function updateSelectedCount(){$('selectedCount').textContent=`${selectedRecords().length} selected`}
 $('selectAll').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=true);updateSelectedCount()};
