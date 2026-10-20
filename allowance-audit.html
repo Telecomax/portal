@@ -27,6 +27,7 @@ body{overflow-x:hidden}header{padding:11px 12px}.brand{font-size:17px}main{paddi
 .sso-status{position:fixed;inset:0;z-index:999999;background:rgba(2,8,23,.92);display:flex;align-items:center;justify-content:center;padding:24px}
 .sso-status-box{max-width:430px;width:100%;padding:24px;border-radius:20px;background:#0b1020;border:1px solid rgba(255,255,255,.15);color:#fff;text-align:center}
 .sso-status-box b{display:block;font-size:20px;margin-bottom:8px}.sso-status-box span{color:#aab4c4}
+.v24-locked{font-size:11px;color:#f5c768;white-space:nowrap;margin-left:4px}.rowCheck{cursor:pointer}#pendingSelected,#rejectSelected{white-space:nowrap}
 </style><script>
 if(location.hash.indexOf('sso=')>=0){
  document.documentElement.classList.add('portal-sso-pending');
@@ -208,7 +209,7 @@ button:disabled, .btn:disabled {cursor:not-allowed;opacity:.55;}
 <button id="apply" class="btn primary">Apply</button><button id="clear" class="btn ghost">Clear</button></div></div>
 <div class="summary"><div class="metric"><small>Calculated</small><b id="calculated">0 EGP</b></div><div class="metric"><small>Approved</small><b id="approved">0 EGP</b></div><div class="metric"><small>Pending</small><b id="pending">0 EGP</b></div><div class="metric"><small>Rejected</small><b id="rejected">0 EGP</b></div></div><br>
 <div class="card"><div class="tabs"><button class="btn tab active" data-type="All">All</button><button class="btn tab" data-type="Engineer">Engineers</button><button class="btn tab" data-type="Driver">Drivers</button></div>
-<div class="bulkbar"><button id="selectAll" class="btn ghost">Select All</button><button id="clearSelection" class="btn ghost">Clear Selection</button><div class="spacer"></div><span id="selectedCount" class="note">0 selected</span><button id="approveSelected" class="btn primary">Approve Selected</button><button id="exportExcel" class="btn ghost">Export Excel</button></div>
+<div class="bulkbar"><button id="selectAll" class="btn ghost">Select All</button><button id="clearSelection" class="btn ghost">Clear Selection</button><div class="spacer"></div><span id="selectedCount" class="note">0 selected</span><button id="approveSelected" class="btn primary">Approve Selected</button><button id="pendingSelected" class="btn pending">Set Pending Selected</button><button id="rejectSelected" class="btn reject">Reject Selected</button><button id="exportExcel" class="btn ghost" title="Exporting locks the approved records for payroll">Export Excel &amp; Lock</button></div>
 <div id="records" class="records"></div></div>
 </section></main>
 <div id="toast" class="toast"></div>
@@ -264,27 +265,21 @@ function setupCombo(kind){
 $('status').addEventListener('change',()=>{refreshAllCombos()});
 $('month').addEventListener('change',()=>{sanitizeRelated('month');refreshAllCombos()});
 document.addEventListener('click',e=>{['engineer','driver','project'].forEach(k=>{if(!$(k+'Combo').contains(e.target))$(k+'Combo').classList.remove('open')})});
-let v830AllowanceTotal=0,v830AllowanceHasMore=false,allSummaryRecords=[],summaryRequestId=0;
+let v830AllowanceTotal=0,v830AllowanceHasMore=false,allSummaryRecords=[],summaryRequestId=0,v24PageSize=31,v24VisibleCount=31,v24LoadId=0;
 async function load(mode='reset'){
- showBuffer(mode==='all'?'Loading all matching allowances...':mode==='more'?'Loading 31 more allowances...':'Applying filters...');
+ if(mode==='more'){v24VisibleCount+=v24PageSize;data.records=allSummaryRecords.slice(0,v24VisibleCount);v830AllowanceHasMore=data.records.length<allSummaryRecords.length;render();v830RenderAllowancePager();return;}
+ if(mode==='all'){v24VisibleCount=allSummaryRecords.length;data.records=allSummaryRecords.slice();v830AllowanceHasMore=false;render();v830RenderAllowancePager();return;}
+ const id=++v24LoadId;v24VisibleCount=v24PageSize;
+ const btn=$('apply');if(btn)btn.disabled=true;
  try{
-   if(!filterSource||!Object.keys(filterSource).length)filterSource=await post('allowanceFilterOptions');
-   const offset=mode==='more'?(data.records||[]).length:0;
-   const r=await post('allowanceData',{filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:$('status').value,offset,limit:31,loadAll:mode==='all'});
-   if(!r.ok)throw new Error(r.error||'server-error');
-   if(mode==='more'){data=Object.assign({},r,{records:(data.records||[]).concat(r.records||[])})}else data=r;
-   v830AllowanceTotal=Number(r.totalMatched||0);v830AllowanceHasMore=!!r.hasMore;
-   refreshAllCombos();
-   // Summary uses all matching records, not just the current 31-row page.
-   const requestId=++summaryRequestId;
-   if(mode==='all'||!v830AllowanceHasMore){allSummaryRecords=(data.records||[]).slice();render()}
-   else {
-     allSummaryRecords=[];render();
-     const q={filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:$('status').value,offset:0,limit:31,loadAll:true};
-     post('allowanceData',q).then(full=>{if(requestId!==summaryRequestId)return;allSummaryRecords=full.records||[];render()}).catch(err=>{if(requestId===summaryRequestId){console.warn('Full summary unavailable',err);allSummaryRecords=[];render()}});
-   }
-   v830RenderAllowancePager();
- }catch(e){toast(e.message)}finally{hideBuffer()}
+  const q={filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:$('status').value,offset:0,limit:31,loadAll:true};
+  const full=await post('allowanceData',q);
+  if(id!==v24LoadId)return;
+  allSummaryRecords=full.records||[];v830AllowanceTotal=allSummaryRecords.length;
+  data=Object.assign({},full,{records:allSummaryRecords.slice(0,v24VisibleCount)});
+  v830AllowanceHasMore=data.records.length<allSummaryRecords.length;
+  render();v830RenderAllowancePager();
+ }catch(e){if(id===v24LoadId)toast(e.message)}finally{if(id===v24LoadId&&btn)btn.disabled=false}
 }
 function v830RenderAllowancePager(){
  let x=document.getElementById('v830AllowancePager');if(x)x.remove();
@@ -299,12 +294,22 @@ function recalcVisibleSummary(){
  rows.forEach(r=>{sm.calculated+=Number(r.amount)||0;if(r.status==='Approved')sm.approved+=Number(r.amount)||0;else if(r.status==='Pending')sm.pending+=Number(r.amount)||0;else if(r.status==='Rejected')sm.rejected+=Number(r.amount)||0});
  data.summary=sm;
 }
-function render(){let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView);let summaryRows=allSummaryRecords.length?allSummaryRecords:((!v830AllowanceHasMore)?(data.records||[]):null);let sm={calculated:0,approved:0,pending:0,rejected:0};if(summaryRows){summaryRows.filter(r=>typeView==='All'||r.type===typeView).forEach(r=>{const amount=Number(r.amount)||0;sm.calculated+=amount;if(r.status==='Approved')sm.approved+=amount;else if(r.status==='Pending')sm.pending+=amount;else if(r.status==='Rejected')sm.rejected+=amount})}else if(typeView==='All'){sm=data.summary||sm}else{sm={calculated:0,approved:0,pending:0,rejected:0}};$('calculated').textContent=money(sm.calculated);$('approved').textContent=money(sm.approved);$('pending').textContent=money(sm.pending);$('rejected').textContent=money(sm.rejected);let body=rows.map(r=>{let key=encodeURIComponent(JSON.stringify({type:r.type,name:r.name,date:r.date,amount:r.amount})),actions=[];if(r.status!=='Approved')actions.push(`<button class="btn approve" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Approved','')">Approve</button>`);if(r.status!=='Pending')actions.push(`<button class="btn pending" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Pending','')">Set Pending</button>`);if(r.status!=='Rejected')actions.push(`<button class="btn reject" onclick="rejectDay('${r.type}','${esc(r.name)}','${r.date}',${r.amount})">Reject</button>`);return `<tr><td class="select-cell" data-label="Select">${r.status==='Pending'?`<input class="check rowCheck" type="checkbox" data-key="${key}">`:''}</td><td data-label="Person"><b>${r.type}</b> · ${r.name}</td><td data-label="Date">${r.date}<span class="allowance-weekday">${r.day||''}</span></td><td data-label="Area"><b>${r.area}</b></td><td data-label="Project">${r.projects.join(', ')||'—'}</td><td data-label="Details">${r.type==='Engineer'?`Working days: <b>${r.workingDays}</b>`:`Related: ${r.related.join(', ')||'—'}`}</td><td data-label="Allowance"><b>${money(r.amount)}</b></td><td data-label="Status"><span class="status ${r.status}">${r.status}</span></td><td data-label="Action"><div class="actions">${actions.join('')}</div></td></tr>`}).join('');$('records').innerHTML=rows.length?`<table class="audit-table"><thead><tr><th></th><th>Person</th><th>Date</th><th>Area</th><th>Project</th><th>Details</th><th>Allowance</th><th>Status</th><th>Action</th></tr></thead><tbody>${body}</tbody></table>`:'<div class="empty">No allowance records match these filters.</div>';document.querySelectorAll('.rowCheck').forEach(x=>x.addEventListener('change',updateSelectedCount));updateSelectedCount()}
+function render(){let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView);let summaryRows=allSummaryRecords.length?allSummaryRecords:((!v830AllowanceHasMore)?(data.records||[]):null);let sm={calculated:0,approved:0,pending:0,rejected:0};if(summaryRows){summaryRows.filter(r=>typeView==='All'||r.type===typeView).forEach(r=>{const amount=Number(r.amount)||0;sm.calculated+=amount;if(r.status==='Approved')sm.approved+=amount;else if(r.status==='Pending')sm.pending+=amount;else if(r.status==='Rejected')sm.rejected+=amount})}else if(typeView==='All'){sm=data.summary||sm}else{sm={calculated:0,approved:0,pending:0,rejected:0}};$('calculated').textContent=money(sm.calculated);$('approved').textContent=money(sm.approved);$('pending').textContent=money(sm.pending);$('rejected').textContent=money(sm.rejected);let body=rows.map(r=>{let key=encodeURIComponent(JSON.stringify({type:r.type,name:r.name,date:r.date,amount:r.amount})),actions=[];if(!r.exportLocked&&r.status!=='Approved')actions.push(`<button class="btn approve" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Approved','')">Approve</button>`);if(!r.exportLocked&&r.status!=='Pending')actions.push(`<button class="btn pending" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Pending','')">Set Pending</button>`);if(!r.exportLocked&&r.status!=='Rejected')actions.push(`<button class="btn reject" onclick="rejectDay('${r.type}','${esc(r.name)}','${r.date}',${r.amount})">Reject</button>`);return `<tr><td class="select-cell" data-label="Select">${!r.exportLocked?`<input class="check rowCheck" type="checkbox" data-key="${key}">`:''}</td><td data-label="Person"><b>${r.type}</b> · ${r.name}</td><td data-label="Date">${r.date}<span class="allowance-weekday">${r.day||''}</span></td><td data-label="Area"><b>${r.area}</b></td><td data-label="Project">${r.projects.join(', ')||'—'}</td><td data-label="Details">${r.type==='Engineer'?`Working days: <b>${r.workingDays}</b>`:`Related: ${r.related.join(', ')||'—'}`}</td><td data-label="Allowance"><b>${money(r.amount)}</b></td><td data-label="Status"><span class="status ${r.status}">${r.status}</span>${r.exportLocked?` <span title="Payroll batch: ${r.exportBatch}" class="v24-locked">🔒 Exported</span>`:""}</td><td data-label="Action"><div class="actions">${actions.join('')}</div></td></tr>`}).join('');$('records').innerHTML=rows.length?`<table class="audit-table"><thead><tr><th></th><th>Person</th><th>Date</th><th>Area</th><th>Project</th><th>Details</th><th>Allowance</th><th>Status</th><th>Action</th></tr></thead><tbody>${body}</tbody></table>`:'<div class="empty">No allowance records match these filters.</div>';document.querySelectorAll('.rowCheck').forEach(x=>x.addEventListener('change',updateSelectedCount));updateSelectedCount()}
 function selectedRecords(){return [...document.querySelectorAll('.rowCheck:checked')].map(x=>JSON.parse(decodeURIComponent(x.dataset.key)))}
 function updateSelectedCount(){$('selectedCount').textContent=`${selectedRecords().length} selected`}
 $('selectAll').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=true);updateSelectedCount()};
 $('clearSelection').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=false);updateSelectedCount()};
-$('approveSelected').onclick=async()=>{let items=selectedRecords();if(!items.length){toast('Select at least one pending day.');return}if(!confirm(`Approve ${items.length} selected allowance day(s)?`))return;showBuffer('Approving selected allowances...');let b=$('approveSelected');b.disabled=true;b.textContent='Approving...';try{for(const r of items)await post('allowanceAudit',{type:r.type,name:r.name,date:r.date,calculatedAmount:r.amount,status:'Approved',reason:''});toast(`${items.length} day(s) approved.`);await load()}catch(e){toast(e.message)}finally{hideBuffer();b.disabled=false;b.textContent='Approve Selected'}}
+async function v24Bulk(status){
+ const items=selectedRecords();if(!items.length)return toast('Select at least one unlocked allowance day.');
+ let reason='';if(status==='Rejected'){reason=prompt('Reason for rejecting selected days (optional):','');if(reason===null)return;}
+ if(!confirm(`${status}: apply to ${items.length} selected allowance day(s)?`))return;
+ const buttons=['approveSelected','pendingSelected','rejectSelected'].map($);buttons.forEach(b=>b.disabled=true);
+ try{const r=await post('allowanceAuditBatch',{items,status,reason});toast(`${r.updated} allowance day(s) updated.`);await load();}
+ catch(e){toast(e.message)}finally{buttons.forEach(b=>b.disabled=false)}
+}
+$('approveSelected').onclick=()=>v24Bulk('Approved');
+$('pendingSelected').onclick=()=>v24Bulk('Pending');
+$('rejectSelected').onclick=()=>v24Bulk('Rejected');
 function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
 async function audit(type,name,date,amount,status,reason=''){showBuffer(status==='Rejected'?'Rejecting allowance...':'Approving allowance...');try{await post('allowanceAudit',{type,name,date,calculatedAmount:amount,status,reason});await load()}catch(e){toast(e.message)}finally{hideBuffer()}}function rejectDay(type,name,date,amount){let reason=prompt('Reason for rejection (optional):','');if(reason===null)return;audit(type,name,date,amount,'Rejected',reason)}
 function xlsxEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
@@ -339,8 +344,9 @@ $('exportExcel').onclick=async()=>{
   showBuffer('Preparing full allowance Excel export...');
   const exportData=await post('allowanceData',{filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:'Approved',offset:0,limit:31,loadAll:true});
   if(!exportData.ok)throw new Error(exportData.error||'server-error');
-  const rows=(exportData.records||[]).filter(r=>typeView==='All'||r.type===typeView);
-  if(!rows.length){toast('No approved allowances to export for the current filters.');return}
+  const rows=(exportData.records||[]).filter(r=>(typeView==='All'||r.type===typeView)&&!r.exportLocked);
+  if(!rows.length){toast('No new approved allowances to export (existing exports are locked).');return}
+  if(!confirm(`Export and permanently lock ${rows.length} approved allowance day(s) for payroll? You cannot edit them afterward.`))return;
   const groups={};
   rows.forEach(r=>(r.projects&&r.projects.length?r.projects:['—']).forEach(pr=>{
    const k=r.type+'|'+r.name+'|'+pr;if(!groups[k])groups[k]={name:r.name,project:pr,total:0};groups[k].total+=Number(r.amount)||0;
@@ -367,13 +373,14 @@ $('exportExcel').onclick=async()=>{
    {name:'xl/worksheets/sheet4.xml',data:xlsxSheet(drvDetails)}
   ];
   const blob=makeZip(files);
+  const lockResult=await post('allowanceExportLock',{items:rows.map(r=>({type:r.type,name:r.name,date:r.date,amount:r.amount})),exportedBy:managementName});
   const reader=new FileReader();
-  reader.onload=()=>{const a=document.createElement('a');a.href=reader.result;a.download=`Allowance-Audit-${$('month').value||'All'}-${typeView}.xlsx`;a.style.display='none';document.body.appendChild(a);a.click();a.remove();toast('Excel workbook created with 4 allowance tabs.')};
-  reader.onerror=()=>toast('Could not create Excel workbook.');
+  reader.onload=()=>{const a=document.createElement('a');a.href=reader.result;a.download=`Allowance-Audit-${$('month').value||'All'}-${typeView}.xlsx`;a.style.display='none';document.body.appendChild(a);a.click();a.remove();toast('Payroll batch '+lockResult.batchId+' locked. Excel download started.');load()};
+  reader.onerror=()=>toast('PAYROLL LOCKED but download failed. Contact Admin with batch '+lockResult.batchId+'.');
   reader.readAsDataURL(blob);
  }catch(err){console.error(err);toast('Excel export failed: '+(err.message||err))}finally{hideBuffer()}
 };
-$('apply').onclick=async()=>{showBuffer('Applying relational filters...');try{filterSource=await post('allowanceFilterOptions',{filterMonth:$('month').value});sanitizeRelated('apply');refreshAllCombos();await load()}catch(e){toast(e.message||'Could not apply filters')}finally{hideBuffer()}};$('clear').onclick=()=>{$('engineer').value='';$('driver').value='';$('project').value='';$('status').value='';refreshAllCombos();load()};document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');typeView=b.dataset.type;render()});
+$('apply').onclick=()=>{refreshAllCombos();load()};$('clear').onclick=()=>{$('engineer').value='';$('driver').value='';$('project').value='';$('status').value='';refreshAllCombos();load()};document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');typeView=b.dataset.type;render()});
 const portalSsoIncoming=/(?:^|[&#])sso=/.test(location.hash);
 if(portalSsoIncoming){
   // Portal SSO owns authentication. Do not let validation of an older PM token race it.
