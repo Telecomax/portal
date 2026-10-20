@@ -229,7 +229,8 @@ function relationalRows(excludeKind=''){
  const q=filterState();
  return (filterSource.combinations||[]).filter(c=>{
    if(q.months.length&&!q.months.includes(String(c.month||'')))return false;
-   if(excludeKind!=='status'&&q.status&&!eq(c.status,q.status))return false;
+   // Status is intentionally excluded from dropdown availability.
+   // A bulk audit can change statuses without changing the engineer/driver/project relationships.
    if(excludeKind!=='engineer'&&q.engineer&&!eq(c.engineer,q.engineer))return false;
    if(excludeKind!=='driver'&&q.driver&&!eq(c.driver,q.driver))return false;
    if(excludeKind!=='project'&&q.project&&!eq(c.project,q.project))return false;
@@ -238,9 +239,9 @@ function relationalRows(excludeKind=''){
 }
 function relationalOptions(kind){
  const q=filterState(),rows=relationalRows(kind);
- if(kind==='engineer'){const cfg=uniq(filterSource.engineers||[]),allowed=uniq(rows.map(c=>c.engineer));return (q.months.length||q.driver||q.project||q.status)?cfg.filter(e=>allowed.some(v=>eq(v,e))):cfg}
- if(kind==='driver'){const cfg=uniq((filterSource.drivers||[]).filter(x=>String(x).toLowerCase()!=='rent')),allowed=uniq(rows.map(c=>c.driver).filter(x=>String(x).toLowerCase()!=='rent'));return (q.months.length||q.engineer||q.project||q.status)?cfg.filter(d=>allowed.some(v=>eq(v,d))):cfg}
- const cfg=uniq(filterSource.projects||[]),allowed=uniq(rows.map(c=>c.project));return (q.months.length||q.engineer||q.driver||q.status)?cfg.filter(p=>allowed.some(v=>eq(v,p))):cfg;
+ if(kind==='engineer'){const cfg=uniq(filterSource.engineers||[]),allowed=uniq(rows.map(c=>c.engineer));return (q.months.length||q.driver||q.project)?(allowed.length?cfg.filter(e=>allowed.some(v=>eq(v,e))):cfg):cfg}
+ if(kind==='driver'){const cfg=uniq((filterSource.drivers||[]).filter(x=>String(x).toLowerCase()!=='rent')),allowed=uniq(rows.map(c=>c.driver).filter(x=>String(x).toLowerCase()!=='rent'));return (q.months.length||q.engineer||q.project)?(allowed.length?cfg.filter(d=>allowed.some(v=>eq(v,d))):cfg):cfg}
+ const cfg=uniq(filterSource.projects||[]),allowed=uniq(rows.map(c=>c.project));return (q.months.length||q.engineer||q.driver)?(allowed.length?cfg.filter(p=>allowed.some(v=>eq(v,p))):cfg):cfg;
 }
 function renderCombo(kind,showAll=false){
  const input=$(kind),list=$(kind+'List'),q=showAll?'':input.value.trim().toLowerCase(),options=relationalOptions(kind).filter(x=>!q||x.toLowerCase().includes(q));
