@@ -139,6 +139,64 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
   #records .audit-table tbody td .allowance-weekday {margin-left:8px;color:#94a3b8;font-size:11px;}
 }
 </style>
+
+<style id="tmxV23ButtonMotionAndTableType">
+/* Subtle, consistent feedback across page controls. */
+button, .btn, .tab, .combo-option {
+  transition: transform 160ms ease, box-shadow 180ms ease,
+              filter 180ms ease, background-color 180ms ease,
+              border-color 180ms ease !important;
+}
+@media (hover:hover) and (pointer:fine) {
+  button:not(:disabled):hover, .btn:not(:disabled):hover {
+    transform: translateY(-1px);
+    filter: brightness(1.12);
+    box-shadow: 0 3px 10px rgba(236,0,140,.15);
+  }
+  .combo-option:hover {filter:brightness(1.12);}
+}
+button:not(:disabled):active, .btn:not(:disabled):active {
+  transform: translateY(1px) scale(.97);
+  filter: brightness(.96);
+  box-shadow: none;
+}
+button:focus-visible, .btn:focus-visible {
+  outline: 2px solid #ff74c5;
+  outline-offset: 2px;
+}
+button:disabled, .btn:disabled {cursor:not-allowed;opacity:.55;}
+/* Readable data while retaining compact, auto-height table rows. */
+@media (min-width:701px) {
+  #records .audit-table tbody td {
+    font-size:14px!important;
+    line-height:19px!important;
+    padding:4px 7px!important;
+  }
+  #records .audit-table tbody td .allowance-weekday {
+    font-size:12px!important;
+  }
+  #records .audit-table tbody td .status {
+    font-size:12px!important;
+    line-height:17px!important;
+  }
+  #records .audit-table tbody td .actions .btn {
+    font-size:12px!important;
+    height:28px!important;
+    min-height:28px!important;
+    line-height:20px!important;
+  }
+}
+@media (max-width:700px) {
+  #records .audit-table tbody td {font-size:14px!important;line-height:1.35!important;}
+  #records .audit-table tbody td:before {font-size:10px!important;}
+  #records .audit-table tbody td .status {font-size:12px!important;}
+  #records .audit-table tbody td .actions .btn {font-size:12px!important;}
+}
+@media (prefers-reduced-motion:reduce) {
+  button, .btn, .tab, .combo-option {transition:none!important;}
+  button:hover, button:active, .btn:hover, .btn:active {transform:none!important;}
+}
+</style>
 </head><body><header><div class="brand"><span>TELECOMAX</span> <small>Operations / Allowance Audit</small></div><div class="header-actions"><button class="btn ghost" type="button" onclick="location.href='./'">← Operations</button><button id="logout" class="btn ghost" style="display:none">Logout</button></div></header><main>
 <section id="login" class="card login" style="display:none"><h2>PM Login</h2><p class="note">Use your management Name + 6-digit PIN.</p><div class="field"><label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name"></div><br><div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN"></div><br><button id="loginBtn" class="btn primary">Login</button></section>
 <section id="app" style="display:none"><div class="card"><div class="section-title"><div><h2 style="margin:0">Monthly Allowance Audit</h2></div></div><br><div class="filters">
