@@ -16,9 +16,8 @@
   if(!allowed){document.documentElement.style.visibility='hidden';location.replace('./?reason=access')}
 })();
 
-const v8311AllowanceMonth=$('month');
-if(v8311AllowanceMonth)v8311AllowanceMonth.addEventListener('change',()=>{sanitizeRelated('month');refreshAllCombos();});
-</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Telecomax Operations — Allowance Audit</title><style>
+// V26: month listeners are attached after the page DOM is available.
+</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Telecomax Operations — Allowance Audit V26</title><style>
 :root{--bg:#f3f6f8;--card:#fff;--text:#24313a;--muted:#71808b;--line:#dfe6ea;--brand:#c52b83;--green:#21865a;--red:#b83b47;--amber:#a66a00}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial;background:var(--bg);color:var(--text)}header{background:#fff;border-bottom:1px solid var(--line);padding:16px 22px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}.brand{font-weight:900;font-size:20px}.brand span{color:var(--brand)}button,input,select,textarea{font:inherit}.btn{border:0;border-radius:10px;padding:11px 15px;font-weight:750;cursor:pointer}.primary{background:var(--brand);color:#fff}.ghost{background:#eef2f4;color:var(--text)}main{max-width:1250px;margin:auto;padding:24px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 8px 24px #25323a0b}.login{max-width:440px;margin:70px auto}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase}.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;min-width:0}
 .combo{position:relative}.combo input{width:100%;padding-right:34px}.combo:after{content:'⌄';position:absolute;right:11px;bottom:11px;color:var(--muted);pointer-events:none}.combo-list{display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);max-height:230px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px #25323a20;z-index:30;padding:5px}.combo.open .combo-list{display:block}.combo-option{padding:9px 10px;border-radius:7px;cursor:pointer;font-size:13px}.combo-option.multi{display:flex;align-items:center;gap:8px}.combo-option.multi input{width:auto}.chips{position:absolute;left:0;right:0;top:100%;display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;z-index:6;pointer-events:none}.chips .chip{pointer-events:auto}.chip{background:#f8eaf2;color:var(--brand);border-radius:99px;padding:3px 8px;font-size:11px;font-weight:700}.combo-option:hover,.combo-option.active{background:#f8eaf2;color:var(--brand)}.combo-empty{padding:10px;color:var(--muted);font-size:12px}.filters{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr 1fr auto auto;gap:10px;align-items:end}
 .filters>.field{align-self:end}.filters .field>input,.filters .field>select{height:46px}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.metric{background:#f8fafb;border:1px solid var(--line);border-radius:14px;padding:15px}.metric b{font-size:22px;display:block;margin-top:5px}.metric small{color:var(--muted)}.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}.bulkbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}.bulkbar .spacer{flex:1}.records{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}.audit-table{width:100%;border-collapse:collapse;min-width:1000px}.audit-table th{background:#f4f7f8;text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}.audit-table td{padding:7px 8px;border-bottom:1px solid #edf1f3;vertical-align:middle;font-size:12.5px}.audit-table tr:hover td{background:#fbfcfd}.audit-table tr:last-child td{border-bottom:0}.check{width:17px;height:17px;accent-color:var(--brand)}.name{font-weight:850}.meta{font-size:13px;color:var(--muted);margin-top:4px}.amount{font-size:19px;font-weight:900}.status{font-weight:800}.Pending{color:var(--amber)}.Approved{color:var(--green)}.Rejected{color:var(--red)}.actions{display:flex;gap:6px;flex-wrap:wrap}.approve{background:#e9f7f0;color:var(--green)}.reject{background:#fdecef;color:var(--red)}.pending{background:#fff4db;color:var(--amber)}.empty{text-align:center;color:var(--muted);padding:35px}.toast{position:fixed;right:20px;bottom:20px;background:#26323a;color:#fff;padding:12px 16px;border-radius:10px;display:none;z-index:20}.note{font-size:13px;color:var(--muted);line-height:1.5}.tabs{display:flex;gap:8px;margin-bottom:14px}.tab{background:#edf1f3}.tab.active{background:var(--brand);color:#fff}@media(max-width:1000px){main{padding:16px}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.filters .btn{min-height:44px}.summary{grid-template-columns:1fr 1fr}.card{padding:15px}.bulkbar{align-items:stretch}.bulkbar .spacer{display:none}.bulkbar #selectedCount{margin-left:auto;align-self:center}}@media(max-width:700px){
@@ -219,18 +218,26 @@ button:disabled, .btn:disabled {cursor:not-allowed;opacity:.55;}
 <script>
 const URL='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec',$=x=>document.getElementById(x);let managementToken=sessionStorage.getItem('tmx_km_pm_token')||'',managementName=sessionStorage.getItem('tmx_km_pm_name')||'',data=null,filterSource={},typeView='All';
 function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}function showBuffer(t='Loading...'){const b=$('buffer'),x=$('bufferText');if(x)x.textContent=t;if(b)b.classList.add('show')}function hideBuffer(){const b=$('buffer');if(b)b.classList.remove('show')}function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}async function post(action,x={}){const r=await fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),d=await r.json();if(!d.ok)throw Error(d.error||'Server error');return d}function auth(on){$('login').style.display=on?'none':'block';$('app').style.display=on?'block':'none';$('logout').style.display=on?'block':'none';if(on){data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();loadAllowanceFilterSource()}}
-async function loadAllowanceFilterSource(){try{filterSource=await post('allowanceFilterOptions',{filterMonth:$('month').value});refreshAllCombos()}catch(e){toast('Could not load filter lists')}}
+let v26FilterSourceRequest=0;
+async function loadAllowanceFilterSource(){
+ const request=++v26FilterSourceRequest,month=$('month').value;
+ try{const result=await post('allowanceFilterOptions',{filterMonth:month});
+ if(request!==v26FilterSourceRequest)return;
+ filterSource=result;refreshAllCombos();
+ }catch(e){if(request===v26FilterSourceRequest)toast('Could not load filter lists')}
+}
 function monthNow(){let d=new Date(),o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,7)}$('month').value=monthNow();
 $('loginBtn').onclick=async()=>{const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 6-digit PIN');showBuffer('Logging in...');try{const d=await post('managementLogin',{name,pin,portalRole:'PM'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName);auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{hideBuffer()}};$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
 function uniq(a){return [...new Set((a||[]).filter(Boolean))].sort((x,y)=>x.localeCompare(y))}
 function eq(a,b){return String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase()}
 function filterState(){return {engineer:$('engineer').value.trim(),driver:$('driver').value.trim(),project:$('project').value.trim(),status:$('status').value.trim(),months:String($('month').value||'').split(',').map(x=>x.trim()).filter(Boolean)}}
+// V26: cascading filter options are based on the allowance records' actual statuses.
+// Each dropdown respects all OTHER selected filters (faceted filtering).
 function relationalRows(excludeKind=''){
  const q=filterState();
  return (filterSource.combinations||[]).filter(c=>{
    if(q.months.length&&!q.months.includes(String(c.month||'')))return false;
-   // Status is intentionally excluded from dropdown availability.
-   // A bulk audit can change statuses without changing the engineer/driver/project relationships.
+   if(excludeKind!=='status'&&q.status&&!eq(c.status,q.status))return false;
    if(excludeKind!=='engineer'&&q.engineer&&!eq(c.engineer,q.engineer))return false;
    if(excludeKind!=='driver'&&q.driver&&!eq(c.driver,q.driver))return false;
    if(excludeKind!=='project'&&q.project&&!eq(c.project,q.project))return false;
@@ -238,10 +245,11 @@ function relationalRows(excludeKind=''){
  });
 }
 function relationalOptions(kind){
- const q=filterState(),rows=relationalRows(kind);
- if(kind==='engineer'){const cfg=uniq(filterSource.engineers||[]),allowed=uniq(rows.map(c=>c.engineer));return (q.months.length||q.driver||q.project)?(allowed.length?cfg.filter(e=>allowed.some(v=>eq(v,e))):cfg):cfg}
- if(kind==='driver'){const cfg=uniq((filterSource.drivers||[]).filter(x=>String(x).toLowerCase()!=='rent')),allowed=uniq(rows.map(c=>c.driver).filter(x=>String(x).toLowerCase()!=='rent'));return (q.months.length||q.engineer||q.project)?(allowed.length?cfg.filter(d=>allowed.some(v=>eq(v,d))):cfg):cfg}
- const cfg=uniq(filterSource.projects||[]),allowed=uniq(rows.map(c=>c.project));return (q.months.length||q.engineer||q.driver)?(allowed.length?cfg.filter(p=>allowed.some(v=>eq(v,p))):cfg):cfg;
+ const rows=relationalRows(kind);
+ if(kind==='engineer')return uniq(rows.map(c=>c.engineer));
+ if(kind==='driver')return uniq(rows.map(c=>c.driver).filter(x=>String(x).toLowerCase()!=='rent'));
+ if(kind==='project')return uniq(rows.map(c=>c.project));
+ return [];
 }
 function renderCombo(kind,showAll=false){
  const input=$(kind),list=$(kind+'List'),q=showAll?'':input.value.trim().toLowerCase(),options=relationalOptions(kind).filter(x=>!q||x.toLowerCase().includes(q));
@@ -264,7 +272,7 @@ function setupCombo(kind){
 }
 ['engineer','driver','project'].forEach(setupCombo);
 $('status').addEventListener('change',()=>{refreshAllCombos()});
-$('month').addEventListener('change',()=>{sanitizeRelated('month');refreshAllCombos()});
+$('month').addEventListener('change',()=>{loadAllowanceFilterSource()});
 document.addEventListener('click',e=>{['engineer','driver','project'].forEach(k=>{if(!$(k+'Combo').contains(e.target))$(k+'Combo').classList.remove('open')})});
 let v830AllowanceTotal=0,v830AllowanceHasMore=false,allSummaryRecords=[],summaryRequestId=0,v24PageSize=31,v24VisibleCount=31,v24LoadId=0;
 async function load(mode='reset'){
@@ -305,14 +313,14 @@ async function v24Bulk(status){
  let reason='';if(status==='Rejected'){reason=prompt('Reason for rejecting selected days (optional):','');if(reason===null)return;}
  if(!confirm(`${status}: apply to ${items.length} selected allowance day(s)?`))return;
  const buttons=['approveSelected','pendingSelected','rejectSelected'].map($);buttons.forEach(b=>b.disabled=true);
- try{const r=await post('allowanceAuditBatch',{items,status,reason});toast(`${r.updated} allowance day(s) updated.`);await load();}
+ try{const r=await post('allowanceAuditBatch',{items,status,reason});toast(`${r.updated} allowance day(s) updated.`);await Promise.all([load(),loadAllowanceFilterSource()]);}
  catch(e){toast(e.message)}finally{buttons.forEach(b=>b.disabled=false)}
 }
 $('approveSelected').onclick=()=>v24Bulk('Approved');
 $('pendingSelected').onclick=()=>v24Bulk('Pending');
 $('rejectSelected').onclick=()=>v24Bulk('Rejected');
 function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
-async function audit(type,name,date,amount,status,reason=''){showBuffer(status==='Rejected'?'Rejecting allowance...':'Approving allowance...');try{await post('allowanceAudit',{type,name,date,calculatedAmount:amount,status,reason});await load()}catch(e){toast(e.message)}finally{hideBuffer()}}function rejectDay(type,name,date,amount){let reason=prompt('Reason for rejection (optional):','');if(reason===null)return;audit(type,name,date,amount,'Rejected',reason)}
+async function audit(type,name,date,amount,status,reason=''){showBuffer(status==='Rejected'?'Rejecting allowance...':'Approving allowance...');try{await post('allowanceAudit',{type,name,date,calculatedAmount:amount,status,reason});await Promise.all([load(),loadAllowanceFilterSource()])}catch(e){toast(e.message)}finally{hideBuffer()}}function rejectDay(type,name,date,amount){let reason=prompt('Reason for rejection (optional):','');if(reason===null)return;audit(type,name,date,amount,'Rejected',reason)}
 function xlsxEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function xlsxCol(n){let s='';while(n){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s}
 function xlsxSheet(rows){
