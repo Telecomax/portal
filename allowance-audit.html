@@ -103,7 +103,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 .combo:after{display:none!important}.combo input{padding-right:40px!important}
 .combo-arrow{position:absolute;right:4px;bottom:4px;width:32px;height:30px;min-height:0!important;padding:0!important;border:0!important;border-left:1px solid #304158!important;border-radius:0 8px 8px 0!important;background:transparent!important;color:#b8c5d8!important;font-size:18px!important;z-index:3;cursor:pointer}
 .combo-arrow:hover{color:#fff!important;background:#17263a!important}
-</style><meta name="tmx-migration-build" content="2026-10-21-v21-compact-verified">
+</style><meta name="tmx-migration-build" content="2026-10-09-github-km">
 
 <style id="tmxV20AllowanceTrueSingleLine">
 /* V20: compact desktop table. Data cells render one line; long text may wrap
@@ -141,7 +141,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 </style>
 </head><body><header><div class="brand"><span>TELECOMAX</span> <small>Operations / Allowance Audit</small></div><div class="header-actions"><button class="btn ghost" type="button" onclick="location.href='./'">← Operations</button><button id="logout" class="btn ghost" style="display:none">Logout</button></div></header><main>
 <section id="login" class="card login" style="display:none"><h2>PM Login</h2><p class="note">Use your management Name + 6-digit PIN.</p><div class="field"><label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name"></div><br><div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN"></div><br><button id="loginBtn" class="btn primary">Login</button></section>
-<section id="app" style="display:none"><div class="card"><div class="section-title"><div><h2 style="margin:0">Monthly Allowance Audit <span style="font-size:11px;font-weight:700;color:#ec008c;vertical-align:middle;margin-left:8px" title="Deployment verification">V21 • Compact</span></h2></div></div><br><div class="filters">
+<section id="app" style="display:none"><div class="card"><div class="section-title"><div><h2 style="margin:0">Monthly Allowance Audit</h2></div></div><br><div class="filters">
 <div class="field"><label>Months</label><input id="month" type="text" data-multimonth></div>
 <div class="field combo" id="engineerCombo"><label>Engineer</label><input id="engineer" autocomplete="off" placeholder="Search or select engineer"><button type="button" class="combo-arrow" id="engineerArrow" aria-label="Show engineer options">⌄</button><div id="engineerList" class="combo-list"></div></div>
 <div class="field combo" id="driverCombo"><label>Driver</label><input id="driver" autocomplete="off" placeholder="Search or select driver"><button type="button" class="combo-arrow" id="driverArrow" aria-label="Show driver options">⌄</button><div id="driverList" class="combo-list"></div></div>
