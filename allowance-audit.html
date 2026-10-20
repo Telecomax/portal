@@ -197,6 +197,17 @@ button:disabled, .btn:disabled {cursor:not-allowed;opacity:.55;}
   button:hover, button:active, .btn:hover, .btn:active {transform:none!important;}
 }
 </style>
+
+<style id="tmxV28ModalTheme">
+.tmx-v28-shade{position:fixed;inset:0;z-index:11000;display:flex;align-items:center;justify-content:center;background:rgba(1,7,17,.78);backdrop-filter:blur(5px);padding:20px}
+.tmx-v28-dialog{width:min(420px,100%);background:#0d1b2b;border:1px solid #304158;border-radius:18px;box-shadow:0 24px 75px #0009;padding:26px;color:#f5f8ff;text-align:center}
+.tmx-v28-symbol{width:46px;height:46px;display:grid;place-items:center;margin:0 auto 12px;border-radius:15px;background:#35142f;color:#ff53b0;font-size:25px}
+.tmx-v28-title{font-size:18px;font-weight:800;margin:0 0 10px}.tmx-v28-text{font-size:13px;color:#b6c4d8;line-height:1.6;margin:0 0 20px;white-space:pre-line}
+.tmx-v28-actions{display:flex;justify-content:center;gap:10px}.tmx-v28-actions button{min-width:110px;border-radius:10px;padding:11px 16px;border:1px solid #304158;background:#16273b;color:#fff;font-weight:700;cursor:pointer}.tmx-v28-actions button.primary{background:#ec008c;border-color:#ec008c}
+.tmx-v28-dialog textarea{box-sizing:border-box;width:100%;min-height:80px;resize:vertical;background:#101f30;color:#fff;border:1px solid #34485f;border-radius:10px;padding:10px;margin-bottom:16px;font:inherit}
+#buffer .buffer-box{width:min(350px,calc(100vw - 64px));padding:27px!important;border-radius:18px!important;box-shadow:0 25px 75px #0009!important;border:1px solid #304158!important;background:#0d1b2b!important}
+#bufferText{font-size:16px!important;font-weight:800!important}#v27Step{font-size:12px!important;line-height:1.5!important}
+</style>
 </head><body><header><div class="brand"><span>TELECOMAX</span> <small>Operations / Allowance Audit</small></div><div class="header-actions"><button class="btn ghost" type="button" onclick="location.href='./'">← Operations</button><button id="logout" class="btn ghost" style="display:none">Logout</button></div></header><main>
 <section id="login" class="card login" style="display:none"><h2>PM Login</h2><p class="note">Use your management Name + 6-digit PIN.</p><div class="field"><label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name"></div><br><div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN"></div><br><button id="loginBtn" class="btn primary">Login</button></section>
 <section id="app" style="display:none"><div class="card"><div class="section-title"><div><h2 style="margin:0">Monthly Allowance Audit</h2></div></div><br><div class="filters">
@@ -212,11 +223,34 @@ button:disabled, .btn:disabled {cursor:not-allowed;opacity:.55;}
 <div id="records" class="records"></div></div>
 </section></main>
 <div id="toast" class="toast"></div>
+
+<div id="tmxV28Confirm" class="tmx-v28-shade" style="display:none" role="presentation">
+ <div class="tmx-v28-dialog" role="dialog" aria-modal="true" aria-labelledby="tmxV28Title">
+  <div class="tmx-v28-symbol">?</div><h3 id="tmxV28Title" class="tmx-v28-title">Confirm action</h3>
+  <p id="tmxV28Text" class="tmx-v28-text"></p>
+  <textarea id="tmxV28Reason" placeholder="Rejection reason (optional)" style="display:none"></textarea>
+  <div class="tmx-v28-actions"><button id="tmxV28Cancel" type="button">Cancel</button><button id="tmxV28OK" type="button" class="primary">Confirm</button></div>
+ </div>
+</div>
 <div id="buffer" class="buffer" aria-live="polite" aria-busy="true">
   <div class="buffer-box" role="status"><div class="spinner"></div><div id="bufferText">Loading...</div><div id="v27Step" style="font-size:12px;color:#a5b7d0;margin-top:8px;max-width:320px;text-align:center">Please wait for the operation to finish.</div></div>
 </div>
 <script>
 const URL='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec',$=x=>document.getElementById(x);let managementToken=sessionStorage.getItem('tmx_km_pm_token')||'',managementName=sessionStorage.getItem('tmx_km_pm_name')||'',data=null,filterSource={},typeView='All';
+
+function tmxV28Confirm(title,message,withReason=false){
+ return new Promise(resolve=>{
+  const modal=document.getElementById('tmxV28Confirm'),reason=document.getElementById('tmxV28Reason');
+  document.getElementById('tmxV28Title').textContent=title;document.getElementById('tmxV28Text').textContent=message;
+  reason.style.display=withReason?'block':'none';reason.value='';modal.style.display='flex';
+  const ok=document.getElementById('tmxV28OK'),cancel=document.getElementById('tmxV28Cancel');
+  const finish=(accepted)=>{modal.style.display='none';ok.onclick=null;cancel.onclick=null;document.removeEventListener('keydown',onKey);resolve(accepted?{reason:reason.value.trim()}:null)};
+  const onKey=e=>{if(e.key==='Escape')finish(false);else if(e.key==='Enter'&&!withReason){e.preventDefault();finish(true)}};
+  ok.onclick=()=>finish(true);cancel.onclick=()=>finish(false);document.addEventListener('keydown',onKey);
+  (withReason?reason:ok).focus();
+ });
+}
+function tmxV28Progress(status){return status==='Approved'?'Applying Approved Allowances':status==='Rejected'?'Rejected Allowances Are Being Applied':'Allowances Are Being Set to Pending'}
 function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}function showBuffer(t='Loading...'){const b=$('buffer'),x=$('bufferText');if(x)x.textContent=t;if(b)b.classList.add('show')}function hideBuffer(){const b=$('buffer');if(b)b.classList.remove('show')}let v27Busy=false;let v27BusyTimer=null;
 function v27Message(title,detail){showBuffer(title);const el=$('v27Step');if(el)el.textContent=detail||'Please wait for the operation to finish.';}
 async function v27Run(title,detail,operation){
@@ -306,7 +340,7 @@ function v830RenderAllowancePager(){
  (v830AllowanceHasMore?'<button class="btn" onclick="load(&quot;more&quot;)">Load More 31</button><button class="btn" onclick="v830LoadAllAllowance()">Load All</button>':'');
  $('records').insertAdjacentElement('afterend',wrap);
 }
-function v830LoadAllAllowance(){if(v830AllowanceTotal>500&&!confirm('Load all '+v830AllowanceTotal+' matching allowance records?'))return;load('all')}
+function v830LoadAllAllowance(){load('all')}
 function recalcVisibleSummary(){
  let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView), sm={calculated:0,approved:0,pending:0,rejected:0};
  rows.forEach(r=>{sm.calculated+=Number(r.amount)||0;if(r.status==='Approved')sm.approved+=Number(r.amount)||0;else if(r.status==='Pending')sm.pending+=Number(r.amount)||0;else if(r.status==='Rejected')sm.rejected+=Number(r.amount)||0});
@@ -319,11 +353,11 @@ $('selectAll').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.
 $('clearSelection').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=false);updateSelectedCount();toast('Selection cleared.')};
 async function v24Bulk(status){
  const items=selectedRecords();if(!items.length)return toast('Select at least one unlocked allowance day.');
- let reason='';if(status==='Rejected'){reason=prompt('Reason for rejecting selected days (optional):','');if(reason===null)return;}
- if(!confirm(`${status}: apply to ${items.length} selected allowance day(s)?`))return;
- await v27Run(`${status}: processing ${items.length} records...`,'Saving selected allowance statuses to the database.',async update=>{
+ const confirmation=await tmxV28Confirm(status+' selected allowances','Apply '+status.toLowerCase()+' to '+items.length+' selected allowance record(s)?',status==='Rejected');if(!confirmation)return;
+ const reason=confirmation.reason||'';
+ await v27Run(tmxV28Progress(status),'Please wait while '+items.length+' allowance record(s) are updated.',async update=>{
   const buttons=['approveSelected','pendingSelected','rejectSelected'].map($);buttons.forEach(b=>b.disabled=true);
-  try{const r=await post('allowanceAuditBatch',{items,status,reason});update(`${r.updated||0} record(s) updated`,'Refreshing the table, totals, and related filter choices.');await Promise.all([load(),loadAllowanceFilterSource()]);toast(`${r.updated} allowance day(s) updated.`);}
+  try{const r=await post('allowanceAuditBatch',{items,status,reason});update(tmxV28Progress(status),'Refreshing allowance records.');await Promise.all([load(),loadAllowanceFilterSource()]);toast(`${r.updated} allowance day(s) updated.`);}
   finally{buttons.forEach(b=>b.disabled=false)}
  });
 }
@@ -332,14 +366,14 @@ $('pendingSelected').onclick=()=>v24Bulk('Pending');
 $('rejectSelected').onclick=()=>v24Bulk('Rejected');
 function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
 async function audit(type,name,date,amount,status,reason=''){
- await v27Run(`${status}: ${name}`,'Saving the allowance status for '+date+'.',async update=>{
+ await v27Run(tmxV28Progress(status),'Updating allowance record.',async update=>{
   await post('allowanceAudit',{type,name,date,calculatedAmount:amount,status,reason});
-  update('Status saved','Refreshing allowances, totals, and available filters.');
+  update(tmxV28Progress(status),'Refreshing allowance records.');
   await Promise.all([load(),loadAllowanceFilterSource()]);
   toast('Allowance updated to '+status+'.');
  });
 }
-function rejectDay(type,name,date,amount){let reason=prompt('Reason for rejection (optional):','');if(reason===null)return;audit(type,name,date,amount,'Rejected',reason)}
+async function rejectDay(type,name,date,amount){const c=await tmxV28Confirm('Reject allowance','Reject the allowance for '+name+' on '+date+'?',true);if(!c)return;audit(type,name,date,amount,'Rejected',c.reason)}
 function xlsxEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function xlsxCol(n){let s='';while(n){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s}
 function xlsxSheet(rows){
@@ -371,13 +405,13 @@ $('exportExcel').onclick=async()=>{
  if(v27Busy)return toast('Please wait for the current action to finish.');
  v27Busy=true;
  try{
-  v27Message('Preparing Excel export...','Fetching all approved, unlocked allowance records.');
+  v27Message('Preparing Payroll Export','Loading approved allowance records.');
   const exportData=await post('allowanceData',{filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:'Approved',offset:0,limit:31,loadAll:true});
   if(!exportData.ok)throw new Error(exportData.error||'server-error');
-  const rows=(exportData.records||[]).filter(r=>(typeView==='All'||r.type===typeView)&&!r.exportLocked);v27Message('Export ready','Found '+rows.length+' approved allowance record(s) eligible for export.');
+  const rows=(exportData.records||[]).filter(r=>(typeView==='All'||r.type===typeView)&&!r.exportLocked);v27Message('Preparing Payroll Export','Found '+rows.length+' eligible allowance records.');
   if(!rows.length){toast('No new approved allowances to export (existing exports are locked).');return}
-  if(!confirm(`Export and permanently lock ${rows.length} approved allowance day(s) for payroll? You cannot edit them afterward.`))return;
-  v27Message('Generating workbook...','Preparing the payroll spreadsheet.');
+  hideBuffer();const exportConfirm=await tmxV28Confirm('Export & Lock Payroll','Permanently lock '+rows.length+' approved allowance record(s) after export? These records cannot be edited.');if(!exportConfirm)return;v27Message('Generating payroll Excel','Preparing workbook and locking exported records.');
+  v27Message('Generating Payroll Excel','Preparing payroll spreadsheet.');
   const groups={};
   rows.forEach(r=>(r.projects&&r.projects.length?r.projects:['—']).forEach(pr=>{
    const k=r.type+'|'+r.name+'|'+pr;if(!groups[k])groups[k]={name:r.name,project:pr,total:0};groups[k].total+=Number(r.amount)||0;
@@ -411,8 +445,8 @@ $('exportExcel').onclick=async()=>{
   reader.readAsDataURL(blob);
  }catch(err){console.error(err);toast('Excel export failed: '+(err.message||err))}finally{v27Busy=false;hideBuffer()}
 };
-$('apply').onclick=()=>v27Run('Applying filters...','Fetching matching allowances and updating totals.',async update=>{refreshAllCombos();await load();update('Filters applied','The allowance table and totals are up to date.');});
-$('clear').onclick=()=>v27Run('Clearing filters...','Resetting selections and loading allowances.',async update=>{$('engineer').value='';$('driver').value='';$('project').value='';$('status').value='';refreshAllCombos();await load();update('Filters cleared','All applicable allowances are displayed.');});document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');typeView=b.dataset.type;render()});
+$('apply').onclick=()=>v27Run('Loading Applied Filter','Updating allowance records.',async update=>{refreshAllCombos();await load();update('Loading Applied Filter','Updating totals.');});
+$('clear').onclick=()=>v27Run('Clearing Filters','Loading allowance records.',async update=>{$('engineer').value='';$('driver').value='';$('project').value='';$('status').value='';refreshAllCombos();await load();update('Clearing Filters','Updating totals.');});document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');typeView=b.dataset.type;render()});
 const portalSsoIncoming=/(?:^|[&#])sso=/.test(location.hash);
 if(portalSsoIncoming){
   // Portal SSO owns authentication. Do not let validation of an older PM token race it.
