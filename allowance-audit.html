@@ -103,14 +103,50 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 .combo:after{display:none!important}.combo input{padding-right:40px!important}
 .combo-arrow{position:absolute;right:4px;bottom:4px;width:32px;height:30px;min-height:0!important;padding:0!important;border:0!important;border-left:1px solid #304158!important;border-radius:0 8px 8px 0!important;background:transparent!important;color:#b8c5d8!important;font-size:18px!important;z-index:3;cursor:pointer}
 .combo-arrow:hover{color:#fff!important;background:#17263a!important}
-</style></head><body><header><div class="brand"><span>TELECOMAX</span> <small>Operations / Allowance Audit</small></div><div class="header-actions"><button class="btn ghost" type="button" onclick="location.href='./'">← Operations</button><button id="logout" class="btn ghost" style="display:none">Logout</button></div></header><main>
+</style><meta name="tmx-migration-build" content="2026-10-21-v21-compact-verified">
+
+<style id="tmxV20AllowanceTrueSingleLine">
+/* V20: compact desktop table. Data cells render one line; long text may wrap
+   rather than being clipped. The table can grow only for genuinely long data. */
+@media (min-width:701px) {
+  #records .audit-table {width:100%!important;min-width:1100px!important;table-layout:fixed!important;border-collapse:collapse!important;}
+  #records .audit-table th {padding:5px 7px!important;line-height:15px!important;}
+  #records .audit-table tbody tr {height:auto!important;}
+  #records .audit-table tbody td {
+    height:auto!important;max-height:none!important;
+    padding:3px 7px!important;line-height:17px!important;
+    font-size:11.5px!important;vertical-align:middle!important;
+    white-space:normal!important;overflow-wrap:break-word!important;
+    overflow:visible!important;text-overflow:clip!important;
+  }
+  #records .audit-table tbody td .allowance-weekday {margin-left:9px;color:#91a4bd;font-size:10px;white-space:nowrap;}
+  #records .audit-table tbody td .meta {display:none!important;}
+  #records .audit-table tbody td .actions {display:flex!important;gap:4px!important;flex-wrap:nowrap!important;align-items:center!important;}
+  #records .audit-table tbody td .actions .btn {min-height:24px!important;height:24px!important;padding:2px 7px!important;font-size:10px!important;line-height:18px!important;border-radius:7px!important;white-space:nowrap!important;}
+  #records .audit-table tbody td .status {padding:1px 6px!important;font-size:10px!important;line-height:15px!important;white-space:nowrap!important;}
+  #records .audit-table tbody td .check {width:14px!important;height:14px!important;}
+  #records .audit-table th:nth-child(1){width:2%!important;}
+  #records .audit-table th:nth-child(2){width:19%!important;}
+  #records .audit-table th:nth-child(3){width:13%!important;}
+  #records .audit-table th:nth-child(4){width:16%!important;}
+  #records .audit-table th:nth-child(5){width:7%!important;}
+  #records .audit-table th:nth-child(6){width:18%!important;}
+  #records .audit-table th:nth-child(7){width:8%!important;}
+  #records .audit-table th:nth-child(8){width:7%!important;}
+  #records .audit-table th:nth-child(9){width:10%!important;}
+}
+@media (max-width:700px) {
+  #records .audit-table tbody td .allowance-weekday {margin-left:8px;color:#94a3b8;font-size:11px;}
+}
+</style>
+</head><body><header><div class="brand"><span>TELECOMAX</span> <small>Operations / Allowance Audit</small></div><div class="header-actions"><button class="btn ghost" type="button" onclick="location.href='./'">← Operations</button><button id="logout" class="btn ghost" style="display:none">Logout</button></div></header><main>
 <section id="login" class="card login" style="display:none"><h2>PM Login</h2><p class="note">Use your management Name + 6-digit PIN.</p><div class="field"><label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name"></div><br><div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN"></div><br><button id="loginBtn" class="btn primary">Login</button></section>
-<section id="app" style="display:none"><div class="card"><div class="section-title"><div><h2 style="margin:0">Monthly Allowance Audit</h2></div></div><br><div class="filters">
+<section id="app" style="display:none"><div class="card"><div class="section-title"><div><h2 style="margin:0">Monthly Allowance Audit <span style="font-size:11px;font-weight:700;color:#ec008c;vertical-align:middle;margin-left:8px" title="Deployment verification">V21 • Compact</span></h2></div></div><br><div class="filters">
 <div class="field"><label>Months</label><input id="month" type="text" data-multimonth></div>
 <div class="field combo" id="engineerCombo"><label>Engineer</label><input id="engineer" autocomplete="off" placeholder="Search or select engineer"><button type="button" class="combo-arrow" id="engineerArrow" aria-label="Show engineer options">⌄</button><div id="engineerList" class="combo-list"></div></div>
 <div class="field combo" id="driverCombo"><label>Driver</label><input id="driver" autocomplete="off" placeholder="Search or select driver"><button type="button" class="combo-arrow" id="driverArrow" aria-label="Show driver options">⌄</button><div id="driverList" class="combo-list"></div></div>
 <div class="field combo" id="projectCombo"><label>Project</label><input id="project" autocomplete="off" placeholder="Search or select project"><button type="button" class="combo-arrow" id="projectArrow" aria-label="Show project options">⌄</button><div id="projectList" class="combo-list"></div></div>
-<div class="field"><label>Status</label><select id="status"><option value="" selected>Non Selected</option><option value="Pending">Pending</option><option value="Approved">Approved</option><option value="Rejected">Rejected</option></select></div>
+<div class="field"><label>Status</label><select id="status"><option value="">All Statuses</option><option value="Pending">Pending</option><option value="Approved">Approved</option><option value="Rejected">Rejected</option></select></div>
 <button id="apply" class="btn primary">Apply</button><button id="clear" class="btn ghost">Clear</button></div></div>
 <div class="summary"><div class="metric"><small>Calculated</small><b id="calculated">0 EGP</b></div><div class="metric"><small>Approved</small><b id="approved">0 EGP</b></div><div class="metric"><small>Pending</small><b id="pending">0 EGP</b></div><div class="metric"><small>Rejected</small><b id="rejected">0 EGP</b></div></div><br>
 <div class="card"><div class="tabs"><button class="btn tab active" data-type="All">All</button><button class="btn tab" data-type="Engineer">Engineers</button><button class="btn tab" data-type="Driver">Drivers</button></div>
@@ -171,7 +207,6 @@ $('month').addEventListener('change',()=>{sanitizeRelated('month');refreshAllCom
 document.addEventListener('click',e=>{['engineer','driver','project'].forEach(k=>{if(!$(k+'Combo').contains(e.target))$(k+'Combo').classList.remove('open')})});
 let v830AllowanceTotal=0,v830AllowanceHasMore=false;
 async function load(mode='reset'){
- if(!$('status').value){data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();return;}
  showBuffer(mode==='all'?'Loading all matching allowances...':mode==='more'?'Loading 31 more allowances...':'Applying filters...');
  try{
    if(!filterSource||!Object.keys(filterSource).length)filterSource=await post('allowanceFilterOptions');
@@ -196,7 +231,7 @@ function recalcVisibleSummary(){
  rows.forEach(r=>{sm.calculated+=Number(r.amount)||0;if(r.status==='Approved')sm.approved+=Number(r.amount)||0;else if(r.status==='Pending')sm.pending+=Number(r.amount)||0;else if(r.status==='Rejected')sm.rejected+=Number(r.amount)||0});
  data.summary=sm;
 }
-function render(){let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView);let sm=data.summary||{calculated:0,approved:0,pending:0,rejected:0};$('calculated').textContent=money(sm.calculated);$('approved').textContent=money(sm.approved);$('pending').textContent=money(sm.pending);$('rejected').textContent=money(sm.rejected);let body=rows.map(r=>{let key=encodeURIComponent(JSON.stringify({type:r.type,name:r.name,date:r.date,amount:r.amount})),actions=[];if(r.status!=='Approved')actions.push(`<button class="btn approve" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Approved','')">Approve</button>`);if(r.status!=='Pending')actions.push(`<button class="btn pending" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Pending','')">Set Pending</button>`);if(r.status!=='Rejected')actions.push(`<button class="btn reject" onclick="rejectDay('${r.type}','${esc(r.name)}','${r.date}',${r.amount})">Reject</button>`);return `<tr><td class="select-cell" data-label="Select">${r.status==='Pending'?`<input class="check rowCheck" type="checkbox" data-key="${key}">`:''}</td><td data-label="Person"><b>${r.type}</b> · ${r.name}</td><td data-label="Date">${r.date}<div class="meta">${r.day}</div></td><td data-label="Area"><b>${r.area}</b><div class="meta">Base: ${r.baseCity||'Not set'}</div></td><td data-label="Project">${r.projects.join(', ')||'—'}</td><td data-label="Details">${r.type==='Engineer'?`Working days: <b>${r.workingDays}</b>`:`Related: ${r.related.join(', ')||'—'}`}${r.autoApproved?'<div class="meta">GPS task-location allowance</div>':''}</td><td data-label="Allowance"><b>${money(r.amount)}</b></td><td data-label="Status"><span class="status ${r.status}">${r.status}</span></td><td data-label="Action"><div class="actions">${actions.join('')}</div></td></tr>`}).join('');$('records').innerHTML=rows.length?`<table class="audit-table"><thead><tr><th></th><th>Person</th><th>Date</th><th>Area</th><th>Project</th><th>Details</th><th>Allowance</th><th>Status</th><th>Action</th></tr></thead><tbody>${body}</tbody></table>`:'<div class="empty">No allowance records match these filters.</div>';document.querySelectorAll('.rowCheck').forEach(x=>x.addEventListener('change',updateSelectedCount));updateSelectedCount()}
+function render(){let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView);let sm=data.summary||{calculated:0,approved:0,pending:0,rejected:0};$('calculated').textContent=money(sm.calculated);$('approved').textContent=money(sm.approved);$('pending').textContent=money(sm.pending);$('rejected').textContent=money(sm.rejected);let body=rows.map(r=>{let key=encodeURIComponent(JSON.stringify({type:r.type,name:r.name,date:r.date,amount:r.amount})),actions=[];if(r.status!=='Approved')actions.push(`<button class="btn approve" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Approved','')">Approve</button>`);if(r.status!=='Pending')actions.push(`<button class="btn pending" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Pending','')">Set Pending</button>`);if(r.status!=='Rejected')actions.push(`<button class="btn reject" onclick="rejectDay('${r.type}','${esc(r.name)}','${r.date}',${r.amount})">Reject</button>`);return `<tr><td class="select-cell" data-label="Select">${r.status==='Pending'?`<input class="check rowCheck" type="checkbox" data-key="${key}">`:''}</td><td data-label="Person"><b>${r.type}</b> · ${r.name}</td><td data-label="Date">${r.date}<span class="allowance-weekday">${r.day||''}</span></td><td data-label="Area"><b>${r.area}</b></td><td data-label="Project">${r.projects.join(', ')||'—'}</td><td data-label="Details">${r.type==='Engineer'?`Working days: <b>${r.workingDays}</b>`:`Related: ${r.related.join(', ')||'—'}`}</td><td data-label="Allowance"><b>${money(r.amount)}</b></td><td data-label="Status"><span class="status ${r.status}">${r.status}</span></td><td data-label="Action"><div class="actions">${actions.join('')}</div></td></tr>`}).join('');$('records').innerHTML=rows.length?`<table class="audit-table"><thead><tr><th></th><th>Person</th><th>Date</th><th>Area</th><th>Project</th><th>Details</th><th>Allowance</th><th>Status</th><th>Action</th></tr></thead><tbody>${body}</tbody></table>`:'<div class="empty">No allowance records match these filters.</div>';document.querySelectorAll('.rowCheck').forEach(x=>x.addEventListener('change',updateSelectedCount));updateSelectedCount()}
 function selectedRecords(){return [...document.querySelectorAll('.rowCheck:checked')].map(x=>JSON.parse(decodeURIComponent(x.dataset.key)))}
 function updateSelectedCount(){$('selectedCount').textContent=`${selectedRecords().length} selected`}
 $('selectAll').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=true);updateSelectedCount()};
