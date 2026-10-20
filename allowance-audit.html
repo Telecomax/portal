@@ -213,11 +213,20 @@ button:disabled, .btn:disabled {cursor:not-allowed;opacity:.55;}
 </section></main>
 <div id="toast" class="toast"></div>
 <div id="buffer" class="buffer" aria-live="polite" aria-busy="true">
-  <div class="buffer-box"><div class="spinner"></div><div id="bufferText">Loading...</div></div>
+  <div class="buffer-box" role="status"><div class="spinner"></div><div id="bufferText">Loading...</div><div id="v27Step" style="font-size:12px;color:#a5b7d0;margin-top:8px;max-width:320px;text-align:center">Please wait for the operation to finish.</div></div>
 </div>
 <script>
 const URL='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec',$=x=>document.getElementById(x);let managementToken=sessionStorage.getItem('tmx_km_pm_token')||'',managementName=sessionStorage.getItem('tmx_km_pm_name')||'',data=null,filterSource={},typeView='All';
-function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}function showBuffer(t='Loading...'){const b=$('buffer'),x=$('bufferText');if(x)x.textContent=t;if(b)b.classList.add('show')}function hideBuffer(){const b=$('buffer');if(b)b.classList.remove('show')}function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}async function post(action,x={}){const r=await fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),d=await r.json();if(!d.ok)throw Error(d.error||'Server error');return d}function auth(on){$('login').style.display=on?'none':'block';$('app').style.display=on?'block':'none';$('logout').style.display=on?'block':'none';if(on){data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();loadAllowanceFilterSource()}}
+function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}function showBuffer(t='Loading...'){const b=$('buffer'),x=$('bufferText');if(x)x.textContent=t;if(b)b.classList.add('show')}function hideBuffer(){const b=$('buffer');if(b)b.classList.remove('show')}let v27Busy=false;let v27BusyTimer=null;
+function v27Message(title,detail){showBuffer(title);const el=$('v27Step');if(el)el.textContent=detail||'Please wait for the operation to finish.';}
+async function v27Run(title,detail,operation){
+ if(v27Busy){toast('Please wait for the current action to finish.');return;}
+ v27Busy=true;clearTimeout(v27BusyTimer);v27Message(title,detail);
+ try{return await operation((heading,description)=>v27Message(heading,description));}
+ catch(error){v27Message('Action failed',error.message||String(error));toast(error.message||'Action failed');await new Promise(resolve=>setTimeout(resolve,1000));}
+ finally{v27Busy=false;clearTimeout(v27BusyTimer);hideBuffer();}
+}
+function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}async function post(action,x={}){const r=await fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),d=await r.json();if(!d.ok)throw Error(d.error||'Server error');return d}function auth(on){$('login').style.display=on?'none':'block';$('app').style.display=on?'block':'none';$('logout').style.display=on?'block':'none';if(on){data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();loadAllowanceFilterSource()}}
 let v26FilterSourceRequest=0;
 async function loadAllowanceFilterSource(){
  const request=++v26FilterSourceRequest,month=$('month').value;
@@ -288,7 +297,7 @@ async function load(mode='reset'){
   data=Object.assign({},full,{records:allSummaryRecords.slice(0,v24VisibleCount)});
   v830AllowanceHasMore=data.records.length<allSummaryRecords.length;
   render();v830RenderAllowancePager();
- }catch(e){if(id===v24LoadId)toast(e.message)}finally{if(id===v24LoadId&&btn)btn.disabled=false}
+ }catch(e){if(id===v24LoadId){toast(e.message);throw e}}finally{if(id===v24LoadId&&btn)btn.disabled=false}
 }
 function v830RenderAllowancePager(){
  let x=document.getElementById('v830AllowancePager');if(x)x.remove();
@@ -306,21 +315,31 @@ function recalcVisibleSummary(){
 function render(){let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView);let summaryRows=allSummaryRecords.length?allSummaryRecords:((!v830AllowanceHasMore)?(data.records||[]):null);let sm={calculated:0,approved:0,pending:0,rejected:0};if(summaryRows){summaryRows.filter(r=>typeView==='All'||r.type===typeView).forEach(r=>{const amount=Number(r.amount)||0;sm.calculated+=amount;if(r.status==='Approved')sm.approved+=amount;else if(r.status==='Pending')sm.pending+=amount;else if(r.status==='Rejected')sm.rejected+=amount})}else if(typeView==='All'){sm=data.summary||sm}else{sm={calculated:0,approved:0,pending:0,rejected:0}};$('calculated').textContent=money(sm.calculated);$('approved').textContent=money(sm.approved);$('pending').textContent=money(sm.pending);$('rejected').textContent=money(sm.rejected);let body=rows.map(r=>{let key=encodeURIComponent(JSON.stringify({type:r.type,name:r.name,date:r.date,amount:r.amount})),actions=[];if(!r.exportLocked&&r.status!=='Approved')actions.push(`<button class="btn approve" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Approved','')">Approve</button>`);if(!r.exportLocked&&r.status!=='Pending')actions.push(`<button class="btn pending" onclick="audit('${r.type}','${esc(r.name)}','${r.date}',${r.amount},'Pending','')">Set Pending</button>`);if(!r.exportLocked&&r.status!=='Rejected')actions.push(`<button class="btn reject" onclick="rejectDay('${r.type}','${esc(r.name)}','${r.date}',${r.amount})">Reject</button>`);return `<tr><td class="select-cell" data-label="Select">${!r.exportLocked?`<input class="check rowCheck" type="checkbox" data-key="${key}">`:''}</td><td data-label="Person"><b>${r.type}</b> · ${r.name}</td><td data-label="Date">${r.date}<span class="allowance-weekday">${r.day||''}</span></td><td data-label="Area"><b>${r.area}</b></td><td data-label="Project">${r.projects.join(', ')||'—'}</td><td data-label="Details">${r.type==='Engineer'?`Working days: <b>${r.workingDays}</b>`:`Related: ${r.related.join(', ')||'—'}`}</td><td data-label="Allowance"><b>${money(r.amount)}</b></td><td data-label="Status"><span class="status ${r.status}">${r.status}</span>${r.exportLocked?` <span title="Payroll batch: ${r.exportBatch}" class="v24-locked">🔒 Exported</span>`:""}</td><td data-label="Action"><div class="actions">${actions.join('')}</div></td></tr>`}).join('');$('records').innerHTML=rows.length?`<table class="audit-table"><thead><tr><th></th><th>Person</th><th>Date</th><th>Area</th><th>Project</th><th>Details</th><th>Allowance</th><th>Status</th><th>Action</th></tr></thead><tbody>${body}</tbody></table>`:'<div class="empty">No allowance records match these filters.</div>';document.querySelectorAll('.rowCheck').forEach(x=>x.addEventListener('change',updateSelectedCount));updateSelectedCount()}
 function selectedRecords(){return [...document.querySelectorAll('.rowCheck:checked')].map(x=>JSON.parse(decodeURIComponent(x.dataset.key)))}
 function updateSelectedCount(){$('selectedCount').textContent=`${selectedRecords().length} selected`}
-$('selectAll').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=true);updateSelectedCount()};
-$('clearSelection').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=false);updateSelectedCount()};
+$('selectAll').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=true);updateSelectedCount();toast('Eligible visible rows selected.')};
+$('clearSelection').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=false);updateSelectedCount();toast('Selection cleared.')};
 async function v24Bulk(status){
  const items=selectedRecords();if(!items.length)return toast('Select at least one unlocked allowance day.');
  let reason='';if(status==='Rejected'){reason=prompt('Reason for rejecting selected days (optional):','');if(reason===null)return;}
  if(!confirm(`${status}: apply to ${items.length} selected allowance day(s)?`))return;
- const buttons=['approveSelected','pendingSelected','rejectSelected'].map($);buttons.forEach(b=>b.disabled=true);
- try{const r=await post('allowanceAuditBatch',{items,status,reason});toast(`${r.updated} allowance day(s) updated.`);await Promise.all([load(),loadAllowanceFilterSource()]);}
- catch(e){toast(e.message)}finally{buttons.forEach(b=>b.disabled=false)}
+ await v27Run(`${status}: processing ${items.length} records...`,'Saving selected allowance statuses to the database.',async update=>{
+  const buttons=['approveSelected','pendingSelected','rejectSelected'].map($);buttons.forEach(b=>b.disabled=true);
+  try{const r=await post('allowanceAuditBatch',{items,status,reason});update(`${r.updated||0} record(s) updated`,'Refreshing the table, totals, and related filter choices.');await Promise.all([load(),loadAllowanceFilterSource()]);toast(`${r.updated} allowance day(s) updated.`);}
+  finally{buttons.forEach(b=>b.disabled=false)}
+ });
 }
 $('approveSelected').onclick=()=>v24Bulk('Approved');
 $('pendingSelected').onclick=()=>v24Bulk('Pending');
 $('rejectSelected').onclick=()=>v24Bulk('Rejected');
 function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
-async function audit(type,name,date,amount,status,reason=''){showBuffer(status==='Rejected'?'Rejecting allowance...':'Approving allowance...');try{await post('allowanceAudit',{type,name,date,calculatedAmount:amount,status,reason});await Promise.all([load(),loadAllowanceFilterSource()])}catch(e){toast(e.message)}finally{hideBuffer()}}function rejectDay(type,name,date,amount){let reason=prompt('Reason for rejection (optional):','');if(reason===null)return;audit(type,name,date,amount,'Rejected',reason)}
+async function audit(type,name,date,amount,status,reason=''){
+ await v27Run(`${status}: ${name}`,'Saving the allowance status for '+date+'.',async update=>{
+  await post('allowanceAudit',{type,name,date,calculatedAmount:amount,status,reason});
+  update('Status saved','Refreshing allowances, totals, and available filters.');
+  await Promise.all([load(),loadAllowanceFilterSource()]);
+  toast('Allowance updated to '+status+'.');
+ });
+}
+function rejectDay(type,name,date,amount){let reason=prompt('Reason for rejection (optional):','');if(reason===null)return;audit(type,name,date,amount,'Rejected',reason)}
 function xlsxEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function xlsxCol(n){let s='';while(n){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s}
 function xlsxSheet(rows){
@@ -349,13 +368,16 @@ function makeZip(files){
  return new Blob([...parts,...central,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
 }
 $('exportExcel').onclick=async()=>{
+ if(v27Busy)return toast('Please wait for the current action to finish.');
+ v27Busy=true;
  try{
-  showBuffer('Preparing full allowance Excel export...');
+  v27Message('Preparing Excel export...','Fetching all approved, unlocked allowance records.');
   const exportData=await post('allowanceData',{filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:'Approved',offset:0,limit:31,loadAll:true});
   if(!exportData.ok)throw new Error(exportData.error||'server-error');
-  const rows=(exportData.records||[]).filter(r=>(typeView==='All'||r.type===typeView)&&!r.exportLocked);
+  const rows=(exportData.records||[]).filter(r=>(typeView==='All'||r.type===typeView)&&!r.exportLocked);v27Message('Export ready','Found '+rows.length+' approved allowance record(s) eligible for export.');
   if(!rows.length){toast('No new approved allowances to export (existing exports are locked).');return}
   if(!confirm(`Export and permanently lock ${rows.length} approved allowance day(s) for payroll? You cannot edit them afterward.`))return;
+  v27Message('Generating workbook...','Preparing the payroll spreadsheet.');
   const groups={};
   rows.forEach(r=>(r.projects&&r.projects.length?r.projects:['—']).forEach(pr=>{
    const k=r.type+'|'+r.name+'|'+pr;if(!groups[k])groups[k]={name:r.name,project:pr,total:0};groups[k].total+=Number(r.amount)||0;
@@ -387,9 +409,10 @@ $('exportExcel').onclick=async()=>{
   reader.onload=()=>{const a=document.createElement('a');a.href=reader.result;a.download=`Allowance-Audit-${$('month').value||'All'}-${typeView}.xlsx`;a.style.display='none';document.body.appendChild(a);a.click();a.remove();toast('Payroll batch '+lockResult.batchId+' locked. Excel download started.');load()};
   reader.onerror=()=>toast('PAYROLL LOCKED but download failed. Contact Admin with batch '+lockResult.batchId+'.');
   reader.readAsDataURL(blob);
- }catch(err){console.error(err);toast('Excel export failed: '+(err.message||err))}finally{hideBuffer()}
+ }catch(err){console.error(err);toast('Excel export failed: '+(err.message||err))}finally{v27Busy=false;hideBuffer()}
 };
-$('apply').onclick=()=>{refreshAllCombos();load()};$('clear').onclick=()=>{$('engineer').value='';$('driver').value='';$('project').value='';$('status').value='';refreshAllCombos();load()};document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');typeView=b.dataset.type;render()});
+$('apply').onclick=()=>v27Run('Applying filters...','Fetching matching allowances and updating totals.',async update=>{refreshAllCombos();await load();update('Filters applied','The allowance table and totals are up to date.');});
+$('clear').onclick=()=>v27Run('Clearing filters...','Resetting selections and loading allowances.',async update=>{$('engineer').value='';$('driver').value='';$('project').value='';$('status').value='';refreshAllCombos();await load();update('Filters cleared','All applicable allowances are displayed.');});document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');typeView=b.dataset.type;render()});
 const portalSsoIncoming=/(?:^|[&#])sso=/.test(location.hash);
 if(portalSsoIncoming){
   // Portal SSO owns authentication. Do not let validation of an older PM token race it.
