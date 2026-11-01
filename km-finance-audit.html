@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head>
+<head><script src="/tmx/compat.js"></script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Telecomax Operations — KM Finance Audit</title>
 <link rel="icon" href="icon-192.png">
@@ -44,7 +44,7 @@ function v8311FinanceMonthRelation(prefix=''){
  const ids=prefix?{engineer:'sEngineer',driver:'sDriver',project:'sProject',paidBy:'sPaidBy'}:{engineer:'engineer',driver:'driver',project:'project',paidBy:'paidBy'};
  for(const k of Object.keys(ids)){const el=$(ids[k]);if(el&&el.value.trim()){const allowed=relationalOptions(k,prefix).map(v=>String(v).toLowerCase());if(!allowed.includes(el.value.trim().toLowerCase()))el.value='';}}
 }
-['month','sMonth'].forEach(id=>{const el=$(id);if(el)el.addEventListener('change',()=>v8311FinanceMonthRelation(id==='sMonth'?'s':''));});
+document.addEventListener('DOMContentLoaded',()=>{['month','sMonth'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>v8311FinanceMonthRelation(id==='sMonth'?'s':''));});});
 </script>
 <style>
 html.portal-sso-pending body{visibility:hidden!important}
@@ -217,7 +217,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 
 <div class="shell"><header class="topbar"><div class="brand">TELECOMAX <small>Finance Audit Portal</small></div><div class="top-actions"><span id="sessionLabel" class="muted"></span><button id="logoutBtn" class="btn logout" style="display:none">Log out</button></div></header>
 <main class="wrap">
-<section id="loginView" class="login"><h1>Finance Login</h1><div class="muted">Use your management Name + 6-digit PIN.</div><label>Name</label><input id="name" class="input" autocomplete="username" placeholder="Enter your name"><label>PIN</label><input id="pin" class="input" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN"><button id="loginBtn" class="btn primary" style="width:100%;margin-top:16px">Login to Finance</button></section>
+<section id="loginView" class="login"><h1>Finance Login</h1><div class="muted">Use your management Name + 4-digit PIN.</div><label>Name</label><input id="name" class="input" autocomplete="username" placeholder="Enter your name"><label>PIN</label><input id="pin" class="input" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="4-digit PIN"><button id="loginBtn" class="btn primary" style="width:100%;margin-top:16px">Login to Finance</button></section>
 <section id="dash" class="dashboard"><div style="display:flex;gap:8px;margin-bottom:14px"><button id="photoTab" class="btn primary">Photo Audit</button><button id="summaryTab" class="btn">Summary</button></div><div id="photoView"><div class="heading"><div><h1>Photo Audit</h1><div class="muted">Desktop workspace for reviewing trip odometers, large photos and GPS.</div></div></div>
 <div class="filters"><div class="field"><label>Engineer</label><div class="search"><input id="engineer" class="input" autocomplete="off" placeholder="Search or select engineer"><div id="engineerOpts" class="opts"></div></div></div><div class="field"><label>Driver</label><div class="search"><input id="driver" class="input" autocomplete="off" placeholder="Search or select driver"><div id="driverOpts" class="opts"></div></div></div><div class="field"><label>Project</label><div class="search"><input id="project" class="input" autocomplete="off" placeholder="Search or select project"><div id="projectOpts" class="opts"></div></div></div><div class="field"><label>Months</label><input id="month" class="input" type="text" data-multimonth></div><div class="field"><label>Paid By</label><div class="search"><input id="paidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="paidByOpts" class="opts"></div></div></div><div class="field"><label>Status</label><select id="auditStatus" class="input"><option value="" selected>Non Selected</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></div><div class="filter-buttons"><button id="apply" class="btn primary">Apply Filters</button><button id="clear" class="btn">Clear</button></div></div>
 <div class="stats"><div class="stat"><div class="k">Trips found</div><div id="tripCount" class="v">0</div></div><div class="stat"><div class="k">Trip KM</div><div id="tripKm" class="v">0</div></div><div class="stat"><div class="k">Total KM</div><div id="totalKm" class="v">0</div></div><div class="stat accent"><div class="k">Amount Spent</div><div id="amount" class="v">0.00 EGP</div></div></div>
@@ -240,10 +240,10 @@ function hideLoginBuffer(){
 function showBuffer(message='Loading...'){showLoginBuffer(message)}
 function hideBuffer(){hideLoginBuffer()}
 
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec';
+const SCRIPT_URL='/_legacy/km';
 const $=id=>document.getElementById(id); let managementToken=sessionStorage.getItem('tmx_km_finance_token')||'', managementName=sessionStorage.getItem('tmx_km_finance_name')||''; let trips=[]; let filterCombos=[]; let configEngineers=[]; let photosVisible=localStorage.getItem('finance_portal_photos')!=='0';
 function toast(s){const e=$('toast');e.textContent=s;e.style.display='block';clearTimeout(window._tt);window._tt=setTimeout(()=>e.style.display='none',2600)}
-async function post(action,extra={}){const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action,managementToken,...extra})});const text=await r.text();let d;try{d=JSON.parse(text)}catch(e){throw Error('bad-response')}if(!d.ok)throw Error(d.error||'server-error');return d}
+async function post(action,extra={}){const r=await TMX.fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action,managementToken,...extra})});const text=await r.text();let d;try{d=JSON.parse(text)}catch(e){throw Error('bad-response')}if(!d.ok)throw Error(d.error||'server-error');return d}
 function uniqueSorted(values){return [...new Set(values.filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b)))}
 function relationContext(prefix=''){
   const ids=prefix?{engineer:'sEngineer',driver:'sDriver',project:'sProject',paidBy:'sPaidBy'}:{engineer:'engineer',driver:'driver',project:'project',paidBy:'paidBy'};
@@ -300,7 +300,7 @@ async function loadLists(){try{const d=await post('financeFilterOptions');filter
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function num(v){const n=Number(v);return Number.isFinite(n)?n:0}
 function setAuthed(on){document.documentElement.classList.toggle('finance-unauthenticated',!on);$('loginView').style.display=on?'none':'block';$('dash').style.display=on?'block':'none';$('logoutBtn').style.display=on?'inline-block':'none';$('sessionLabel').textContent=on?'Finance':' ';if(on){loadLists();$('tableWrap').innerHTML='<div class="empty">Apply filters to load trips.</div>'}}
-$('loginBtn').onclick=async()=>{const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 6-digit PIN');showLoginBuffer('Logging in to Finance...');$('loginBtn').disabled=true;try{const d=await post('managementLogin',{name,pin,portalRole:'Finance'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_finance_token',managementToken);sessionStorage.setItem('tmx_km_finance_name',managementName);setAuthed(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not verify — check connection')}finally{$('loginBtn').disabled=false;hideLoginBuffer()}};
+$('loginBtn').onclick=async()=>{const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 4-digit PIN');showLoginBuffer('Logging in to Finance...');$('loginBtn').disabled=true;try{const d=await post('managementLogin',{name,pin,portalRole:'Finance'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_finance_token',managementToken);sessionStorage.setItem('tmx_km_finance_name',managementName);setAuthed(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not verify — check connection')}finally{$('loginBtn').disabled=false;hideLoginBuffer()}};
 $('name').addEventListener('keydown',e=>{if(e.key==='Enter')$('pin').focus()});
 $('pin').addEventListener('keydown',e=>{if(e.key==='Enter')$('loginBtn').click()});
 $('logoutBtn').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_finance_token');sessionStorage.removeItem('tmx_km_finance_name');$('name').value='';$('pin').value='';setAuthed(false)};
@@ -505,7 +505,7 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
  const m=location.hash.match(/(?:^|[&#])sso=([^&]+)/); if(!m)return;
  const portalToken=decodeURIComponent(m[1]);  history.replaceState(null,'',location.pathname+location.search);
  try{
-  const r=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'portalSSO',portalToken,portalRole:'Finance'})});
+  const r=await TMX.fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'portalSSO',portalToken,portalRole:'Finance'})});
   const text=await r.text(); let d; try{d=JSON.parse(text)}catch(_){throw Error('KM Finance SSO backend returned a non-JSON response');}
   if(!d.ok||!d.token){setAuthed(false);portalSSOStatus_('Single Sign-On failed',d.error||'The module rejected the portal session.');return;}
   managementToken=d.token; managementName=d.name||'';
@@ -590,7 +590,7 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
 
 <script id="v8323UnifiedPortalLogout">
 (function(){
- const PORTAL_LOGIN='https://telecomaxportal.vercel.app/?logout=1';
+ const PORTAL_LOGIN='/index.html?logout=1';
  function isLogoutTarget(el){
    const b=el&&el.closest?el.closest('button,a'):null;if(!b)return false;
    const id=String(b.id||'').toLowerCase(),txt=String(b.textContent||'').trim().toLowerCase();
@@ -604,4 +604,4 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
  },true);
 })();
 </script>
-</body></html>
+<script src="/tmx/tail.js"></script></body></html>

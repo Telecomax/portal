@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head>
+<head><script src="/tmx/compat.js"></script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Telecomax Operations</title>
 <link rel="manifest" href="/manifest.webmanifest">
@@ -501,7 +501,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 <section id="loginView" class="card login">
 <div class="login-logo-wrap"><img class="login-logo" src="telecomax-login-logo-white.png" alt="Telecomax"></div>
 <label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name">
-<label>6-digit PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="••••••">
+<label>4-digit PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="••••">
 <button id="login" class="primary">Log in</button><div id="msg" class="msg"></div>
 </section>
 
@@ -546,10 +546,10 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 </section>
 </div>
 <script>
-const CUSTODY_API='https://script.google.com/macros/s/AKfycbzA-CXfl2-BgUx-xi48SUikxryD6WH92bdN95vOMyoG0TuX444h3b4-q8zXD9F4amR0Hw/exec';
-const KM_API='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec';
+const CUSTODY_API='/_legacy/custody';
+const KM_API='/_legacy/km';
 const $=id=>document.getElementById(id);
-async function post(url,payload){const r=await fetch(url,{method:'POST',body:JSON.stringify(payload)});return JSON.parse(await r.text())}
+async function post(url,payload){const r=await TMX.fetch(url,{method:'POST',body:JSON.stringify(payload)});return JSON.parse(await r.text())}
 async function custody(action,data){return post(CUSTODY_API,{action,data})}
 async function kmPost(payload){return post(KM_API,payload)}
 let liveDashboard={km:null,custody:null,loading:false,error:''};
@@ -616,16 +616,16 @@ async function centralLogin(name,pin){
 let currentPortalToken='';
 let currentPortalUser=null;
 const moduleUrls={
- kmEngineerStart:'https://kmaudit.vercel.app/?view=start&portalLabel=Trips%20App&silentSso=1',
- kmEngineerHistory:'https://kmaudit.vercel.app/?view=history&portalLabel=Trips%20History&silentSso=1',
+ kmEngineerStart:'/km/index.html?view=start&portalLabel=Trips%20App&silentSso=1',
+ kmEngineerHistory:'/km/index.html?view=history&portalLabel=Trips%20History&silentSso=1',
  kmBalances:'km-balances.html',
  kmPhotoAudit:'photo-audit.html',
  kmSolfa:'km-solfa.html',
  kmRent:'km-rent.html',
  kmAllowance:'allowance-audit.html',
  kmFinanceAudit:'km-finance-audit.html',
- custodyEngineerNew:'https://custodyaudit.vercel.app/?view=home&portalLabel=Custody%20App&silentSso=1',
- custodyEngineerHistory:'https://custodyaudit.vercel.app/?view=history&portalLabel=Custody%20History&silentSso=1',
+ custodyEngineerNew:'/custody/index.html?view=home&portalLabel=Custody%20App&silentSso=1',
+ custodyEngineerHistory:'/custody/index.html?view=history&portalLabel=Custody%20History&silentSso=1',
  custodyAdminEngineers:'custody-engineer-management.html',
  custodyAdminUsers:'custody-management-users.html',
  custodyAdminTransfers:'custody-finance-transfers.html',
@@ -727,9 +727,8 @@ function renderQuickActions(u){
    }
  }else if(u.role==='PM'){
    if(u.km){
-     h+=actionCard('Engineers Balance','Engineer KM balances.',moduleUrls.kmBalances);
+     h+=actionCard('Engineer Balances','Solfa and engineer KM balances.',moduleUrls.kmBalances);
      h+=actionCard('KM Odometer Audit','Review trip evidence.',moduleUrls.kmPhotoAudit);
-     h+=actionCard('Add Solfa','Engineer advances.',moduleUrls.kmSolfa);
      h+=actionCard('Pay Cars Rent','Pay Cars Rent trips and deductions.',moduleUrls.kmRent);
      h+=actionCard('Allowance Acceptance','Monthly allowance approvals.',moduleUrls.kmAllowance);
    }
@@ -739,15 +738,13 @@ function renderQuickActions(u){
    }
  }else{
    if(u.km){
-     h+=actionCard('Engineers Balance','Engineer KM balances.',moduleUrls.kmBalances);
+     h+=actionCard('Engineer Balances','Solfa and engineer KM balances.',moduleUrls.kmBalances);
      h+=actionCard('KM Odometer Audit','Review trip evidence.',moduleUrls.kmPhotoAudit);
-     h+=actionCard('Add Solfa','Engineer advances.',moduleUrls.kmSolfa);
      h+=actionCard('Pay Cars Rent','Pay Cars Rent trips and deductions.',moduleUrls.kmRent);
      h+=actionCard('Allowance Acceptance','Monthly allowance approvals.',moduleUrls.kmAllowance);
    }
    if(u.custody){
-     h+=actionCard('Engineer Management','Engineers, PINs and limits.',moduleUrls.custodyAdminEngineers);
-     h+=actionCard('Management Users','PM, Finance and Admin access.',moduleUrls.custodyAdminUsers);
+     h+=actionCard('Users Managements','Engineers, PM, Finance and Admin accounts.','users-management.html');
      h+=actionCard('Custody Review','Admin expense review.',moduleUrls.custodyPMReview);
      h+=actionCard('Custody Transfer','Approved expense transfers.',moduleUrls.custodyAdminTransfers);
    }
@@ -799,7 +796,7 @@ function render(u){
 }
 $('login').onclick=async()=>{
  const name=$('name').value.trim(),pin=$('pin').value.trim();$('msg').textContent='';
- if(!name||!/^\d{6}$/.test(pin)){ $('msg').textContent='Enter your name and 6-digit PIN.';return}
+ if(!name||!/^\d{4}$/.test(pin)){ $('msg').textContent='Enter your name and 4-digit PIN.';return}
  $('login').disabled=true;$('login').textContent='Checking access…';
  try{
   let u=await centralLogin(name,pin);
@@ -936,4 +933,4 @@ window.addEventListener('DOMContentLoaded',()=>{
 
 
 
-</body></html>
+<script src="/tmx/tail.js"></script></body></html>

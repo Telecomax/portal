@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script src="/tmx/compat.js"></script>
 <script id="tmxRouteGuardV82">
 (function(){
  const ALLOWED=["Finance"], NEED_KM=false, NEED_CUSTODY=true;
@@ -1070,7 +1070,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
     <label>Finance User Name / اسم المستخدم</label>
     <input id="reviewer" autocomplete="username" placeholder="Enter your name">
     <label>PIN / الرقم السري</label>
-    <input id="financePin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN">
+    <input id="financePin" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="4-digit PIN">
     <button id="loginBtn" class="primary" style="width:100%;margin-top:14px" onclick="login()">Login / دخول</button>
     <div class="muted" style="font-size:12px;margin-top:10px">Access is restricted to Finance users and Administrators.</div>
     <div id="loginMsg" class="msg"></div>
@@ -1187,7 +1187,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 </div>
 
 <script>
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzA-CXfl2-BgUx-xi48SUikxryD6WH92bdN95vOMyoG0TuX444h3b4-q8zXD9F4amR0Hw/exec';
+const GAS_URL = '/_legacy/custody';
 const API = GAS_URL;
 let financeToken=null, reviewerName='', allRows=[], shownRows=[], selected=null, readyRows=[], renderedCount=0, currentLoginRole='';
 const FEED_BATCH=31;
@@ -1249,9 +1249,9 @@ document.addEventListener('click',e=>{
 
 function msg(id,t,c){const e=$(id);if(!e)return;e.textContent=t||'';e.className='msg '+(c||'')}
 async function api(action,data){
-  const res=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,data:data||{}}),redirect:'follow'});
+  const res=await TMX.fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,data:data||{}}),redirect:'follow'});
   const text=await res.text();
-  try{return JSON.parse(text)}catch(e){throw new Error('Unexpected reply from Apps Script (HTTP '+res.status+').')}
+  try{return JSON.parse(text)}catch(e){throw new Error('Unexpected reply from Telecomax API (HTTP '+res.status+').')}
 }
 function saveSession(){sessionStorage.setItem('custody.finance',JSON.stringify({token:financeToken,reviewer:reviewerName}))}
 function clearSession(){sessionStorage.removeItem('custody.finance')}
@@ -1260,7 +1260,7 @@ function getSession(){try{return JSON.parse(sessionStorage.getItem('custody.fina
 async function login(){
   const reviewer=$('reviewer').value.trim(),pin=$('financePin').value.trim();
   if(!reviewer)return msg('loginMsg','Enter your name.','err');
-  if(!pin)return msg('loginMsg','Enter your 6-digit PIN.','err');
+  if(!pin)return msg('loginMsg','Enter your 4-digit PIN.','err');
   $('loginBtn').disabled=true;msg('loginMsg','Logging in...');
   showLoadingDialog('Finance Login','Verifying Finance access...');
   try{
@@ -1748,7 +1748,7 @@ setTimeout(()=>{try{showTab('reviewTab')}catch(e){}},250);
 
 <script id="v8323UnifiedPortalLogout">
 (function(){
- const PORTAL_LOGIN='https://telecomaxportal.vercel.app/?logout=1';
+ const PORTAL_LOGIN='/index.html?logout=1';
  function isLogoutTarget(el){
    const b=el&&el.closest?el.closest('button,a'):null;if(!b)return false;
    const id=String(b.id||'').toLowerCase(),txt=String(b.textContent||'').trim().toLowerCase();
@@ -1762,5 +1762,5 @@ setTimeout(()=>{try{showTab('reviewTab')}catch(e){}},250);
  },true);
 })();
 </script>
-</body>
+<script src="/tmx/tail.js"></script></body>
 </html>

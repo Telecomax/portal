@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script src="/tmx/compat.js"></script>
 <script id="tmxRouteGuardV82">
 (function(){
  const ALLOWED=["Admin"], NEED_KM=false, NEED_CUSTODY=true;
@@ -350,7 +350,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
       <div id="lnameList" class="combo-list hidden"></div>
     </div>
     <label>PIN / الرقم السري</label>
-    <input id="lpin" name="custody-pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="6 digits">
+    <input id="lpin" name="custody-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="6 digits">
     <button id="loginBtn" class="primary" onclick="doLogin()">Login / دخول</button>
     <div id="loginMsg" class="msg err"></div>
     <button class="secondary" style="width:100%;margin-top:14px" onclick="openAdminLogin()">Admin login / دخول الإدارة</button>
@@ -510,7 +510,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 
           <div class="card">
             <h2>PM / Finance / Admin Accounts</h2>
-            <div class="search-note">PINs are shown only immediately after generation/reset. The Google Sheet stores the PIN hash, not the actual PIN.</div>
+            <div class="search-note">PINs are shown only immediately after generation/reset. The database stores the PIN hash, not the actual PIN.</div>
             <div class="table-wrap" style="margin-top:10px">
               <table class="admin-table stack-table">
                 <thead>
@@ -555,7 +555,7 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
     <label>Name</label>
     <input id="adminName" autocomplete="username" placeholder="Enter your name">
     <label>PIN</label>
-    <input id="adminPin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN">
+    <input id="adminPin" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="4-digit PIN">
     <button class="primary" onclick="doAdminLogin()">Login</button>
     <button class="secondary" style="width:100%;margin-top:10px" onclick="closeAdminLogin()">Cancel</button>
     <div id="adminLoginMsg" class="msg err"></div>
@@ -563,9 +563,9 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 </div>
 
 <script>
-// Apps Script web app URL (Deploy > Manage deployments). Keep the same URL by always using "Edit > New version".
+// Telecomax API web app URL (Deploy > Manage deployments). Keep the same URL by always using "Edit > New version".
 // Leave empty ('') to go back to the Vercel proxy at /api/backend.
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbzA-CXfl2-BgUx-xi48SUikxryD6WH92bdN95vOMyoG0TuX444h3b4-q8zXD9F4amR0Hw/exec';
+const GAS_URL = '/_legacy/custody';
 const API = GAS_URL || '/api/backend';
 let engineerToken = null;
 let adminToken = null;
@@ -599,10 +599,10 @@ function fill(id,list,placeholder){
   (list||[]).forEach(x=>{const o=document.createElement('option');o.value=x;o.textContent=x;s.appendChild(o)})
 }
 async function api(action,data){
-  // text/plain keeps this a "simple" request, so the browser does not need a CORS preflight that Apps Script cannot answer
-  const res=await fetch(API,{method:'POST',headers:{'Content-Type':GAS_URL?'text/plain;charset=utf-8':'application/json'},body:JSON.stringify({action,data:data||{}}),redirect:'follow'});
+  // text/plain keeps this a "simple" request, so the browser does not need a CORS preflight that Telecomax API cannot answer
+  const res=await TMX.fetch(API,{method:'POST',headers:{'Content-Type':GAS_URL?'text/plain;charset=utf-8':'application/json'},body:JSON.stringify({action,data:data||{}}),redirect:'follow'});
   const text=await res.text();
-  try{return JSON.parse(text)}catch(e){throw new Error(GAS_URL?'Unexpected reply from Apps Script (HTTP '+res.status+'). Check the deployment: Execute as Me, access Anyone.':'Server returned HTTP '+res.status+' (not JSON). Check /api/backend on Vercel.')}
+  try{return JSON.parse(text)}catch(e){throw new Error(GAS_URL?'Unexpected reply from Telecomax API (HTTP '+res.status+'). Check the deployment: Execute as Me, access Anyone.':'Server returned HTTP '+res.status+' (not JSON). Check /api/backend on Vercel.')}
 }
 /* ---------- keep the login after a page refresh ---------- */
 function mkStore(kind){return{
@@ -702,7 +702,7 @@ async function doLogin(){
     $('roleBadge').textContent='ENGINEER';
     $('loginView').classList.add('hidden');$('appView').classList.remove('hidden');
     showPage('home');refresh();
-  }catch(e){setMsg('loginMsg','Connection problem: '+(e.message||e)+'. Check the Vercel API settings and Apps Script deployment.','err')}
+  }catch(e){setMsg('loginMsg','Connection problem: '+(e.message||e)+'. Check the Vercel API settings and Telecomax API deployment.','err')}
   finally{hideLoadingDialog();$('loginBtn').disabled=false;$('loginBtn').textContent='Login / دخول'}
 }
 function returnToLogin(){
@@ -1028,7 +1028,7 @@ async function saveManagementUser(name,role,kmAccess,custodyAccess,active){
 
 async function generateManagementUserPin(name){
   if(!confirm('Generate/reset the PIN for '+name+'? Any previous PIN will stop working immediately.'))return;
-  showLoadingDialog('Generating PIN','Creating a secure 6-digit PIN...');
+  showLoadingDialog('Generating PIN','Creating a secure 4-digit PIN...');
   try{
     const r=await api('generateManagementPin',{adminToken,name});
     if(!r.ok)return setMsg('managementUsersMsg',r.error,'err');
@@ -1162,7 +1162,7 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
 
 <script id="v8323UnifiedPortalLogout">
 (function(){
- const PORTAL_LOGIN='https://telecomaxportal.vercel.app/?logout=1';
+ const PORTAL_LOGIN='/index.html?logout=1';
  function isLogoutTarget(el){
    const b=el&&el.closest?el.closest('button,a'):null;if(!b)return false;
    const id=String(b.id||'').toLowerCase(),txt=String(b.textContent||'').trim().toLowerCase();
@@ -1176,5 +1176,5 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
  },true);
 })();
 </script>
-</body>
+<script src="/tmx/tail.js"></script></body>
 </html>

@@ -1,4 +1,4 @@
-<!doctype html><html><head>
+<!doctype html><html><head><script src="/tmx/compat.js"></script>
 <script id="tmxAllowanceRouteGuardV828">
 (function(){
   if(/(?:^|[&#])sso=/.test(location.hash))return;
@@ -209,7 +209,7 @@ button:disabled, .btn:disabled {cursor:not-allowed;opacity:.55;}
 #bufferText{font-size:16px!important;font-weight:800!important}#v27Step{font-size:12px!important;line-height:1.5!important}
 </style>
 </head><body><header><div class="brand"><span>TELECOMAX</span> <small>Operations / Allowance Audit</small></div><div class="header-actions"><button class="btn ghost" type="button" onclick="location.href='./'">← Operations</button><button id="logout" class="btn ghost" style="display:none">Logout</button></div></header><main>
-<section id="login" class="card login" style="display:none"><h2>PM Login</h2><p class="note">Use your management Name + 6-digit PIN.</p><div class="field"><label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name"></div><br><div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password" placeholder="6-digit PIN"></div><br><button id="loginBtn" class="btn primary">Login</button></section>
+<section id="login" class="card login" style="display:none"><h2>PM Login</h2><p class="note">Use your management Name + 4-digit PIN.</p><div class="field"><label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name"></div><br><div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="4-digit PIN"></div><br><button id="loginBtn" class="btn primary">Login</button></section>
 <section id="app" style="display:none"><div class="card"><div class="section-title"><div><h2 style="margin:0">Monthly Allowance Audit</h2></div></div><br><div class="filters">
 <div class="field"><label>Months</label><input id="month" type="text" data-multimonth></div>
 <div class="field combo" id="engineerCombo"><label>Engineer</label><input id="engineer" autocomplete="off" placeholder="Search or select engineer"><button type="button" class="combo-arrow" id="engineerArrow" aria-label="Show engineer options">⌄</button><div id="engineerList" class="combo-list"></div></div>
@@ -236,7 +236,7 @@ button:disabled, .btn:disabled {cursor:not-allowed;opacity:.55;}
   <div class="buffer-box" role="status"><div class="spinner"></div><div id="bufferText">Loading...</div><div id="v27Step" style="font-size:12px;color:#a5b7d0;margin-top:8px;max-width:320px;text-align:center">Please wait for the operation to finish.</div></div>
 </div>
 <script>
-const URL='https://script.google.com/macros/s/AKfycbxAInzadr2Er5LCH28IoK7TSZgi_53MT0mjDhMDRXWxEY08hQY7VVH_Q_WqSsGzVlhdbQ/exec',$=x=>document.getElementById(x);let managementToken=sessionStorage.getItem('tmx_km_pm_token')||'',managementName=sessionStorage.getItem('tmx_km_pm_name')||'',data=null,filterSource={},typeView='All';
+const URL='/_legacy/km',$=x=>document.getElementById(x);let managementToken=sessionStorage.getItem('tmx_km_pm_token')||'',managementName=sessionStorage.getItem('tmx_km_pm_name')||'',data=null,filterSource={},typeView='All';
 
 function tmxV28Confirm(title,message,withReason=false){
  return new Promise(resolve=>{
@@ -260,7 +260,7 @@ async function v27Run(title,detail,operation){
  catch(error){v27Message('Action failed',error.message||String(error));toast(error.message||'Action failed');await new Promise(resolve=>setTimeout(resolve,1000));}
  finally{v27Busy=false;clearTimeout(v27BusyTimer);hideBuffer();}
 }
-function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}async function post(action,x={}){const r=await fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),d=await r.json();if(!d.ok)throw Error(d.error||'Server error');return d}function auth(on){$('login').style.display=on?'none':'block';$('app').style.display=on?'block':'none';$('logout').style.display=on?'block':'none';if(on){data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();loadAllowanceFilterSource()}}
+function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}async function post(action,x={}){const r=await TMX.fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),d=await r.json();if(!d.ok)throw Error(d.error||'Server error');return d}function auth(on){$('login').style.display=on?'none':'block';$('app').style.display=on?'block':'none';$('logout').style.display=on?'block':'none';if(on){data={records:[],summary:{calculated:0,rejected:0,approved:0,pending:0,payable:0}};render();loadAllowanceFilterSource()}}
 let v26FilterSourceRequest=0;
 async function loadAllowanceFilterSource(){
  const request=++v26FilterSourceRequest,month=$('month').value;
@@ -270,7 +270,7 @@ async function loadAllowanceFilterSource(){
  }catch(e){if(request===v26FilterSourceRequest)toast('Could not load filter lists')}
 }
 function monthNow(){let d=new Date(),o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,7)}$('month').value=monthNow();
-$('loginBtn').onclick=async()=>{const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 6-digit PIN');showBuffer('Logging in...');try{const d=await post('managementLogin',{name,pin,portalRole:'PM'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName);auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{hideBuffer()}};$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
+$('loginBtn').onclick=async()=>{const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 4-digit PIN');showBuffer('Logging in...');try{const d=await post('managementLogin',{name,pin,portalRole:'PM'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName);auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{hideBuffer()}};$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
 function uniq(a){return [...new Set((a||[]).filter(Boolean))].sort((x,y)=>x.localeCompare(y))}
 function eq(a,b){return String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase()}
 function filterState(){return {engineer:$('engineer').value.trim(),driver:$('driver').value.trim(),project:$('project').value.trim(),status:$('status').value.trim(),months:String($('month').value||'').split(',').map(x=>x.trim()).filter(Boolean)}}
@@ -468,7 +468,7 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
  const portalToken=decodeURIComponent(m[1]);
  history.replaceState(null,'',location.pathname+location.search);
  try{
-  const r=await fetch(URL,{method:'POST',body:JSON.stringify({action:'portalSSO',portalToken,portalRole:'PM'})});
+  const r=await TMX.fetch(URL,{method:'POST',body:JSON.stringify({action:'portalSSO',portalToken,portalRole:'PM'})});
   const d=await r.json();
   if(!d.ok||!d.token){portalSSOStatus_('Single Sign-On failed',d.error||'The KM module rejected the portal session.');return;}
   managementToken=d.token; managementName=d.name||'';
@@ -667,7 +667,7 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
 
 <script id="v8323UnifiedPortalLogout">
 (function(){
- const PORTAL_LOGIN='https://telecomaxportal.vercel.app/?logout=1';
+ const PORTAL_LOGIN='/index.html?logout=1';
  function isLogoutTarget(el){
    const b=el&&el.closest?el.closest('button,a'):null;if(!b)return false;
    const id=String(b.id||'').toLowerCase(),txt=String(b.textContent||'').trim().toLowerCase();
@@ -681,4 +681,4 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
  },true);
 })();
 </script>
-</body></html>
+<script src="/tmx/tail.js"></script></body></html>

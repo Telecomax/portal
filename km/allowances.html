@@ -1,0 +1,239 @@
+<!doctype html><html><head><script src="/tmx/compat.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Telecomax Allowance Audit</title><style>
+:root{--bg:#f3f6f8;--card:#fff;--text:#24313a;--muted:#71808b;--line:#dfe6ea;--brand:#c52b83;--green:#21865a;--red:#b83b47;--amber:#a66a00}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Segoe UI,Arial;background:var(--bg);color:var(--text)}header{background:#fff;border-bottom:1px solid var(--line);padding:16px 22px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}.brand{font-weight:900;font-size:20px}.brand span{color:var(--brand)}button,input,select,textarea{font:inherit}.btn{border:0;border-radius:10px;padding:11px 15px;font-weight:750;cursor:pointer}.primary{background:var(--brand);color:#fff}.ghost{background:#eef2f4;color:var(--text)}main{max-width:1250px;margin:auto;padding:24px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:18px;box-shadow:0 8px 24px #25323a0b}.login{max-width:440px;margin:70px auto}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase}.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:10px;padding:11px;background:#fff;min-width:0}
+.combo{position:relative}.combo input{width:100%;padding-right:34px}.combo:after{content:'⌄';position:absolute;right:11px;bottom:11px;color:var(--muted);pointer-events:none}.combo-list{display:none;position:absolute;left:0;right:0;top:calc(100% + 4px);max-height:230px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 28px #25323a20;z-index:30;padding:5px}.combo.open .combo-list{display:block}.combo-option{padding:9px 10px;border-radius:7px;cursor:pointer;font-size:13px}.combo-option.multi{display:flex;align-items:center;gap:8px}.combo-option.multi input{width:auto}.chips{position:absolute;left:0;right:0;top:100%;display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;z-index:6;pointer-events:none}.chips .chip{pointer-events:auto}.chip{background:#f8eaf2;color:var(--brand);border-radius:99px;padding:3px 8px;font-size:11px;font-weight:700}.combo-option:hover,.combo-option.active{background:#f8eaf2;color:var(--brand)}.combo-empty{padding:10px;color:var(--muted);font-size:12px}.filters{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr 1fr auto auto;gap:10px;align-items:end}
+.filters>.field{align-self:end}.filters .field>input,.filters .field>select{height:46px}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.metric{background:#f8fafb;border:1px solid var(--line);border-radius:14px;padding:15px}.metric b{font-size:22px;display:block;margin-top:5px}.metric small{color:var(--muted)}.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}.bulkbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 12px}.bulkbar .spacer{flex:1}.records{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}.audit-table{width:100%;border-collapse:collapse;min-width:1000px}.audit-table th{background:#f4f7f8;text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);padding:8px;border-bottom:1px solid var(--line);white-space:nowrap}.audit-table td{padding:7px 8px;border-bottom:1px solid #edf1f3;vertical-align:middle;font-size:12.5px}.audit-table tr:hover td{background:#fbfcfd}.audit-table tr:last-child td{border-bottom:0}.check{width:17px;height:17px;accent-color:var(--brand)}.name{font-weight:850}.meta{font-size:13px;color:var(--muted);margin-top:4px}.amount{font-size:19px;font-weight:900}.status{font-weight:800}.Pending{color:var(--amber)}.Approved{color:var(--green)}.Rejected{color:var(--red)}.actions{display:flex;gap:6px;flex-wrap:wrap}.approve{background:#e9f7f0;color:var(--green)}.reject{background:#fdecef;color:var(--red)}.pending{background:#fff4db;color:var(--amber)}.empty{text-align:center;color:var(--muted);padding:35px}.toast{position:fixed;right:20px;bottom:20px;background:#26323a;color:#fff;padding:12px 16px;border-radius:10px;display:none;z-index:20}.note{font-size:13px;color:var(--muted);line-height:1.5}.tabs{display:flex;gap:8px;margin-bottom:14px}.tab{background:#edf1f3}.tab.active{background:var(--brand);color:#fff}@media(max-width:1000px){main{padding:16px}.filters{grid-template-columns:repeat(2,minmax(0,1fr))}.filters .btn{min-height:44px}.summary{grid-template-columns:1fr 1fr}.card{padding:15px}.bulkbar{align-items:stretch}.bulkbar .spacer{display:none}.bulkbar #selectedCount{margin-left:auto;align-self:center}}@media(max-width:700px){
+body{overflow-x:hidden}header{padding:11px 12px}.brand{font-size:17px}main{padding:10px;width:100%;max-width:100%}.card{padding:12px;border-radius:13px;margin-bottom:10px}.filters{grid-template-columns:1fr;gap:9px}.filters .field>input,.filters .field>select{height:44px;width:100%}.chips{position:static;margin-top:4px}.summary{grid-template-columns:1fr 1fr;gap:7px}.metric{padding:8px 9px;border-radius:10px}.metric b{font-size:17px}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.tabs .btn{padding:9px 5px}.bulkbar{display:grid;grid-template-columns:1fr 1fr;gap:6px}.bulkbar .spacer{display:none}.bulkbar #selectedCount{grid-column:1/-1;margin:0;text-align:center}.bulkbar .btn{width:100%;padding:9px 7px}.records{border:0;background:transparent;overflow:visible}.audit-table{min-width:0}.audit-table,.audit-table tbody,.audit-table tr,.audit-table td{display:block;width:100%}.audit-table thead{display:none}.audit-table tr{background:#fff;border:1px solid var(--line);border-radius:10px;margin-bottom:7px;padding:6px}.audit-table td{border:0;padding:4px 6px;display:flex;justify-content:space-between;gap:10px;overflow-wrap:anywhere}.audit-table td:before{content:attr(data-label);font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;flex:0 0 34%}.audit-table td.select-cell{justify-content:flex-start}.audit-table td.select-cell:before{content:'Select'}.actions{justify-content:flex-end}.combo-list{position:fixed;left:10px;right:10px;top:auto;max-height:45vh;z-index:100}}
+.buffer{position:fixed;inset:0;background:rgba(245,248,250,.72);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:9999}.buffer.show{display:flex}.buffer-box{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 50px #26323b25;padding:20px 28px;min-width:220px;text-align:center;font-weight:800}.spinner{width:34px;height:34px;border:4px solid #eadde5;border-top-color:var(--brand);border-radius:50%;margin:0 auto 11px;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.sso-status{position:fixed;inset:0;z-index:999999;background:rgba(2,8,23,.92);display:flex;align-items:center;justify-content:center;padding:24px}
+.sso-status-box{max-width:430px;width:100%;padding:24px;border-radius:20px;background:#0b1020;border:1px solid rgba(255,255,255,.15);color:#fff;text-align:center}
+.sso-status-box b{display:block;font-size:20px;margin-bottom:8px}.sso-status-box span{color:#aab4c4}
+</style><script>
+if(location.hash.indexOf('sso=')>=0){
+ document.documentElement.classList.add('portal-sso-pending');
+}
+</script>
+<style>
+html.portal-sso-pending body{visibility:hidden!important}
+html.portal-sso-pending body::before{content:'Signing you in…';visibility:visible!important;position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#020817;color:#fff;font:700 20px Arial,sans-serif}
+</style>
+<meta name="tmx-migration-build" content="2026-10-09-github-km">
+</head><body><header><div class="brand"><span>TELECOMAX</span> · Allowance Audit</div><button id="logout" class="btn ghost" style="display:none">Logout</button></header><main>
+<section id="login" class="card login"><h2>PM Login</h2><p class="note">Use your management Name + 4-digit PIN.</p><div class="field"><label>Name</label><input id="name" autocomplete="username" placeholder="Enter your name"></div><br><div class="field"><label>PIN</label><input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="4-digit PIN"></div><br><button id="loginBtn" class="btn primary">Login</button></section>
+<section id="app" style="display:none"><div class="card"><div class="section-title"><div><h2 style="margin:0">Monthly Allowance Audit</h2></div></div><br><div class="filters">
+<div class="field"><label>Month</label><input id="month" type="month"></div>
+<div class="field combo" id="engineerCombo"><label>Engineer</label><input id="engineer" autocomplete="off" placeholder="Search or select engineer"><div id="engineerList" class="combo-list"></div></div>
+<div class="field combo" id="driverCombo"><label>Driver</label><input id="driver" autocomplete="off" placeholder="Search or select driver"><div id="driverList" class="combo-list"></div></div>
+<div class="field combo" id="projectCombo"><label>Project</label><input id="project" autocomplete="off" placeholder="Search or select project"><div id="projectList" class="combo-list"></div></div>
+<div class="field"><label>Status</label><select id="status"><option value="" selected>All Statuses</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></div>
+<button id="apply" class="btn primary">Apply</button><button id="clear" class="btn ghost">Clear</button></div></div>
+<div class="summary"><div class="metric"><small>Calculated</small><b id="calculated">0 EGP</b></div><div class="metric"><small>Approved</small><b id="approved">0 EGP</b></div><div class="metric"><small>Pending</small><b id="pending">0 EGP</b></div><div class="metric"><small>Rejected</small><b id="rejected">0 EGP</b></div></div><br>
+<div class="card"><div class="tabs"><button class="btn tab active" data-type="All">All</button><button class="btn tab" data-type="Engineer">Engineers</button><button class="btn tab" data-type="Driver">Drivers</button></div>
+<div class="bulkbar"><button id="selectAll" class="btn ghost">Select All</button><button id="clearSelection" class="btn ghost">Clear Selection</button><div class="spacer"></div><span id="selectedCount" class="note">0 selected</span><button id="approveSelected" class="btn primary">Approve Selected</button><button id="exportExcel" class="btn ghost">Export Excel</button></div>
+<div id="records" class="records"></div></div>
+</section></main>
+<div id="toast" class="toast"></div>
+<div id="buffer" class="buffer" aria-live="polite" aria-busy="true">
+  <div class="buffer-box"><div class="spinner"></div><div id="bufferText">Loading...</div></div>
+</div>
+<script>
+const URL='/_legacy/km',$=x=>document.getElementById(x);let managementToken=sessionStorage.getItem('tmx_km_pm_token')||'',managementName=sessionStorage.getItem('tmx_km_pm_name')||'',data=null,typeView='All';
+function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}function showBuffer(t='Loading...'){const b=$('buffer'),x=$('bufferText');if(x)x.textContent=t;if(b)b.classList.add('show')}function hideBuffer(){const b=$('buffer');if(b)b.classList.remove('show')}function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}async function post(action,x={}){const r=await TMX.fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),d=await r.json();if(!d.ok)throw Error(d.error||'Server error');return d}function auth(on){$('login').style.display=on?'none':'block';$('app').style.display=on?'block':'none';$('logout').style.display=on?'block':'none';if(on)load()}
+function monthNow(){let d=new Date(),o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,7)}$('month').value=monthNow();
+$('loginBtn').onclick=async()=>{const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 4-digit PIN');showBuffer('Logging in...');try{const d=await post('managementLogin',{name,pin,portalRole:'PM'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName);auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{hideBuffer()}};$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')$('loginBtn').click()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
+function uniq(a){return [...new Set((a||[]).filter(Boolean))].sort((x,y)=>x.localeCompare(y))}
+function eq(a,b){return String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase()}
+function filterState(){return {engineer:$('engineer').value.trim(),driver:$('driver').value.trim(),project:$('project').value.trim()}}
+function relationalOptions(kind){
+ const q=filterState();
+ const rows=(filterSource.combinations||[]).filter(c=>{
+   for(const k of ['engineer','driver','project']){
+     if(k===kind||!q[k])continue;
+     if(!eq(c[k],q[k]))return false;
+   }
+   return true;
+ });
+ if(kind==='engineer'){
+   // MASTER SOURCE: Engineer Name list from Config Column A.
+   const cfg=uniq(filterSource.engineers||[]);
+   // With no Driver/Project selection, always show the complete Config Column A list.
+   const hasRelation=!!q.driver||!!q.project;
+   if(!hasRelation)return cfg;
+   // Once another filter is selected, keep Config A as the source and only narrow
+   // it to engineers that exist in matching KM combinations.
+   const allowed=uniq(rows.map(c=>c.engineer));
+   return cfg.filter(e=>allowed.some(v=>eq(v,e)));
+ }
+ if(kind==='driver'){
+   const vals=uniq(rows.map(c=>c.driver).filter(x=>String(x).toLowerCase()!=='rent'));
+   const cfg=uniq((filterSource.drivers||[]).filter(x=>String(x).toLowerCase()!=='rent'));
+   return vals.length?cfg.filter(d=>vals.some(v=>eq(v,d))):cfg;
+ }
+ const vals=uniq(rows.map(c=>c.project));
+ const cfg=uniq(filterSource.projects||[]);
+ const hasRelation=!!q.engineer||!!q.driver;
+ return hasRelation?cfg.filter(p=>vals.some(v=>eq(v,p))):cfg;
+}
+function renderCombo(kind){
+ const input=$(kind),list=$(kind+'List'),q=input.value.trim().toLowerCase();
+ const options=relationalOptions(kind).filter(x=>!q||x.toLowerCase().includes(q));
+ list.innerHTML=options.length?options.map(x=>`<div class="combo-option" data-value="${x.replace(/"/g,'&quot;')}">${x}</div>`).join(''):'<div class="combo-empty">No related matches</div>';
+ list.querySelectorAll('.combo-option').forEach(o=>o.onclick=e=>{
+   e.preventDefault();input.value=o.dataset.value;$(kind+'Combo').classList.remove('open');sanitizeRelated(kind);refreshAllCombos();
+ });
+}
+function sanitizeRelated(changed){
+ for(const kind of ['engineer','driver','project']){
+   if(kind===changed)continue;
+   const input=$(kind),v=input.value.trim();if(!v)continue;
+   if(!relationalOptions(kind).some(x=>eq(x,v)))input.value='';
+ }
+}
+function refreshAllCombos(){['engineer','driver','project'].forEach(renderCombo)}
+function setupCombo(kind){
+ const input=$(kind),box=$(kind+'Combo');
+ const open=()=>{box.classList.add('open');renderCombo(kind)};
+ input.addEventListener('focus',open);input.addEventListener('click',open);input.addEventListener('input',open);
+ input.addEventListener('keydown',e=>{if(e.key==='Escape'){box.classList.remove('open');input.blur()}});
+}
+['engineer','driver','project'].forEach(setupCombo);
+document.addEventListener('click',e=>{['engineer','driver','project'].forEach(k=>{if(!$(k+'Combo').contains(e.target))$(k+'Combo').classList.remove('open')})});
+async function load(){
+ showBuffer('Applying filters...');try{
+   // Filter lists are loaded independently from allowance records.
+   // Engineer master source is always Config Column A.
+   filterSource=await post('allowanceFilterOptions');
+   data=await post('allowanceData',{filterMonth:$('month').value,filterEngineer:$('engineer').value.trim(),filterDriver:$('driver').value.trim(),filterProject:$('project').value.trim(),filterStatus:$('status').value});
+   refreshAllCombos();recalcVisibleSummary();render()
+ }catch(e){toast(e.message)}finally{hideBuffer()}
+}
+function recalcVisibleSummary(){
+ let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView), sm={calculated:0,approved:0,pending:0,rejected:0};
+ rows.forEach(r=>{sm.calculated+=Number(r.amount)||0;if(r.status==='Approved')sm.approved+=Number(r.amount)||0;else if(r.status==='Pending')sm.pending+=Number(r.amount)||0;else if(r.status==='Rejected')sm.rejected+=Number(r.amount)||0});
+ data.summary=sm;
+}
+function render(){let rows=(data.records||[]).filter(r=>typeView==='All'||r.type===typeView);let sm={calculated:0,approved:0,pending:0,rejected:0};rows.forEach(r=>{let a=Number(r.amount)||0;sm.calculated+=a;if(r.status==='Approved')sm.approved+=a;else if(r.status==='Pending')sm.pending+=a;else if(r.status==='Rejected')sm.rejected+=a});$('calculated').textContent=money(sm.calculated);$('approved').textContent=money(sm.approved);$('pending').textContent=money(sm.pending);$('rejected').textContent=money(sm.rejected);let body=rows.map(r=>{let key=encodeURIComponent(JSON.stringify({type:r.type,name:r.name,date:r.date,amount:r.amount})),pending=r.status==='Pending';return `<tr><td class="select-cell" data-label="Select">${pending?`<input class="check rowCheck" type="checkbox" data-key="${key}">`:''}</td><td data-label="Person"><b>${r.type}</b> · ${r.name}</td><td data-label="Date">${r.date}<div class="meta">${r.day}</div></td><td data-label="Area"><b>${r.area}</b><div class="meta">Base: ${r.baseCity||'Not set'}</div></td><td data-label="Project">${r.projects.join(', ')||'—'}</td><td data-label="Details">${r.type==='Engineer'?`Working days: <b>${r.workingDays}</b>`:`Related: ${r.related.join(', ')||'—'}`}</td><td data-label="Allowance"><b>${money(r.amount)}</b></td><td data-label="Status"><span class="status ${r.status}">${r.status}</span></td><td data-label="Action"><div class="actions">${pending?`<button class="btn reject" onclick="rejectDay('${r.type}','${esc(r.name)}','${r.date}',${r.amount})">Reject</button>`:''}</div></td></tr>`}).join('');$('records').innerHTML=rows.length?`<table class="audit-table"><thead><tr><th></th><th>Person</th><th>Date</th><th>Area</th><th>Project</th><th>Details</th><th>Allowance</th><th>Status</th><th>Action</th></tr></thead><tbody>${body}</tbody></table>`:'<div class="empty">No pending allowance records match these filters.</div>';document.querySelectorAll('.rowCheck').forEach(x=>x.addEventListener('change',updateSelectedCount));updateSelectedCount()}
+function selectedRecords(){return [...document.querySelectorAll('.rowCheck:checked')].map(x=>JSON.parse(decodeURIComponent(x.dataset.key)))}
+function updateSelectedCount(){$('selectedCount').textContent=`${selectedRecords().length} selected`}
+$('selectAll').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=true);updateSelectedCount()};
+$('clearSelection').onclick=()=>{document.querySelectorAll('.rowCheck').forEach(x=>x.checked=false);updateSelectedCount()};
+$('approveSelected').onclick=async()=>{let items=selectedRecords();if(!items.length){toast('Select at least one pending day.');return}if(!confirm(`Approve ${items.length} selected allowance day(s)?`))return;showBuffer('Approving selected allowances...');let b=$('approveSelected');b.disabled=true;b.textContent='Approving...';try{for(const r of items)await post('allowanceAudit',{type:r.type,name:r.name,date:r.date,calculatedAmount:r.amount,status:'Approved',reason:''});toast(`${items.length} day(s) approved.`);await load()}catch(e){toast(e.message)}finally{hideBuffer();b.disabled=false;b.textContent='Approve Selected'}}
+function esc(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+async function audit(type,name,date,amount,status,reason=''){showBuffer(status==='Rejected'?'Rejecting allowance...':'Approving allowance...');try{await post('allowanceAudit',{type,name,date,calculatedAmount:amount,status,reason});await load()}catch(e){toast(e.message)}finally{hideBuffer()}}function rejectDay(type,name,date,amount){let reason=prompt('Reason for rejection (optional):','');if(reason===null)return;audit(type,name,date,amount,'Rejected',reason)}
+function xlsxEsc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function xlsxCol(n){let s='';while(n){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s}
+function xlsxSheet(rows){
+ let xmlRows=rows.map((row,ri)=>'<row r="'+(ri+1)+'">'+row.map((v,ci)=>{
+   let ref=xlsxCol(ci+1)+(ri+1);
+   if(typeof v==='number'&&isFinite(v))return '<c r="'+ref+'"><v>'+v+'</v></c>';
+   return '<c r="'+ref+'" t="inlineStr"><is><t>'+xlsxEsc(v)+'</t></is></c>';
+ }).join('')+'</row>').join('');
+ return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+xmlRows+'</sheetData></worksheet>';
+}
+function crc32(bytes){
+ let table=crc32.table||(crc32.table=(()=>{let t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xedb88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})());
+ let c=0xffffffff;for(let b of bytes)c=table[(c^b)&255]^(c>>>8);return (c^0xffffffff)>>>0;
+}
+function u16(n){return [n&255,(n>>>8)&255]} function u32(n){return [n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]}
+function makeZip(files){
+ const enc=new TextEncoder(),parts=[],central=[];let offset=0;
+ for(const f of files){
+  const name=enc.encode(f.name),data=enc.encode(f.data),crc=crc32(data);
+  const local=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...name,...data]);
+  parts.push(local);
+  const cen=new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(data.length),...u32(data.length),...u16(name.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(offset),...name]);
+  central.push(cen);offset+=local.length;
+ }
+ const csize=central.reduce((a,b)=>a+b.length,0),end=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(csize),...u32(offset),...u16(0)]);
+ return new Blob([...parts,...central,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+$('exportExcel').onclick=()=>{
+ try{
+  const rows=(data.records||[]).filter(r=>(typeView==='All'||r.type===typeView)&&r.status==='Approved');
+  if(!rows.length){toast('No approved allowances to export for the current filters.');return}
+  const groups={};
+  rows.forEach(r=>(r.projects&&r.projects.length?r.projects:['—']).forEach(pr=>{
+   const k=r.type+'|'+r.name+'|'+pr;if(!groups[k])groups[k]={name:r.name,project:pr,total:0};groups[k].total+=Number(r.amount)||0;
+  }));
+  const engGroups={},drvGroups={};
+  rows.forEach(r=>(r.projects&&r.projects.length?r.projects:['—']).forEach(pr=>{
+   const target=r.type==='Engineer'?engGroups:drvGroups;
+   const k=r.name+'|'+pr;if(!target[k])target[k]={name:r.name,project:pr,total:0};target[k].total+=Number(r.amount)||0;
+  }));
+  const engCover=[['Engineer Name','Total Amount','Project'],...Object.values(engGroups).map(x=>[x.name,x.total,x.project])];
+  const drvCover=[['Driver Name','Total Amount','Project'],...Object.values(drvGroups).map(x=>[x.name,x.total,x.project])];
+  const engDetails=[['Engineer Name','Date','Day','Area','Base City','Project','Allowance Amount','Status'],
+   ...rows.filter(r=>r.type==='Engineer').flatMap(r=>(r.projects&&r.projects.length?r.projects:['—']).map(pr=>[r.name,r.date,r.day,r.area,r.baseCity||'',pr,Number(r.amount)||0,r.status]))];
+  const drvDetails=[['Driver Name','Date','Day','Area','Base City','Project','Allowance Amount','Status'],
+   ...rows.filter(r=>r.type==='Driver').flatMap(r=>(r.projects&&r.projects.length?r.projects:['—']).map(pr=>[r.name,r.date,r.day,r.area,r.baseCity||'',pr,Number(r.amount)||0,r.status]))];
+  const files=[
+   {name:'[Content_Types].xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet4.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>'},
+   {name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
+   {name:'xl/workbook.xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Engineers Cover" sheetId="1" r:id="rId1"/><sheet name="Driver Cover" sheetId="2" r:id="rId2"/><sheet name="In Details Engineers" sheetId="3" r:id="rId3"/><sheet name="In Details Drivers" sheetId="4" r:id="rId4"/></sheets></workbook>'},
+   {name:'xl/_rels/workbook.xml.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet4.xml"/></Relationships>'},
+   {name:'xl/worksheets/sheet1.xml',data:xlsxSheet(engCover)},
+   {name:'xl/worksheets/sheet2.xml',data:xlsxSheet(drvCover)},
+   {name:'xl/worksheets/sheet3.xml',data:xlsxSheet(engDetails)},
+   {name:'xl/worksheets/sheet4.xml',data:xlsxSheet(drvDetails)}
+  ];
+  const blob=makeZip(files);
+  const reader=new FileReader();
+  reader.onload=()=>{const a=document.createElement('a');a.href=reader.result;a.download=`Allowance-Audit-${$('month').value||'All'}-${typeView}.xlsx`;a.style.display='none';document.body.appendChild(a);a.click();a.remove();toast('Excel workbook created with 4 allowance tabs.')};
+  reader.onerror=()=>toast('Could not create Excel workbook.');
+  reader.readAsDataURL(blob);
+ }catch(err){console.error(err);toast('Excel export failed: '+(err.message||err))}
+};
+$('apply').onclick=load;$('clear').onclick=()=>{$('engineer').value='';$('driver').value='';$('project').value='';$('status').value='';refreshAllCombos();load()};document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');typeView=b.dataset.type;render()});
+const portalSsoIncoming=/(?:^|[&#])sso=/.test(location.hash);
+if(portalSsoIncoming){
+  // Portal SSO owns authentication. Do not let validation of an older PM token race it.
+}else if(managementToken){
+ $('name').value=managementName;
+ post('allowanceData',{}).then(()=>auth(true)).catch(()=>{
+  sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');
+  managementToken='';managementName='';auth(false)
+ });
+}else auth(false);
+</script><script>
+function portalSSOStatus_(title,detail){ document.documentElement.classList.remove('portal-sso-pending');
+ let x=document.getElementById('portalSsoStatus');
+ if(!x){x=document.createElement('div');x.id='portalSsoStatus';x.className='sso-status';document.body.appendChild(x)}
+ x.innerHTML='<div class="sso-status-box"><b>'+title+'</b><span>'+detail+'</span></div>';
+}
+(async function portalAutoLogin(){
+ const m=location.hash.match(/(?:^|[&#])sso=([^&]+)/); if(!m)return;
+ const portalToken=decodeURIComponent(m[1]);
+ portalSSOStatus_('Signing you in…','Using your Telecomax Operations session.');
+ history.replaceState(null,'',location.pathname+location.search);
+ try{
+  const r=await TMX.fetch(URL,{method:'POST',body:JSON.stringify({action:'portalSSO',portalToken,portalRole:'PM'})});
+  const d=await r.json();
+  if(!d.ok||!d.token){portalSSOStatus_('Single Sign-On failed',d.error||'The KM module rejected the portal session.');return;}
+  managementToken=d.token; managementName=d.name||'';
+  sessionStorage.setItem('tmx_km_pm_token',managementToken);
+  sessionStorage.setItem('tmx_km_pm_name',managementName);
+  // portalSso already validated the portal token and created this PM session.
+  // Do not call allowanceData here: that API requires a month.
+  const x=document.getElementById('portalSsoStatus'); if(x)x.remove();
+  $('name').value=managementName;
+  auth(true);
+ }catch(e){portalSSOStatus_('Single Sign-On connection error',String(e&&e.message||e));console.error('Portal SSO failed',e)}
+})();
+</script>
+
+<script id="v8323UnifiedPortalLogout">
+(function(){
+ const PORTAL_LOGIN='/index.html?logout=1';
+ function isLogoutTarget(el){
+   const b=el&&el.closest?el.closest('button,a'):null;if(!b)return false;
+   const id=String(b.id||'').toLowerCase(),txt=String(b.textContent||'').trim().toLowerCase();
+   return id==='logout'||id==='logoutbtn'||id==='navadmlogout'||txt==='log out'||txt==='logout'||txt==='admin log out';
+ }
+ document.addEventListener('click',function(e){
+   if(!isLogoutTarget(e.target))return;
+   e.preventDefault();e.stopImmediatePropagation();
+   try{sessionStorage.clear();}catch(_e){}
+   location.replace(PORTAL_LOGIN);
+ },true);
+})();
+</script>
+<script src="/tmx/tail.js"></script></body></html>

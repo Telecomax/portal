@@ -1,0 +1,4010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/tmx/compat.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Telecomax KM Tracker</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0E0E10">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root{
+    --teal:#CF3691; --teal-dark:#FF8FC9; --bg:#0E0E10; --card:#151517; --card-alt:#1F1F22;
+    --text:#FFFFFF; --muted:#8C8C8E; --border:#34343D; --border-soft:#2A2A2D;
+    --danger:#F87171; --ok:#4ADE80; --amber:#FBBF24; --blue:#60A5FA;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);}
+  header{background:var(--bg);color:#fff;padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;border-bottom:0.5px solid var(--border-soft);}
+  .brand{display:flex;align-items:center;gap:8px;}
+  .brand-dot{width:5px;height:16px;background:var(--teal);border-radius:1px;}
+  .brand-name{font-size:13px;font-weight:700;letter-spacing:0.5px;color:#fff;}
+  .brand-sub{font-size:12px;color:var(--muted);}
+  header button{background:var(--card-alt);border:none;color:#fff;border-radius:8px;padding:8px 10px;font-size:16px;}
+  .user-row{max-width:520px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:0.5px solid var(--border-soft);}
+  .user-row-left{display:flex;align-items:center;gap:8px;font-size:12px;color:#fff;}
+  .user-avatar{width:26px;height:26px;border-radius:50%;background:var(--card-alt);display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .user-row-left .role{color:var(--muted);}
+  .switch-link{background:none;border:none;color:var(--teal);font-size:12px;font-weight:700;padding:4px;}
+  main{max-width:520px;margin:0 auto;padding:16px 16px 100px;}
+  .card{background:var(--card);border-radius:14px;padding:16px;margin-bottom:14px;border:0.5px solid var(--border-soft);}
+  label{display:block;font-size:11px;letter-spacing:0.6px;text-transform:uppercase;color:var(--muted);margin:14px 0 6px;font-weight:700;}
+  input[type=text],input[type=number],input[type=date],select,textarea{
+    width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:16px;background:var(--card-alt);color:var(--text);
+  }
+  input::placeholder,textarea::placeholder{color:#5C5C5F;}
+  input[type=date]{color-scheme:dark;}
+  .date-display{background:var(--card-alt);color:var(--text);cursor:default;}
+  .date-display:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 2px rgba(20,184,166,.12);}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .km-row{display:flex;gap:8px;align-items:stretch;}
+  .km-row input{flex:1;font-size:20px;font-weight:700;}
+  .photo-block{margin-top:6px;}
+  .photo-block img{max-width:100%;max-height:160px;border-radius:8px;display:block;margin:8px auto 0;}
+  img[id$="Thumb"]{width:44px;height:44px;object-fit:cover;border-radius:8px;margin:8px 0 0;border:1px solid var(--border);}
+  .photo-btn{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:10px 8px;font-size:11px;font-weight:600;width:84px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+  .photo-btn::before{content:'📷';font-size:16px;}
+  .photo-btn.retake{background:var(--card-alt);color:var(--teal);border:1px solid var(--teal);}
+  .photo-missing{color:var(--danger);font-size:12px;margin-top:6px;}
+  .camera-modal{align-items:center;justify-content:center;padding:16px;}
+  .camera-modal .modal{border-radius:16px;max-width:520px;max-height:94vh;padding:14px;}
+  .camera-preview{width:100%;aspect-ratio:3/4;background:#000;border-radius:12px;object-fit:cover;display:block;}
+  .camera-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+  .camera-actions button{margin-top:0;}
+  .camera-status{font-size:12px;color:var(--muted);text-align:center;margin-top:8px;}
+  .computed{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+  .computed div{background:rgba(207,54,145,.12);border-radius:10px;padding:10px;text-align:center;}
+  .computed .num{font-size:18px;font-weight:700;color:var(--teal-dark);}
+   .computed .lbl{font-size:11px;color:var(--muted);}
+  .payment-card{grid-column:1 / -1;background:rgba(207,54,145,.16);border:1.5px solid var(--teal);border-radius:14px;padding:18px 14px 20px;text-align:center;margin-top:2px;box-shadow:0 0 0 1px rgba(207,54,145,.08),0 8px 24px rgba(0,0,0,.22);}
+  .payment-card .payment-lbl{font-size:13px;letter-spacing:1.1px;text-transform:uppercase;color:var(--teal-dark);font-weight:800;margin-bottom:6px;}
+  .payment-card .payment-num{font-size:38px;line-height:1.05;font-weight:900;color:#fff;letter-spacing:.3px;}
+  .payment-card .payment-note{font-size:11px;color:var(--muted);margin-top:8px;font-weight:600;}
+  .overnight-option{display:flex;align-items:center;gap:10px;margin:14px 0 2px;padding:13px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);font-weight:800;cursor:pointer;}
+  .overnight-option input{width:22px;height:22px;accent-color:var(--teal);margin:0;}
+  .overnight-option span{font-size:15px;}
+  .submit-btn{width:100%;padding:16px;background:var(--teal);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;margin-top:16px;letter-spacing:0.3px;}
+  .submit-btn:disabled{background:#3A3A3D;color:var(--muted);}
+  .log-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:0.5px solid var(--border-soft);font-size:13px;gap:8px;}
+  .log-item:last-child{border-bottom:none;}
+  .badge{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:700;white-space:nowrap;}
+  .badge.synced{background:rgba(74,222,128,.15);color:var(--ok);}
+  .badge.pending{background:rgba(251,191,36,.15);color:var(--amber);}
+  .badge.error{background:rgba(248,113,113,.15);color:var(--danger);}
+  .badge.awaiting{background:rgba(96,165,250,.15);color:var(--blue);}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;z-index:20;}
+  .modal{background:var(--card);border-radius:16px 16px 0 0;padding:20px;width:100%;max-height:88vh;overflow:auto;border-top:0.5px solid var(--border-soft);}
+  .modal h2{margin-top:0;font-size:17px;color:#fff;}
+  .modal .close{float:right;background:none;border:none;font-size:20px;color:var(--muted);}
+  .validation-error{color:#fca5a5;font-weight:800;margin-top:6px;display:block;}
+  .hint{font-size:12px;color:var(--muted);margin-top:4px;}
+  .save-btn{width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;margin-top:14px;}
+  #loginPin{min-height:54px;font-size:20px;letter-spacing:3px;text-align:center;}
+  .toast{position:fixed;bottom:16px;left:16px;right:16px;max-width:520px;margin:0 auto;background:var(--card-alt);border:0.5px solid var(--border);color:#fff;padding:12px 16px;border-radius:10px;font-size:14px;text-align:center;z-index:30;}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:10px 0;}
+  .tabs{display:flex;gap:8px;margin-bottom:14px;}
+  .tab-btn{flex:1;padding:10px 2px;border-radius:10px;border:none;background:var(--card-alt);color:var(--muted);font-weight:700;font-size:11px;}
+  .tab-btn.active{background:var(--teal);color:#fff;}
+  .tab-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .lock-note{font-size:12px;color:var(--muted);text-align:center;margin:-8px 0 14px;}
+  .section{display:none;}
+  .section.active{display:block;}
+  .trip-summary{background:rgba(207,54,145,.12);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--teal-dark);margin-top:6px;}
+  .banner{background:rgba(251,191,36,.12);border:0.5px solid rgba(251,191,36,.4);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .banner .msg{font-size:13px;color:var(--amber);font-weight:600;flex:1;min-width:180px;}
+  .banner-actions{display:flex;gap:8px;}
+  .banner-actions button{border:none;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;}
+  #bannerGoFinish{background:var(--amber);color:#1a1200;}
+  #bannerDismiss{background:transparent;color:var(--amber);padding:8px;}
+  .balance-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+  .balance-box{background:rgba(207,54,145,.12);border-radius:12px;padding:14px 10px;text-align:center;}
+  .balance-box.wide{grid-column:1 / -1;}
+  .balance-lbl{font-size:11px;color:var(--muted);margin-bottom:4px;}
+  .balance-num{font-size:20px;font-weight:800;color:var(--teal-dark);}
+  .balance-num.negative{color:var(--danger);}
+  .history-item{padding:10px 0;border-bottom:0.5px solid var(--border-soft);font-size:13px;}
+  .history-item:last-child{border-bottom:none;}
+  #historyList.history-photos-hidden .audit-row{display:none;}
+  #adminTripsList.admin-photos-hidden .audit-row{display:none;}
+  #financeTripsList.finance-photos-hidden .audit-row{display:none;}
+  #financeTripsList.finance-photos-hidden .audit-row{display:none;}
+.solfa-balance-box{grid-column:1 / -1;}
+.solfa-entries{margin-top:10px;text-align:left;border-top:1px solid rgba(255,255,255,.10);padding-top:6px;}
+.admin-filter-control{width:100%;min-height:44px;box-sizing:border-box;}
+  .admin-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px;}
+  .admin-tab-btn{padding:11px 6px;border:1px solid var(--border-soft);border-radius:10px;background:var(--card-alt);color:var(--muted);font-weight:800;font-size:12px;cursor:pointer;}
+  .admin-tab-btn.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .admin-panel{display:none;}
+  .admin-panel.active{display:block;}
+  .solfa-upload-card,.rent-upload-card{max-width:520px;margin:0 auto;}
+.rent-total-card{background:rgba(207,54,145,.16);border:1.5px solid var(--teal);border-radius:14px;padding:18px 14px;text-align:center;margin-top:14px;}
+.rent-total-card .rent-total-lbl{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--teal-dark);font-weight:800;}
+.rent-total-card .rent-total-num{font-size:32px;font-weight:900;margin-top:5px;}
+.solfa-entry{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 2px;font-size:14px;}
+.solfa-entry-date{font-weight:600;color:#e5e7eb;}
+.solfa-entry-amount{font-weight:700;color:#86efac;white-space:nowrap;}
+.solfa-entry-total{display:flex;justify-content:space-between;padding:9px 2px 2px;margin-top:3px;border-top:1px solid rgba(255,255,255,.12);font-weight:800;font-size:14px;}
+  .history-item .top-row{display:flex;justify-content:space-between;align-items:center;gap:8px;}
+  .history-item .sub-row{color:var(--muted);font-size:12px;margin-top:2px;}
+  .history-item .amount{font-weight:700;color:var(--teal-dark);}
+  .admin-date-header{background:var(--teal);color:#fff;padding:8px 12px;border-radius:8px;font-weight:700;font-size:13px;margin:14px 0 6px;}
+  .admin-date-header:first-child{margin-top:0;}
+  .admin-engineer-header{font-weight:700;font-size:13px;color:var(--teal-dark);margin:10px 0 6px;padding-left:2px;}
+  .admin-trip-card{background:var(--card-alt);border:0.5px solid var(--border-soft);border-radius:10px;padding:10px;margin-bottom:8px;}
+  .audit-row{display:flex;flex-direction:column;gap:14px;margin-top:8px;}
+  .audit-col{text-align:center;}
+  .audit-lbl{font-size:13px;color:var(--muted);margin-bottom:6px;}
+  .audit-thumb{width:100%;max-height:320px;object-fit:contain;background:#000;border-radius:8px;border:0.5px solid var(--border);cursor:zoom-in;}
+  #photoLightbox{align-items:center;justify-content:center;}
+  .lightbox-content{background:transparent;position:relative;max-width:96vw;max-height:92vh;display:flex;flex-direction:column;align-items:center;}
+  .lightbox-content img{max-width:96vw;max-height:78vh;border-radius:10px;background:#000;}
+  .lightbox-close{position:absolute;top:-42px;right:0;background:rgba(255,255,255,.95);border:none;border-radius:50%;width:38px;height:38px;font-size:18px;color:#111;}
+  .lightbox-link{color:#fff;margin-top:12px;font-weight:700;text-decoration:underline;font-size:14px;}
+  .locked-field{width:100%;padding:12px;border:1px solid var(--border);border-radius:10px;font-size:16px;background:var(--card-alt);color:var(--text);font-weight:600;}
+  .search-select{position:relative;}
+  .search-options{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--card-alt);border:1px solid var(--border);border-radius:10px;max-height:220px;overflow-y:auto;z-index:40;display:none;box-shadow:0 8px 20px rgba(0,0,0,.35);}
+  .search-options.open{display:block;}
+  .search-option{padding:11px 12px;font-size:15px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border-soft);}
+  .search-option:last-child{border-bottom:none;}
+  .search-option:hover,.search-option:active{background:rgba(207,54,145,.18);}
+  .search-empty{padding:11px 12px;font-size:13px;color:var(--muted);}
+  .result-modal{border-radius:16px;max-width:360px;margin:auto;}
+  #resultModal{align-items:center;}
+  .result-icon{font-size:44px;text-align:center;margin-bottom:6px;}
+  .result-icon.spin{animation:spin 1s linear infinite;}
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  #resultTitle{color:#fff;}
+  #resultTitle.success{color:var(--ok);}
+  #resultTitle.failure{color:var(--danger);}
+  #resultTitle.offline{color:var(--amber);}
+
+  /* ---------- side toolbar menu ---------- */
+  .menu-btn{
+    width:42px;height:38px;padding:0!important;border:1px solid var(--border-soft)!important;
+    background:var(--card-alt)!important;color:#fff;border-radius:10px!important;
+    font-size:22px!important;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:background .2s,transform .2s;
+  }
+  .menu-btn:active{transform:scale(.96);}
+  .side-menu-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:30;
+    opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease;
+    backdrop-filter:blur(2px);
+  }
+  .side-menu-overlay.open{opacity:1;visibility:visible;}
+  .side-menu{
+    position:fixed;top:0;left:0;bottom:0;width:min(310px,86vw);
+    background:var(--card);border-right:1px solid var(--border);
+    z-index:31;transform:translateX(-105%);transition:transform .25s ease;
+    display:flex;flex-direction:column;box-shadow:12px 0 35px rgba(0,0,0,.35);
+  }
+  .side-menu.open{transform:translateX(0);}
+  .side-menu-header{
+    min-height:76px;padding:18px 16px;display:flex;align-items:center;justify-content:space-between;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .side-menu-title{font-size:14px;font-weight:800;letter-spacing:.7px;}
+  .side-menu-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+  .side-menu-close{
+    width:36px;height:36px;border:1px solid var(--border-soft);border-radius:9px;
+    background:var(--card-alt);color:#fff;font-size:17px;cursor:pointer;
+  }
+  .side-menu-user{
+    margin:14px 12px 8px;padding:12px;border-radius:12px;background:var(--card-alt);
+    display:flex;align-items:center;gap:10px;font-size:13px;
+  }
+  .side-menu-role{font-size:11px;color:var(--muted);margin-top:2px;}
+  .side-menu-nav{padding:8px 10px;}
+  .side-menu-item{
+    width:100%;display:flex;align-items:center;gap:12px;padding:13px 12px;
+    border:0;border-radius:10px;background:transparent;color:var(--text);
+    font-size:14px;text-align:left;cursor:pointer;margin-bottom:4px;
+  }
+  .side-menu-item:hover,.side-menu-item.active{background:rgba(207,54,145,.13);color:var(--teal-dark);}
+  .side-menu-icon{width:24px;text-align:center;font-size:17px;}
+  .side-menu-divider{height:1px;background:var(--border-soft);margin:10px 4px;}
+  .side-menu-footer{margin-top:auto;padding:16px;color:var(--muted);font-size:10px;text-align:center;border-top:1px solid var(--border-soft);}
+  .page-header{margin:2px 0 14px;padding:14px 2px 12px;border-bottom:2px solid var(--teal);display:flex;align-items:center;gap:10px;}
+  .page-header-icon{font-size:20px;}
+  .page-header-title{font-size:20px;font-weight:800;letter-spacing:.2px;}
+  .filter-row{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;}
+  .filter-row .save-btn{margin-top:0;}
+  .month-input{color-scheme:dark;}
+
+
+    html[dir="rtl"] body{direction:rtl;}
+    html[dir="rtl"] .side-menu{right:0;left:auto;transform:translateX(105%);}
+    html[dir="rtl"] .side-menu.open{transform:translateX(0);}
+    html[dir="rtl"] .side-menu-overlay{direction:rtl;}
+    html[dir="rtl"] input,html[dir="rtl"] select,html[dir="rtl"] textarea{text-align:right;}
+    html[dir="rtl"] .modal .close{left:12px;right:auto;}
+    html[dir="rtl"] .search-options{text-align:right;}
+
+    .side-menu-logout {
+    margin-top: 8px;
+    padding: 11px 12px;
+    border: 1px solid rgba(207,54,145,.42);
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(207,54,145,.16), rgba(207,54,145,.07));
+    color: var(--teal-dark);
+    font-weight: 800;
+    box-shadow: 0 4px 14px rgba(207,54,145,.08);
+    transition: background .2s ease, border-color .2s ease, transform .15s ease, box-shadow .2s ease;
+}
+.side-menu-logout:hover {
+    background: linear-gradient(135deg, rgba(207,54,145,.24), rgba(207,54,145,.11));
+    border-color: var(--teal);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(207,54,145,.14);
+}
+.side-menu-logout:active { transform: scale(.98); }
+.side-menu-logout .side-menu-icon {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: var(--teal);
+    color: #fff;
+    font-size: 16px;
+    flex: 0 0 30px;
+    box-shadow: 0 3px 9px rgba(207,54,145,.24);
+}
+.side-menu-logout:hover .side-menu-icon { background: var(--teal-dark); color: var(--bg); }
+
+/* V39 clean engineer login */
+.engineer-login-card{
+  margin-top:20px;padding:22px;border:1px solid #e5e7eb;border-radius:22px;
+  background:linear-gradient(180deg,#ffffff 0%,#fafafa 100%);
+  box-shadow:0 12px 32px rgba(17,24,39,.07);
+}
+.engineer-login-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.engineer-login-icon{
+  width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+  background:#111827;color:#fff;font-size:21px;flex:0 0 auto
+}
+.engineer-login-title{font-size:18px;font-weight:900;color:#111827;margin:0}
+.engineer-login-sub{font-size:12px;color:#6b7280;margin-top:3px}
+.engineer-login-card label{font-weight:800;color:#374151;margin-top:12px}
+.engineer-login-card input,.engineer-login-card select{min-height:52px;border-radius:13px}
+.engineer-login-btn{
+  width:100%;min-height:54px;margin-top:20px;border:0;border-radius:14px;
+  background:#111827;color:#fff;font-size:15px;font-weight:900;cursor:pointer
+}
+.engineer-login-btn:disabled{opacity:.6;cursor:wait}
+.engineer-login-status{text-align:center;margin-top:12px;font-size:12px;color:#6b7280}
+.connection-details{margin-top:18px;border-top:1px solid #eceff3;padding-top:14px}
+.connection-details summary{cursor:pointer;font-weight:800;color:#6b7280;font-size:12px}
+.login-buffer-overlay{
+  position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;
+  background:rgba(15,23,42,.40);backdrop-filter:blur(3px)
+}
+.login-buffer-overlay.show{display:flex}
+.login-buffer-box{
+  min-width:230px;padding:26px 30px;border-radius:20px;background:#fff;text-align:center;
+  box-shadow:0 20px 60px rgba(15,23,42,.25);font-weight:900;color:#111827
+}
+.login-buffer-spinner{
+  width:44px;height:44px;margin:0 auto 14px;border:4px solid #e5e7eb;
+  border-top-color:#d12f8a;border-radius:50%;animation:kmLoginSpin .75s linear infinite
+}
+@keyframes kmLoginSpin{to{transform:rotate(360deg)}}
+
+
+/* =========================================================
+   V39.3 — VELVET THEME
+   Palette: #313866 #50409A #964EC2 #FF7BBF
+   ========================================================= */
+:root{
+  --velvet-navy:#313866;
+  --velvet-purple:#50409A;
+  --velvet-violet:#964EC2;
+  --velvet-pink:#FF7BBF;
+  --velvet-bg:#F5F3FA;
+  --velvet-surface:#FFFFFF;
+  --velvet-soft:#F0ECF8;
+  --velvet-text:#27233A;
+  --velvet-muted:#716B82;
+  --velvet-border:#DDD7EA;
+  --velvet-success:#2E8B67;
+  --velvet-danger:#C84964;
+  --velvet-shadow:0 10px 30px rgba(49,56,102,.10);
+}
+
+html,body{
+  background:var(--velvet-bg)!important;
+  color:var(--velvet-text)!important;
+  color-scheme:light!important;
+}
+body{
+  background:linear-gradient(180deg,#F8F6FC 0%,#F2EFF8 100%)!important;
+}
+
+/* Surfaces */
+.card,.panel,.box,.section,.home-card,.history-card,.settings-card,.engineer-login-card{
+  background:var(--velvet-surface)!important;
+  color:var(--velvet-text)!important;
+  border:1px solid var(--velvet-border)!important;
+  box-shadow:var(--velvet-shadow)!important;
+}
+h1,h2,h3,h4,strong,b,label,.engineer-login-title{color:var(--velvet-navy)!important}
+.muted,.hint,.note,.sub,.engineer-login-sub,.engineer-login-status{color:var(--velvet-muted)!important}
+
+/* Inputs */
+input,select,textarea,.engineer-login-card input,.engineer-login-card select{
+  background:#fff!important;
+  color:var(--velvet-text)!important;
+  border:1px solid #D6CFE4!important;
+  box-shadow:none!important;
+}
+input::placeholder,textarea::placeholder{color:#9A94A8!important}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--velvet-purple)!important;
+  outline:3px solid rgba(80,64,154,.11)!important;
+}
+select option{background:#fff!important;color:var(--velvet-text)!important}
+
+/* Main actions */
+button,.btn,.save-btn,.engineer-login-btn{border-radius:12px!important}
+.engineer-login-btn,.primary,.btn.primary{
+  background:var(--velvet-navy)!important;
+  color:#fff!important;
+  border-color:var(--velvet-navy)!important;
+}
+.engineer-login-btn:hover,.primary:hover,.btn.primary:hover{
+  background:var(--velvet-purple)!important;
+}
+.save-btn{
+  background:linear-gradient(90deg,var(--velvet-purple),var(--velvet-violet))!important;
+  color:#fff!important;
+  border:0!important;
+}
+.secondary,.btn.secondary{
+  background:#fff!important;color:var(--velvet-navy)!important;
+  border:1px solid var(--velvet-border)!important;
+}
+
+/* Selected / accent */
+.active,.selected,.tab.active,.nav-item.active{
+  border-color:var(--velvet-pink)!important;
+}
+.badge,.pill{
+  background:#FBE5F2!important;
+  color:#8E3970!important;
+}
+
+/* Engineer login */
+.engineer-login-card{
+  border-radius:22px!important;
+  background:linear-gradient(180deg,#FFFFFF 0%,#FCFAFE 100%)!important;
+}
+.engineer-login-icon{
+  background:linear-gradient(145deg,var(--velvet-navy),var(--velvet-purple))!important;
+  color:#fff!important;border-radius:14px!important;
+}
+.connection-details{border-top:1px solid #ECE7F3!important}
+.connection-details summary{color:var(--velvet-purple)!important}
+
+/* Search menus */
+.search-options,.dropdown,.menu-list{
+  background:#fff!important;color:var(--velvet-text)!important;
+  border:1px solid var(--velvet-border)!important;
+  box-shadow:0 14px 32px rgba(49,56,102,.14)!important;
+}
+.search-options div:hover,.search-options .active{
+  background:var(--velvet-soft)!important;color:var(--velvet-navy)!important;
+}
+
+/* Sidebar */
+.sidebar,.side-menu,.drawer,.nav-drawer{
+  background:linear-gradient(180deg,var(--velvet-navy),#292F59)!important;
+  color:#fff!important;
+}
+.sidebar a,.side-menu a,.drawer a,.nav-drawer a,
+.sidebar button,.side-menu button{color:#F7F4FC!important}
+.sidebar .active,.side-menu .active,.drawer .active,.nav-drawer .active{
+  background:rgba(150,78,194,.24)!important;
+  color:#fff!important;
+  border-left:4px solid var(--velvet-pink)!important;
+}
+
+/* Tables / history */
+table{background:#fff!important;color:var(--velvet-text)!important}
+th{background:#F0ECF8!important;color:var(--velvet-navy)!important}
+td,th{border-color:#E5DFEE!important}
+
+/* Status */
+.status-ok,.success,.positive{color:var(--velvet-success)!important}
+.status-error,.error,.negative{color:var(--velvet-danger)!important}
+
+/* Dialogs and buffering */
+.modal,.dialog,.modal-content{background:#fff!important;color:var(--velvet-text)!important}
+.login-buffer-overlay{background:rgba(49,56,102,.42)!important}
+.login-buffer-box{background:#fff!important;color:var(--velvet-navy)!important}
+.login-buffer-spinner{
+  border-color:#E8E3F0!important;
+  border-top-color:var(--velvet-pink)!important;
+}
+
+/* Mobile */
+@media(max-width:700px){
+  html,body{background:#F3F0F8!important}
+  .engineer-login-card{border-radius:22px!important}
+}
+
+
+/* =========================================================
+   V39.4 — VELVET VISIBILITY / BACKGROUND FIX
+   ========================================================= */
+
+/* Home / app workspace: use Velvet navy instead of near-black */
+body,
+.app-shell,
+.main,
+.main-content,
+.page,
+.page-content,
+.content,
+#app,
+#home,
+.home-screen{
+  background:#313866!important;
+}
+
+/* Keep actual content cards light and readable */
+.card,.panel,.box,.section,.home-card,.history-card,.settings-card,
+.trip-card,.recent-card,.engineer-login-card{
+  background:#FFFFFF!important;
+}
+
+/* Header remains dark, but belongs to the same palette */
+header,.header,.topbar,.app-header{
+  background:#313866!important;
+}
+
+/* Logged-out engineer field: same Velvet navy as home */
+#engineerName,
+.engineer-name,
+.engineer-display,
+.logged-engineer,
+.login-locked,
+input[readonly]{
+  background:#313866!important;
+  color:#FFFFFF!important;
+  border-color:#313866!important;
+}
+#engineerName::placeholder,
+input[readonly]::placeholder{color:#FFFFFF!important}
+
+/* Settings / login view background */
+.settings,
+.settings-page,
+.settings-panel,
+.settings-modal,
+.settings-content,
+#settings,
+#settingsView{
+  background:#F3F0F8!important;
+}
+
+/* Login card remains white against the lavender workspace */
+.engineer-login-card{
+  background:#FFFFFF!important;
+  border-color:#D9D2E7!important;
+}
+
+/* Search/filter result panel visibility */
+.search-options{
+  background:#FFFFFF!important;
+  color:#27233A!important;
+  border:1px solid #D6CFE4!important;
+}
+.search-options div,
+.search-options .option,
+.search-options button,
+.search-options li{
+  background:#FFFFFF!important;
+  color:#27233A!important;
+  border-color:#E6E0EE!important;
+}
+.search-options div:hover,
+.search-options .option:hover,
+.search-options .active,
+.search-options div[aria-selected="true"]{
+  background:#F0ECF8!important;
+  color:#313866!important;
+}
+
+/* Force text visibility for searchable Engineer/Driver lists */
+#engineerOptions,
+#defaultDriverOptions,
+#driverOptions,
+#areaOptions{
+  background:#FFFFFF!important;
+  color:#27233A!important;
+}
+#engineerOptions *,
+#defaultDriverOptions *,
+#driverOptions *,
+#areaOptions *{
+  color:#27233A!important;
+}
+
+/* Search inputs stay white */
+#loginEngineerSelect,
+#defaultDriver,
+.search-select input{
+  background:#FFFFFF!important;
+  color:#27233A!important;
+}
+#loginEngineerSelect::placeholder,
+#defaultDriver::placeholder,
+.search-select input::placeholder{
+  color:#9690A3!important;
+}
+
+/* Login settings modal/page shell */
+.modal-content,
+.settings-modal .modal-content{
+  background:#F8F6FC!important;
+}
+
+/* Mobile canvas */
+@media(max-width:700px){
+  html{background:#313866!important}
+  body{background:#313866!important}
+  .settings,.settings-page,.settings-panel,.settings-modal,.settings-content,
+  #settings,#settingsView{background:#F3F0F8!important}
+}
+
+
+/* =========================================================
+   V39.5 — UNIFIED VELVET WORKSPACE
+   Removes large white surfaces while preserving field clarity
+   ========================================================= */
+:root{
+  --v-workspace:#313866;
+  --v-panel:#3B4278;
+  --v-panel-soft:#454B82;
+  --v-field:#FFFFFF;
+  --v-field-text:#27233A;
+  --v-label:#FFFFFF;
+  --v-muted-light:#D7D8E8;
+  --v-line:rgba(255,255,255,.18);
+}
+
+/* Main cards/panels blend into the home workspace */
+.card,.panel,.box,.section,.home-card,.history-card,.settings-card,
+.trip-card,.recent-card{
+  background:var(--v-workspace)!important;
+  color:#FFFFFF!important;
+  border:1px solid var(--v-line)!important;
+  box-shadow:none!important;
+}
+
+/* Start/Finish trip main form panel */
+main .card,
+.main .card,
+.main-content .card,
+#home .card,
+.home-screen .card{
+  background:var(--v-workspace)!important;
+}
+
+/* Labels/headings remain visible on dark workspace */
+.card h1,.card h2,.card h3,.card h4,
+.card label,.card strong,.card b,
+.panel h1,.panel h2,.panel h3,.panel label{
+  color:#FFFFFF!important;
+}
+.card .hint,.card .note,.card .muted,.card p,
+.panel .hint,.panel .note,.panel .muted{
+  color:var(--v-muted-light)!important;
+}
+
+/* Every editable/readable field stays white for maximum contrast */
+.card input:not([readonly]),
+.card select,.card textarea,
+.panel input:not([readonly]),
+.panel select,.panel textarea,
+.search-select input,
+#loginEngineerSelect,#defaultDriver{
+  background:var(--v-field)!important;
+  color:var(--v-field-text)!important;
+  border:1px solid #D8D9E3!important;
+}
+.card input::placeholder,.card textarea::placeholder,
+.panel input::placeholder,.panel textarea::placeholder,
+.search-select input::placeholder{
+  color:#9697A5!important;
+}
+
+/* Read-only date/day and logged engineer fields */
+.card input[readonly],.panel input[readonly],#engineerName,
+.engineer-name,.engineer-display,.logged-engineer,.login-locked{
+  background:#3B4278!important;
+  color:#FFFFFF!important;
+  border:1px solid rgba(255,255,255,.22)!important;
+}
+
+/* Keep validation warnings obvious */
+.card .error,.card .required,.card .warning{
+  color:#FF9AAE!important;
+}
+
+/* Search/filter menus: white surface + dark readable text */
+.search-options,#engineerOptions,#defaultDriverOptions,#driverOptions,#areaOptions{
+  background:#FFFFFF!important;
+  color:#27233A!important;
+  border:1px solid #D8D9E3!important;
+}
+.search-options *,#engineerOptions *,#defaultDriverOptions *,
+#driverOptions *,#areaOptions *{color:#27233A!important}
+.search-options div:hover,.search-options .active{
+  background:#EEEAF7!important;color:#313866!important;
+}
+
+/* SETTINGS: remove remaining white page/sheet */
+.settings,.settings-page,.settings-panel,.settings-modal,.settings-content,
+#settings,#settingsView,
+.modal,.dialog,.modal-content,
+.settings-modal .modal-content{
+  background:#313866!important;
+  color:#FFFFFF!important;
+}
+.settings h1,.settings h2,.settings h3,.settings label,
+.settings-page h1,.settings-page h2,.settings-page label,
+.settings-modal h1,.settings-modal h2,.settings-modal label,
+.modal-content h1,.modal-content h2,.modal-content label{
+  color:#FFFFFF!important;
+}
+.settings .hint,.settings .note,.settings .muted,.settings p,
+.settings-modal .hint,.settings-modal .note,.settings-modal p{
+  color:#D7D8E8!important;
+}
+
+/* Login card itself becomes a softer purple panel, not white */
+.engineer-login-card{
+  background:#3B4278!important;
+  color:#FFFFFF!important;
+  border:1px solid rgba(255,255,255,.18)!important;
+  box-shadow:0 12px 30px rgba(18,20,50,.18)!important;
+}
+.engineer-login-card .engineer-login-title,
+.engineer-login-card label{color:#FFFFFF!important}
+.engineer-login-card .engineer-login-sub,
+.engineer-login-card .engineer-login-status{color:#D7D8E8!important}
+.engineer-login-card input,.engineer-login-card select{
+  background:#FFFFFF!important;color:#27233A!important;
+}
+.connection-details{border-top-color:rgba(255,255,255,.16)!important}
+.connection-details summary{color:#FFB3DA!important}
+
+/* Close icon / menu controls on Settings */
+.settings button,.settings-modal button,.modal-content button{
+  color:inherit;
+}
+
+/* Preserve primary action visibility */
+.save-btn{
+  background:linear-gradient(90deg,#964EC2,#FF7BBF)!important;
+  color:#FFFFFF!important;
+}
+.engineer-login-btn{
+  background:#50409A!important;color:#FFFFFF!important;
+}
+
+/* Mobile: no white sheet/canvas */
+@media(max-width:700px){
+  html,body,.app-shell,.main,.main-content,.page,.page-content,#app,#home,.home-screen{
+    background:#313866!important;
+  }
+  .settings,.settings-page,.settings-panel,.settings-modal,.settings-content,
+  #settings,#settingsView,.modal,.dialog,.modal-content{
+    background:#313866!important;
+  }
+}
+
+
+/* V39.6 Management login inside app */
+.management-login-card{max-width:560px;margin:18px auto!important;padding:22px!important;background:#3B4278!important}
+.management-login-head{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.management-login-icon{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,#50409A,#964EC2);font-size:21px}
+.management-login-card strong,.management-login-card label{color:#fff!important}
+.management-login-card .hint{color:#D7D8E8!important}
+.management-login-card input{background:#fff!important;color:#27233A!important;border:1px solid #D8D9E3!important;min-height:52px}
+.management-login-card input::placeholder{color:#9697A5!important}
+.management-login-card .save-btn{background:linear-gradient(90deg,#50409A,#964EC2)!important;color:#fff!important}
+
+
+/* =========================================================
+   KM V39.7 — CUSTODY PORTAL V4 EXACT THEME
+   Shared visual language with Custody Portal V4
+   ========================================================= */
+:root{
+  --tmx-bg:#020817;
+  --tmx-bg-2:#07101C;
+  --tmx-card:rgba(8,10,15,.88);
+  --tmx-card-soft:rgba(14,18,24,.82);
+  --tmx-field:rgba(15,20,25,.90);
+  --tmx-border:rgba(150,170,185,.20);
+  --tmx-text:#F7F8FA;
+  --tmx-muted:#9CA8B8;
+  --tmx-pink:#D63391;
+  --tmx-magenta:#B0005B;
+  --tmx-purple:#31005F;
+  --tmx-cyan:#69C8F2;
+  --tmx-green:#74D6A0;
+}
+
+/* Full blurred Portal background */
+html,body{
+  color-scheme:dark!important;
+  background:
+    radial-gradient(circle at 8% 16%,rgba(0,153,204,.17),transparent 34%),
+    radial-gradient(circle at 92% 10%,rgba(65,44,150,.22),transparent 36%),
+    radial-gradient(circle at 74% 88%,rgba(214,51,145,.12),transparent 32%),
+    linear-gradient(145deg,#00111E 0%,#030817 48%,#120719 100%)!important;
+  color:var(--tmx-text)!important;
+  background-attachment:fixed!important;
+}
+body:before{
+  content:"";position:fixed;inset:-70px;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 24%,rgba(24,177,224,.15),transparent 30%),
+    radial-gradient(circle at 86% 18%,rgba(88,55,188,.17),transparent 32%),
+    radial-gradient(circle at 72% 78%,rgba(214,51,145,.11),transparent 30%);
+  filter:blur(38px);
+}
+
+/* App canvas must stay transparent so blur shows through */
+.app-shell,.main,.main-content,.page,.page-content,.content,#app,#home,.home-screen,
+.settings,.settings-page,.settings-panel,.settings-modal,.settings-content,
+#settings,#settingsView{
+  background:transparent!important;
+}
+
+/* Header */
+header,.header,.topbar,.app-header{
+  background:rgba(5,7,11,.88)!important;
+  color:#fff!important;
+  border-bottom:1px solid rgba(255,255,255,.08)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+}
+header strong,.header strong,.topbar strong,.app-header strong{color:#fff!important}
+
+/* Glass cards */
+.card,.panel,.box,.section,.home-card,.history-card,.settings-card,
+.trip-card,.recent-card,.engineer-login-card,.management-login-card,
+.modal-content,.dialog{
+  background:linear-gradient(145deg,rgba(9,11,16,.94),rgba(9,10,15,.82))!important;
+  color:var(--tmx-text)!important;
+  border:1px solid var(--tmx-border)!important;
+  box-shadow:0 18px 45px rgba(0,0,0,.28)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+}
+
+/* Typography */
+h1,h2,h3,h4,label,strong,b,
+.card h1,.card h2,.card h3,.card h4,.card label,.card strong,.card b,
+.panel h1,.panel h2,.panel h3,.panel label{
+  color:var(--tmx-text)!important;
+}
+.hint,.note,.muted,.sub,p,.engineer-login-sub,.engineer-login-status,
+.card .hint,.card .note,.card .muted,.card p{
+  color:var(--tmx-muted)!important;
+}
+
+/* Inputs */
+input,select,textarea,
+.card input,.card select,.card textarea,
+.panel input,.panel select,.panel textarea,
+.engineer-login-card input,.engineer-login-card select,
+.management-login-card input{
+  background:var(--tmx-field)!important;
+  color:var(--tmx-text)!important;
+  border:1px solid rgba(139,158,174,.23)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.01)!important;
+}
+input::placeholder,textarea::placeholder,
+.card input::placeholder,.card textarea::placeholder{
+  color:#8F99AA!important;
+}
+input:focus,select:focus,textarea:focus{
+  border-color:rgba(214,51,145,.72)!important;
+  outline:3px solid rgba(214,51,145,.10)!important;
+}
+select option{background:#0D1118!important;color:#F7F8FA!important}
+
+/* Read-only fields, including logged engineer */
+input[readonly],#engineerName,.engineer-name,.engineer-display,.logged-engineer,.login-locked{
+  background:#07090D!important;
+  color:#fff!important;
+  border-color:rgba(255,255,255,.18)!important;
+}
+
+/* Search/dropdown results */
+.search-options,.dropdown,.menu-list,
+#engineerOptions,#defaultDriverOptions,#driverOptions,#areaOptions{
+  background:#0C1016!important;
+  color:#F7F8FA!important;
+  border:1px solid rgba(139,158,174,.24)!important;
+  box-shadow:0 16px 34px rgba(0,0,0,.42)!important;
+}
+.search-options *,.dropdown *,.menu-list *,
+#engineerOptions *,#defaultDriverOptions *,#driverOptions *,#areaOptions *{
+  color:#F7F8FA!important;
+}
+.search-options div:hover,.search-options .active,
+.dropdown .active,.menu-list .active{
+  background:rgba(214,51,145,.14)!important;
+  color:#fff!important;
+}
+
+/* Primary actions: exact Custody magenta -> purple treatment */
+.save-btn,.primary,.btn.primary,.engineer-login-btn,
+button[type="submit"]{
+  background:linear-gradient(100deg,#B0005B 0%,#750047 45%,#31005F 100%)!important;
+  color:#fff!important;
+  border:1px solid rgba(214,51,145,.20)!important;
+  box-shadow:0 8px 24px rgba(176,0,91,.18)!important;
+}
+.save-btn:hover,.primary:hover,.btn.primary:hover,.engineer-login-btn:hover{
+  filter:brightness(1.08)!important;
+}
+
+/* Secondary actions */
+.secondary,.btn.secondary{
+  background:rgba(43,47,54,.88)!important;
+  color:#EAF1F8!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+}
+
+/* Start / camera actions */
+#startTabBtn,.start-btn,.camera-btn,.take-photo-btn{
+  background:linear-gradient(100deg,#B0005B,#D63391)!important;
+  color:#fff!important;
+}
+
+/* Sidebar */
+.sidebar,.side-menu,.drawer,.nav-drawer{
+  background:rgba(5,7,11,.96)!important;
+  color:#fff!important;
+  border-right:1px solid rgba(255,255,255,.08)!important;
+  backdrop-filter:blur(20px)!important;
+}
+.sidebar a,.side-menu a,.drawer a,.nav-drawer a,
+.sidebar button,.side-menu button{color:#EAF1F8!important}
+.sidebar .active,.side-menu .active,.drawer .active,.nav-drawer .active{
+  background:rgba(214,51,145,.13)!important;
+  color:#fff!important;
+  border-left:4px solid #D63391!important;
+}
+
+/* Tabs / badges */
+.tab.active,.nav-item.active,.active,.selected{border-color:#D63391!important}
+.badge,.pill{background:rgba(214,51,145,.14)!important;color:#FF79BE!important}
+
+/* Tables / History */
+table{background:rgba(8,10,15,.78)!important;color:#F7F8FA!important}
+th{background:rgba(18,23,31,.96)!important;color:#EAF1F8!important}
+td,th{border-color:rgba(255,255,255,.09)!important}
+
+/* Status colors */
+.status-ok,.success,.positive{color:#74D6A0!important}
+.status-error,.error,.negative,.required,.warning{color:#FF829A!important}
+
+/* Management login accents */
+.management-login-icon,.engineer-login-icon{
+  background:linear-gradient(145deg,#B0005B,#31005F)!important;
+  color:#fff!important;
+}
+.connection-details{border-top-color:rgba(255,255,255,.10)!important}
+.connection-details summary{color:#FF79BE!important}
+
+/* Buffering dialogs */
+.login-buffer-overlay{background:rgba(0,4,12,.72)!important;backdrop-filter:blur(8px)!important}
+.login-buffer-box{
+  background:rgba(9,11,16,.96)!important;color:#fff!important;
+  border:1px solid rgba(255,255,255,.12)!important;
+}
+.login-buffer-spinner{
+  border-color:rgba(255,255,255,.16)!important;
+  border-top-color:#D63391!important;
+}
+
+/* Mobile */
+@media(max-width:700px){
+  html,body{background-color:#020817!important}
+  .card,.panel,.box,.section,.home-card,.history-card,.settings-card,
+  .trip-card,.recent-card,.engineer-login-card,.management-login-card{
+    border-radius:22px!important;
+  }
+}
+
+
+/* =========================================================
+   KM V39.8 — BACKGROUND-BLENDED GLASS CARDS
+   Cards inherit the page's navy/purple glow instead of
+   appearing as separate solid blue blocks.
+   ========================================================= */
+
+/* Main content cards: transparent navy glass */
+.card,.panel,.box,.section,.home-card,.history-card,.settings-card,
+.trip-card,.recent-card,.engineer-login-card,.management-login-card{
+  background:
+    linear-gradient(145deg,
+      rgba(2,8,23,.46) 0%,
+      rgba(7,10,28,.36) 52%,
+      rgba(20,7,25,.30) 100%)!important;
+  border:1px solid rgba(214,51,145,.28)!important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.025),
+    0 14px 36px rgba(0,0,0,.13)!important;
+  backdrop-filter:blur(13px) saturate(115%)!important;
+  -webkit-backdrop-filter:blur(13px) saturate(115%)!important;
+}
+
+/* Main Start/Finish workspace should almost disappear into background */
+#home .card,.home-screen .card,
+.main .card,.main-content .card{
+  background:
+    linear-gradient(180deg,
+      rgba(3,8,27,.34) 0%,
+      rgba(5,8,29,.24) 62%,
+      rgba(26,5,30,.22) 100%)!important;
+}
+
+/* Nested cards need even less fill so they do not stack blue rectangles */
+.card .card,.panel .card,.section .card{
+  background:rgba(5,9,23,.26)!important;
+  box-shadow:none!important;
+}
+
+/* Keep controls readable against the faded cards */
+input,select,textarea,
+.card input,.card select,.card textarea,
+.panel input,.panel select,.panel textarea{
+  background:rgba(35,36,37,.92)!important;
+  color:#F7F8FA!important;
+  border-color:rgba(160,166,177,.28)!important;
+}
+
+/* Locked engineer field stays darker */
+input[readonly],#engineerName,.engineer-name,.engineer-display,
+.logged-engineer,.login-locked{
+  background:rgba(2,3,7,.94)!important;
+  color:#fff!important;
+}
+
+/* Date/read-only accent can still pick up the navy theme */
+input[type="date"][readonly]{
+  background:rgba(16,29,91,.72)!important;
+}
+
+/* Softer card edge on mobile */
+@media(max-width:700px){
+  .card,.panel,.box,.section,.home-card,.history-card,.settings-card,
+  .trip-card,.recent-card,.engineer-login-card,.management-login-card{
+    box-shadow:0 10px 28px rgba(0,0,0,.10)!important;
+  }
+}
+
+
+/* V40 Login field sizing */
+.engineer-login-card #loginEngineerSelect,
+.engineer-login-card #loginPin,
+.engineer-login-card #projectNameSelect,
+.engineer-login-card #defaultDriver{
+  width:100%!important;
+  min-height:58px!important;
+  height:58px!important;
+  box-sizing:border-box!important;
+  padding:0 18px!important;
+  border-radius:14px!important;
+  font-size:17px!important;
+}
+.engineer-login-card #loginPin{
+  letter-spacing:.18em!important;
+}
+
+
+/* V40 final — Engineer Name / PIN / Project use identical dimensions */
+#loginEngineerSelect,
+#loginPin,
+#projectNameSelect{
+  display:block!important;
+  width:100%!important;
+  height:60px!important;
+  min-height:60px!important;
+  max-height:60px!important;
+  padding:0 18px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+  border-radius:14px!important;
+  font-size:17px!important;
+  line-height:60px!important;
+}
+#loginPin{
+  letter-spacing:.14em!important;
+}
+
+
+
+/* V41 — Stable KM palette in BOTH browser light mode and dark mode */
+:root{
+  color-scheme: dark !important;
+  --km-field-bg:#2b2b2b;
+  --km-field-bg-locked:#101522;
+  --km-field-text:#f7f7fb;
+  --km-field-muted:#a7a9b7;
+  --km-field-border:rgba(255,255,255,.20);
+  --km-card-bg:rgba(4,8,31,.72);
+}
+
+/* Prevent Samsung/Chrome light mode from repainting controls white */
+html, body, input, select, textarea, button{
+  color-scheme:dark !important;
+}
+input, select, textarea{
+  -webkit-appearance:none;
+  appearance:none;
+}
+
+/* All normal editable fields */
+input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+select,
+textarea,
+.combo-input,
+.search-input{
+  background:var(--km-field-bg) !important;
+  color:var(--km-field-text) !important;
+  border-color:var(--km-field-border) !important;
+  -webkit-text-fill-color:var(--km-field-text) !important;
+}
+
+/* Placeholder visibility */
+input::placeholder,
+textarea::placeholder,
+.combo-input::placeholder,
+.search-input::placeholder{
+  color:var(--km-field-muted) !important;
+  opacity:1 !important;
+  -webkit-text-fill-color:var(--km-field-muted) !important;
+}
+
+/* Browser autofill must not turn fields white */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill{
+  -webkit-text-fill-color:var(--km-field-text) !important;
+  -webkit-box-shadow:0 0 0 1000px var(--km-field-bg) inset !important;
+  box-shadow:0 0 0 1000px var(--km-field-bg) inset !important;
+  caret-color:var(--km-field-text) !important;
+}
+
+/* Readonly/locked values */
+input[readonly],
+input:disabled,
+select:disabled,
+.locked,
+#engineerName{
+  background:var(--km-field-bg-locked) !important;
+  color:var(--km-field-text) !important;
+  -webkit-text-fill-color:var(--km-field-text) !important;
+  opacity:1 !important;
+}
+
+/* Keep date/day controls consistent */
+input[type="date"],
+input[type="time"],
+input[type="number"]{
+  background:var(--km-field-bg) !important;
+  color:var(--km-field-text) !important;
+  -webkit-text-fill-color:var(--km-field-text) !important;
+}
+input[type="date"]::-webkit-calendar-picker-indicator{
+  filter:invert(1);
+  opacity:.82;
+}
+
+/* Native select popup/options */
+select option{
+  background:#202126 !important;
+  color:#f7f7fb !important;
+}
+
+/* Searchable dropdown result panels */
+.dropdown-list,
+.autocomplete-list,
+.suggestions,
+.combo-list,
+.search-results,
+[role="listbox"]{
+  background:#171923 !important;
+  color:#f7f7fb !important;
+  border-color:rgba(255,255,255,.16) !important;
+}
+.dropdown-list *,
+.autocomplete-list *,
+.suggestions *,
+.combo-list *,
+.search-results *,
+[role="listbox"] *{
+  color:#f7f7fb !important;
+}
+.dropdown-list div:hover,
+.autocomplete-list div:hover,
+.suggestions div:hover,
+.combo-list div:hover,
+.search-results div:hover,
+[role="option"]:hover{
+  background:#313866 !important;
+}
+
+/* Settings + main cards keep the same translucent dark treatment */
+.settings-modal,
+.settings-panel,
+.settings-card,
+.card,
+.panel{
+  color-scheme:dark !important;
+}
+
+/* Engineer login controls: identical geometry and stable dark colors */
+#loginEngineerSelect,
+#loginPin,
+#projectNameSelect,
+#defaultDriver{
+  width:100% !important;
+  height:60px !important;
+  min-height:60px !important;
+  padding:0 18px !important;
+  box-sizing:border-box !important;
+  border-radius:14px !important;
+  background:var(--km-field-bg) !important;
+  color:var(--km-field-text) !important;
+  -webkit-text-fill-color:var(--km-field-text) !important;
+  border:1px solid var(--km-field-border) !important;
+}
+
+/* Apply the exact same palette even when OS explicitly requests light mode */
+@media (prefers-color-scheme: light){
+  html, body, input, select, textarea, button{ color-scheme:dark !important; }
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  select, textarea, .combo-input, .search-input{
+    background:var(--km-field-bg) !important;
+    color:var(--km-field-text) !important;
+    -webkit-text-fill-color:var(--km-field-text) !important;
+  }
+  input[readonly], input:disabled, select:disabled, .locked, #engineerName{
+    background:var(--km-field-bg-locked) !important;
+    color:var(--km-field-text) !important;
+    -webkit-text-fill-color:var(--km-field-text) !important;
+  }
+}
+
+
+
+/* =========================================================
+   V42 — THEME-INDEPENDENT FORM CONTROLS
+   Keep identical colors in Android/Chrome light & dark mode.
+   ========================================================= */
+:root{
+  color-scheme:dark!important;
+  --v42-field:#2B2B2B;
+  --v42-field-locked:#101522;
+  --v42-text:#F5F4FA;
+  --v42-placeholder:#A6A3B2;
+  --v42-border:rgba(255,255,255,.20);
+  --v42-options:#171923;
+  --v42-option-hover:#313866;
+}
+
+html,body{color-scheme:dark!important}
+
+/* Real inputs in Home + Settings */
+body input[type="text"],
+body input[type="number"],
+body input[type="password"],
+body input[type="date"],
+body input[type="time"],
+body select,
+body textarea,
+body .search-select input,
+body #loginEngineerSelect,
+body #loginPin,
+body #projectNameSelect,
+body #defaultDriver{
+  background-color:var(--v42-field)!important;
+  color:var(--v42-text)!important;
+  -webkit-text-fill-color:var(--v42-text)!important;
+  border-color:var(--v42-border)!important;
+  opacity:1!important;
+  color-scheme:dark!important;
+}
+
+/* Locked/read-only fields */
+body input[readonly],
+body input:disabled,
+body select:disabled,
+body #engineerName{
+  background-color:var(--v42-field-locked)!important;
+  color:var(--v42-text)!important;
+  -webkit-text-fill-color:var(--v42-text)!important;
+  opacity:1!important;
+}
+
+/* Placeholder */
+body input::placeholder,
+body textarea::placeholder,
+body .search-select input::placeholder,
+body #loginEngineerSelect::placeholder,
+body #defaultDriver::placeholder{
+  color:var(--v42-placeholder)!important;
+  -webkit-text-fill-color:var(--v42-placeholder)!important;
+  opacity:1!important;
+}
+
+/* ACTUAL custom searchable dropdown containers */
+body .search-options,
+body #engineerOptions,
+body #defaultDriverOptions,
+body #driverOptions,
+body #areaOptions{
+  background:var(--v42-options)!important;
+  color:var(--v42-text)!important;
+  border-color:var(--v42-border)!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.42)!important;
+}
+
+/* ACTUAL dropdown rows — override legacy white !important rules */
+body .search-options div,
+body .search-options .option,
+body .search-options button,
+body .search-options li,
+body #engineerOptions > *,
+body #defaultDriverOptions > *,
+body #driverOptions > *,
+body #areaOptions > *{
+  background:var(--v42-options)!important;
+  color:var(--v42-text)!important;
+  -webkit-text-fill-color:var(--v42-text)!important;
+  border-color:rgba(255,255,255,.10)!important;
+}
+
+/* Selected / hover result */
+body .search-options div:hover,
+body .search-options .option:hover,
+body .search-options .active,
+body .search-options div[aria-selected="true"],
+body .search-options [aria-selected="true"]{
+  background:var(--v42-option-hover)!important;
+  color:#FFFFFF!important;
+  -webkit-text-fill-color:#FFFFFF!important;
+}
+
+/* Autofill */
+body input:-webkit-autofill,
+body input:-webkit-autofill:hover,
+body input:-webkit-autofill:focus{
+  -webkit-text-fill-color:var(--v42-text)!important;
+  -webkit-box-shadow:0 0 0 1000px var(--v42-field) inset!important;
+  box-shadow:0 0 0 1000px var(--v42-field) inset!important;
+  caret-color:var(--v42-text)!important;
+}
+
+/* Same geometry for login fields */
+body #loginEngineerSelect,
+body #loginPin,
+body #projectNameSelect,
+body #defaultDriver{
+  width:100%!important;
+  height:60px!important;
+  min-height:60px!important;
+  max-height:60px!important;
+  padding:0 18px!important;
+  box-sizing:border-box!important;
+  border-radius:14px!important;
+  font-size:17px!important;
+}
+
+/* Explicitly repeat under OS light preference to defeat Samsung Internet/Chrome UA rules */
+@media (prefers-color-scheme:light){
+  html,body{color-scheme:dark!important}
+  body input[type="text"],
+  body input[type="number"],
+  body input[type="password"],
+  body input[type="date"],
+  body input[type="time"],
+  body select,
+  body textarea,
+  body .search-select input,
+  body #loginEngineerSelect,
+  body #loginPin,
+  body #projectNameSelect,
+  body #defaultDriver{
+    background-color:var(--v42-field)!important;
+    color:var(--v42-text)!important;
+    -webkit-text-fill-color:var(--v42-text)!important;
+  }
+  body .search-options,
+  body #engineerOptions,
+  body #defaultDriverOptions,
+  body #driverOptions,
+  body #areaOptions,
+  body .search-options div,
+  body .search-options .option,
+  body .search-options button,
+  body .search-options li{
+    background:var(--v42-options)!important;
+    color:var(--v42-text)!important;
+    -webkit-text-fill-color:var(--v42-text)!important;
+  }
+}
+
+
+.photo-source-modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:10050;display:none;align-items:flex-end;justify-content:center;padding:18px;backdrop-filter:blur(5px)}
+.photo-source-modal.open{display:flex!important}
+.photo-source-box{width:min(100%,460px);background:linear-gradient(180deg,#111426,#090b18);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:20px;box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 0 1px rgba(209,25,121,.08);color:#fff;margin-bottom:max(8px,env(safe-area-inset-bottom))}
+.photo-source-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:17px}.photo-source-kicker{font-size:11px;font-weight:900;letter-spacing:.16em;color:#ef4fa5;margin-bottom:5px}.photo-source-head h3{margin:0;font-size:22px}.photo-source-head p{margin:5px 0 0;color:#9298aa;font-size:14px}.photo-source-x{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#202231;color:#fff;font-size:26px;line-height:1;cursor:pointer}
+.photo-source-actions{display:grid;gap:11px}.photo-source-choice{width:100%;display:grid;grid-template-columns:48px 1fr 24px;align-items:center;gap:12px;text-align:left;padding:14px;border-radius:17px;border:1px solid rgba(255,255,255,.1);background:#171a28;color:#fff;cursor:pointer;min-height:76px}.photo-source-choice:active{transform:scale(.99);background:#202438}.photo-source-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:rgba(210,24,119,.16);font-size:24px}.photo-source-choice b{display:block;font-size:17px;margin-bottom:3px}.photo-source-choice small{display:block;color:#9ba1b2;font-size:13px}.photo-source-arrow{font-size:30px;color:#e33992;text-align:right}.photo-source-cancel{width:100%;margin-top:12px;padding:14px;border:0;border-radius:15px;background:#292c38;color:#fff;font-weight:800;font-size:15px;cursor:pointer}
+@media(min-width:700px){.photo-source-modal{align-items:center}.photo-source-box{margin-bottom:0}}
+
+.sso-status{position:fixed;inset:0;z-index:999999;background:rgba(2,8,23,.92);display:flex;align-items:center;justify-content:center;padding:24px}
+.sso-status-box{max-width:430px;width:100%;padding:24px;border-radius:20px;background:#0b1020;border:1px solid rgba(255,255,255,.15);color:#fff;text-align:center}
+.sso-status-box b{display:block;font-size:20px;margin-bottom:8px}.sso-status-box span{color:#aab4c4}
+</style>
+<script>
+if(location.hash.indexOf('sso=')>=0){
+ document.documentElement.classList.add('portal-sso-pending');
+}
+</script>
+<style>
+html.portal-sso-pending body{visibility:hidden!important}
+html.portal-sso-pending body::before{content:'';visibility:visible!important;position:fixed;inset:0;z-index:2147483647;display:block;background:#020817}
+</style>
+
+<style id="taskLocationV8320">
+.task-location-card{margin:16px 0;padding:16px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.035)}
+.task-location-head{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.task-location-title{font-weight:800;font-size:16px;margin-bottom:4px}
+.task-location-btn{width:auto!important;min-height:46px;padding:0 16px!important;border:1px solid rgba(236,0,140,.55)!important;background:#ec008c!important;color:#fff!important;border-radius:12px!important;font-weight:800!important}
+.task-location-btn:disabled{opacity:.55;cursor:not-allowed}
+.task-location-status{margin-top:12px;padding:11px 12px;border-radius:11px;background:#0b1725;border:1px solid #263b55;color:#b9c5d6;font-size:13px}
+.task-location-status.ok{color:#b8f5ce;border-color:rgba(43,181,115,.45);background:rgba(43,181,115,.08)}
+.task-location-list{display:grid;gap:8px;margin-top:10px}
+.task-location-item{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;border-radius:10px;background:#0b1725;border:1px solid #263b55}
+.task-location-item strong{color:#fff}.task-location-item span{color:#9aa9bd;font-size:12px}
+@media(max-width:650px){.task-location-btn{width:100%!important}.task-location-head{display:block}.task-location-btn{margin-top:12px}}
+</style>
+
+
+<style id="v8331TripStateLoader">
+#tripStateLoader{
+  display:none;align-items:center;justify-content:center;min-height:180px;
+  padding:24px;text-align:center
+}
+#tripStateLoader.active{display:flex}
+#tripStateLoader .box{
+  display:flex;align-items:center;gap:12px;padding:14px 18px;border-radius:14px;
+  background:var(--card,#0b1220);border:1px solid var(--border,#243047);
+  color:var(--text,#fff);font-weight:700
+}
+#tripStateLoader .spin{
+  width:18px;height:18px;border:2px solid rgba(255,255,255,.25);
+  border-top-color:currentColor;border-radius:50%;animation:tmxSpin .7s linear infinite
+}
+@keyframes tmxSpin{to{transform:rotate(360deg)}}
+body.tmx-checking-trip #startSection,
+body.tmx-checking-trip #finishSection{display:none!important}
+</style>
+<meta name="tmx-migration-build" content="2026-10-09-github-km">
+</head>
+<body>
+
+<div id="engineerLoginBuffer" class="login-buffer-overlay" aria-hidden="true">
+  <div class="login-buffer-box" role="status" aria-live="polite">
+    <div class="login-buffer-spinner"></div>
+    <div>Signing you in...</div>
+    <div style="font-size:12px;font-weight:600;color:#6b7280;margin-top:5px">Verifying your Telecomax account</div>
+  </div>
+</div>
+
+
+<header>
+  <div class="brand">
+    <div class="brand-dot"></div>
+    <span class="brand-name">TELECOMAX</span>
+    <span class="brand-sub">KM Tracker</span>
+  </div>
+  <button id="menuBtn" class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+</header>
+
+<!-- SIDE MENU -->
+<div class="side-menu-overlay" id="sideMenuOverlay"></div>
+<aside class="side-menu" id="sideMenu" aria-hidden="true">
+  <div class="side-menu-header">
+    <div>
+      <div class="side-menu-title">TELECOMAX</div>
+      <div class="side-menu-sub">KM Tracker</div>
+    </div>
+    <button type="button" class="side-menu-close" id="closeSideMenu" aria-label="Close menu">✕</button>
+  </div>
+
+  <div class="side-menu-user">
+    <div class="user-avatar">👤</div>
+    <div>
+      <div id="sideMenuUserName">Not logged in</div>
+      <div class="side-menu-role">Engineer</div>
+    </div>
+  </div>
+
+  <nav class="side-menu-nav">
+    <button type="button" class="side-menu-item" id="menuHomeBtn">
+      <span class="side-menu-icon">🏠</span>
+      <span data-i18n="Home">Home</span>
+    </button>
+    <button type="button" class="side-menu-item" id="menuHistoryBtn">
+      <span class="side-menu-icon">📊</span>
+      <span data-i18n="History">History</span>
+    </button>
+    <button type="button" class="side-menu-item" id="menuAdminBtn">
+      <span class="side-menu-icon">🛡</span>
+      <span data-i18n="Admin">Admin</span>
+    </button>
+    <button type="button" class="side-menu-item" id="menuFinanceBtn">
+      <span class="side-menu-icon">💳</span>
+      <span data-i18n="Finance">Finance</span>
+    </button>
+    <div class="side-menu-divider"></div>
+    <button type="button" class="side-menu-item" id="menuSettingsBtn">
+      <span class="side-menu-icon">⚙️</span>
+      <span data-i18n="Settings">Settings</span>
+    </button>
+    <button type="button" class="side-menu-item side-menu-logout" id="sideAdminLogoutBtn" style="display:none;">
+      <span class="side-menu-icon">↪</span>
+      <span data-i18n="Log out of Admin">Log out of Admin</span>
+    </button>
+    <button type="button" class="side-menu-item side-menu-logout" id="sideFinanceLogoutBtn" style="display:none;">
+      <span class="side-menu-icon">↪</span>
+      <span data-i18n="Log out of Finance">Log out of Finance</span>
+    </button>
+  </nav>
+
+  <div class="side-menu-footer">Telecomax KM Tracker</div>
+</aside>
+
+<div class="user-row">
+  <div class="user-row-left">
+    <div class="user-avatar">👤</div>
+    <span id="userRowText">Not logged in</span>
+  </div>
+  <button type="button" class="switch-link" id="switchUserBtn">Switch</button>
+</div>
+
+<main>
+
+  <div class="banner" id="overdueBanner" style="display:none;">
+    <span class="msg"></span>
+    <div class="banner-actions">
+      <button type="button" id="bannerGoFinish">Finish now</button>
+      <button type="button" id="bannerDismiss">✕</button>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" id="tabStartBtn">▶ <span data-i18n="Start">Start</span></button>
+    <button class="tab-btn" id="tabFinishBtn">⏹ <span data-i18n="Finish">Finish</span></button>
+  </div>
+  <div class="lock-note" id="lockNote" style="display:none;"></div>
+
+  <div id="tripStateLoader" aria-live="polite">
+  <div class="box"><span class="spin"></span><span>Checking active trip…</span></div>
+</div>
+
+<!-- START SECTION -->
+  <section class="section active" id="startSection">
+    <form class="card" id="startForm" autocomplete="off">
+      <label data-i18n="Engineer">Engineer</label>
+      <div class="locked-field" id="startEngineerDisplay">— not logged in —</div>
+      <div class="hint" id="startEngineerHint">This is locked to your login. Not you? Switch in ☰ Menu → Settings.</div>
+
+      <label data-i18n="Driver Name">Driver Name</label>
+      <div class="search-select" id="driverSearchWrap">
+        <input type="text" id="driver" placeholder="Search or select driver" autocomplete="off">
+        <div class="search-options" id="driverOptions"></div>
+      </div>
+      <div class="hint" id="startDriverHint">Start typing to search registered drivers.</div>
+      <label>Vehicle ID</label>
+      <div class="search-select"><input type="text" id="vehicle" placeholder="Search or select vehicle" autocomplete="off"><div class="search-options" id="vehicleOptions"></div></div>
+      <div class="hint" id="vehicleHint">Select the vehicle assigned to this driver.</div>
+
+      <div class="row2">
+        <div>
+          <label data-i18n="Date *">Date *</label>
+          <input type="text" id="date" class="date-display" readonly aria-readonly="true" required>
+        </div>
+        <div>
+          <label data-i18n="Day">Day</label>
+          <input type="text" id="day" disabled>
+        </div>
+      </div>
+<label data-i18n="Task *">Task *</label>
+      <input type="text" id="task" name="tmx_task_entry" placeholder="e.g. Travel to site / complaint" autocomplete="off" aria-autocomplete="none" data-lpignore="true" autocapitalize="sentences" autocorrect="off" spellcheck="false" required>
+
+      <label data-i18n="Start KM *">Start KM *</label>
+      <div class="km-row">
+        <input type="number" id="startKm" inputmode="numeric" placeholder="Odometer reading" required>
+        <div id="startPhotoBlock">
+          <button type="button" class="photo-btn" id="startPhotoBtn">Take photo</button>
+        </div>
+      </div>
+      <div class="photo-missing" id="startPhotoMissing">Required — photo of the dashboard right now</div>
+
+      <button type="submit" class="submit-btn" id="startSubmitBtn">▶ Submit Start</button>
+    </form>
+  </section>
+
+  <!-- FINISH SECTION -->
+  <section class="section" id="finishSection">
+    <form class="card" id="finishForm">
+      <label>Which trip are you finishing? *</label>
+      <select id="openTripSelect" required>
+        <option value="">— Select an open trip —</option>
+      </select>
+      <div class="empty" id="noOpenTrips" style="display:none;">No open trips found. Start a trip first.</div>
+      <div class="trip-summary" id="tripSummary" style="display:none;"></div>
+
+      <label data-i18n="Finish KM *">Finish KM *</label>
+      <div class="km-row">
+        <input type="number" id="finishKm" inputmode="numeric" placeholder="Odometer reading" required>
+        <div id="finishPhotoBlock">
+          <button type="button" class="photo-btn" id="finishPhotoBtn">Take photo</button>
+        </div>
+      </div>
+      <div class="photo-missing" id="finishPhotoMissing">Required — photo of the dashboard right now</div>
+
+      <div class="task-location-card" id="taskLocationCard">
+        <div class="task-location-head">
+          <div>
+            <div class="task-location-title">Task Location</div>
+            <div class="hint">When you reach a task destination, submit your current location. The governorate and city are detected automatically.</div>
+          </div>
+          <button type="button" class="task-location-btn" id="submitTaskLocationBtn">📍 Submit Task Location</button>
+        </div>
+        <div class="task-location-status" id="taskLocationStatus">Select an open trip, then submit the location when you reach the task destination.</div>
+        <div class="task-location-list" id="taskLocationList"></div>
+      </div>
+
+      <div>
+        <label>Static Hours</label>
+        <input type="number" id="staticKm" inputmode="decimal" min="0" max="24" step="0.1" value="0">
+      </div>
+
+      <label class="overnight-option">
+        <input type="checkbox" id="overNightStay">
+        <span>Over Night Stay</span>
+      </label>
+      <div class="hint">Checked = F&amp;B for this trip is always 0 KM and no home/personal F&amp;B is added later.</div>
+
+      <div class="computed">
+        <div><div class="num" id="todayTripOut">0</div><div class="lbl">Today's Trip KM</div></div>
+        <div><div class="num" id="lastForthBackOut">0</div><div class="lbl">Last Forth & Back KM</div></div>
+        <div><div class="num" id="totalOut">0</div><div class="lbl">Today Total KM</div></div>
+        <div class="payment-card" id="engineerPaymentCard" style="display:none;">
+          <div class="payment-lbl">Amount to Pay now</div>
+          <div class="payment-num" id="amountOut">0.00 EGP</div>
+          <div class="payment-note">✓ Final amount — check before paying the driver</div>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn" id="finishSubmitBtn">⏹ Submit Finish</button>
+    </form>
+  </section>
+
+  <!-- HISTORY SECTION -->
+  <section class="section" id="historySection">
+    <div class="page-header"><span class="page-header-icon">📊</span><span class="page-header-title">History</span></div>
+    <div class="card">
+      <div class="hint" id="historyWhoami"></div>
+      <label>Filter by Month</label>
+      <div class="filter-row">
+        <input type="month" id="historyMonth" class="month-input">
+        <button type="button" class="save-btn" id="historyClearMonthBtn" style="background:#374151;">Clear</button>
+      </div>
+      <div class="hint">Received, spent and remaining balance are calculated for the selected month only.</div>
+
+      <div class="balance-grid" id="balanceGrid" style="display:none;">
+        <div class="balance-box solfa-balance-box">
+          <div class="balance-lbl">Received (Solfa)</div>
+          <div class="balance-num" id="balReceived">0</div>
+          <div id="solfaEntries" class="solfa-entries"></div>
+        </div>
+        <div class="balance-box wide">
+          <div class="balance-lbl">Spent</div>
+          <div class="balance-num" id="balSpent">0</div>
+        </div>
+        <div class="balance-box wide" id="balBalanceBox">
+          <div class="balance-lbl">Balance Remaining</div>
+          <div class="balance-num" id="balBalance">0</div>
+        </div>
+      </div>
+      <div class="hint" id="historyHint">Log in from ☰ Menu → Settings to view your history and balance.</div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+        <strong>Trip history</strong>
+        <button type="button" class="save-btn" id="historyPhotosToggle" style="width:auto;padding:8px 12px;margin-top:0;background:#374151;">Hide Photos</button>
+      </div>
+      <div id="historyList"><div class="empty">No history loaded yet.</div></div>
+    </div>
+  </section>
+
+  <!-- ADMIN SECTION -->
+  <section class="section" id="adminSection">
+    <div class="page-header"><span class="page-header-icon">🛡</span><span class="page-header-title">Admin</span></div>
+    <div class="card management-login-card" id="adminLoginCard">
+      <div class="management-login-head">
+        <div class="management-login-icon">🛡</div>
+        <div><strong>Admin Access</strong><div class="hint">Use your management Name + 4-digit PIN.</div></div>
+      </div>
+      <label>Name</label>
+      <input type="text" id="adminNameInputTab" placeholder="Enter your name" autocomplete="username">
+      <label>4-digit PIN</label>
+      <input type="password" inputmode="numeric" maxlength="4" id="adminPinInputTab" placeholder="••••" autocomplete="current-password">
+      <button type="button" class="save-btn" id="adminLoginTabBtn">Log in</button>
+    </div>
+
+    <div id="adminDashboard" style="display:none;">
+      <div class="admin-tabs" role="tablist" aria-label="Admin sections">
+        <button type="button" class="admin-tab-btn active" id="adminBalancesTabBtn">💰 Balances</button>
+        <button type="button" class="admin-tab-btn" id="adminPhotoAuditTabBtn">📷 Photo Audit</button>
+        <button type="button" class="admin-tab-btn" id="adminSolfaTabBtn">💵 Solfa</button>
+        <button type="button" class="admin-tab-btn" id="adminRentTabBtn">🚗 Rent</button>
+      </div>
+      <div class="admin-panel active" id="adminBalancesPanel">
+        <div class="card">
+          <strong>Balances</strong>
+          <label>Filter Balances</label>
+          <div class="filter-row" style="display:grid;grid-template-columns:1fr;gap:8px;">
+            <div><div class="hint" style="margin-bottom:4px;">Engineer</div><div class="search-select admin-filter-control" id="adminBalanceEngineerSearchWrap"><input type="text" id="adminBalanceEngineer" class="admin-filter-control" placeholder="Search or select engineer" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"><div class="search-options" id="adminBalanceEngineerOptions"></div></div></div>
+            <div><div class="hint" style="margin-bottom:4px;">Month</div><input type="month" id="adminBalanceMonth" class="month-input admin-filter-control"></div>
+            <button type="button" class="save-btn" id="adminClearBalanceMonthBtn" style="background:#374151;width:100%;">Clear</button>
+          </div>
+          <div class="hint">Received, spent and balance below reflect the selected month and engineer.</div>
+          <div class="balance-grid">
+            <div class="balance-box solfa-balance-box"><div class="balance-lbl">Total Received</div><div class="balance-num" id="adminTotalReceived">0</div><div id="adminSolfaEntries" class="solfa-entries" style="margin-top:7px;"></div></div>
+            <div class="balance-box wide"><div class="balance-lbl">Total Spent</div><div class="balance-num" id="adminTotalSpent">0</div></div>
+            <div class="balance-box wide"><div class="balance-lbl">Total Balance</div><div class="balance-num" id="adminTotalBalance">0</div></div>
+          </div>
+          <div id="adminEngineerList" style="margin-top:14px;"></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="adminPhotoAuditPanel">
+        <div class="card">
+          <strong>📷 Photo Audit</strong>
+          <div class="hint">Compare each odometer photo against the KM the engineer entered, grouped by day and engineer.</div>
+          <button type="button" class="save-btn" id="adminPhotosToggle" style="width:auto;padding:8px 12px;margin:8px 0 2px;background:#374151;">Hide Photos</button>
+          <label data-i18n="Filter by Engineer">Filter by Engineer</label><div class="search-select admin-filter-control" id="adminFilterEngineerSearchWrap"><input type="text" id="adminFilterEngineer" class="admin-filter-control" placeholder="Search or select engineer" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"><div class="search-options" id="adminFilterEngineerOptions"></div></div>
+          <label>Filter by Driver</label><div class="search-select admin-filter-control" id="adminFilterDriverSearchWrap"><input type="text" id="adminFilterDriver" class="admin-filter-control" placeholder="Search or select driver" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"><div class="search-options" id="adminFilterDriverOptions"></div></div>
+          <label>Filter by Month</label><input type="month" id="adminFilterMonth" class="month-input admin-filter-control">
+          <div class="row2" style="margin-top:10px;"><button type="button" class="save-btn" id="adminApplyFiltersBtn">Apply Filters</button><button type="button" class="save-btn" style="background:#374151;" id="adminClearFiltersBtn">Clear</button></div>
+        </div>
+        <div class="card"><div id="adminTripsList"><div class="empty">No trips loaded yet.</div></div></div>
+      </div>
+      <div class="admin-panel" id="adminSolfaPanel">
+        <div class="card solfa-upload-card">
+          <strong>💵 Add Solfa</strong>
+          <div class="hint">Add a Solfa amount for an engineer. The entry is stored in the Solfa column with the selected engineer and date.</div>
+          <label data-i18n="Engineer Name">Engineer Name</label><div class="search-select" id="adminSolfaEngineerSearchWrap"><input type="text" id="adminSolfaEngineer" placeholder="Search or select engineer" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"><div class="search-options" id="adminSolfaEngineerOptions"></div></div>
+          <label>Date</label><input type="date" id="adminSolfaDate">
+          <label>Amount</label><input type="number" id="adminSolfaAmount" min="0.01" step="0.01" inputmode="decimal" placeholder="Enter amount">
+          <button type="button" class="save-btn" id="adminSolfaUploadBtn">⬆ Upload</button>
+          <div id="adminSolfaStatus" class="hint" style="margin-top:8px;"></div>
+        </div>
+      </div>
+      <div class="admin-panel" id="adminRentPanel">
+        <div class="card rent-upload-card">
+          <strong>🚗 Rent Payment</strong>
+          <div class="hint">Select a completed trip using Driver = Rent. Benzine is taken from that trip's Amount Spent. Enter the Rent amount, press Sum, review the total, then Upload.</div>
+          <label>Trip</label>
+          <select id="adminRentTrip"><option value="">— Select Rent Trip —</option></select>
+          <label data-i18n="Engineer Name">Engineer Name</label>
+          <input type="text" id="adminRentEngineer" class="locked-field" readonly placeholder="Select a rent trip">
+          <label>Benzine Amount Spent</label>
+          <input type="number" id="adminRentBenzine" class="locked-field" readonly value="0">
+          <label>Rent Amount</label>
+          <div class="row2" style="align-items:end;">
+            <input type="number" id="adminRentAmount" min="0.01" step="0.01" inputmode="decimal" placeholder="Enter Rent amount">
+            <button type="button" class="save-btn" id="adminRentSumBtn" style="margin-top:0;">➕ Sum</button>
+          </div>
+          <div class="rent-total-card"><div class="rent-total-lbl">Total Amount to Pay</div><div class="rent-total-num" id="adminRentTotal">0.00 EGP</div></div>
+          <label>Rent Deduction</label>
+          <select id="adminRentDeduction"><option value="">— Select —</option><option value="On TMX">On TMX</option><option value="On Driver">On Driver</option></select>
+          <label>Rent Deduction Driver</label>
+          <div class="search-select" id="adminRentDeductionDriverSearchWrap">
+            <input type="text" id="adminRentDeductionDriver" placeholder="Search or select driver (Optional)" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+            <div class="search-options" id="adminRentDeductionDriverOptions"></div>
+          </div>
+          <button type="button" class="save-btn" id="adminRentUploadBtn">⬆ Upload</button>
+          <div id="adminRentStatus" class="hint" style="margin-top:8px;"></div>
+        </div>
+      </div>
+            <button type="button" class="save-btn" style="background:#374151;" id="adminRefreshTabBtn">🔄 Refresh</button>
+    </div>
+  </section>
+
+  <!-- FINANCE SECTION -->
+  <section class="section" id="financeSection">
+    <div class="page-header"><span class="page-header-icon">💳</span><span class="page-header-title">Finance</span></div>
+    <div class="card management-login-card" id="financeLoginCard">
+      <div class="management-login-head">
+        <div class="management-login-icon">💳</div>
+        <div><strong>Finance Access</strong><div class="hint">Use your management Name + 4-digit PIN.</div></div>
+      </div>
+      <label>Name</label>
+      <input type="text" id="financeNameInput" placeholder="Enter your name" autocomplete="username">
+      <label>4-digit PIN</label>
+      <input type="password" inputmode="numeric" maxlength="4" id="financePinInput" placeholder="••••" autocomplete="current-password">
+      <button type="button" class="save-btn" id="financeLoginBtn">Log in</button>
+      <div class="hint">Finance credentials cannot open the Admin section.</div>
+    </div>
+    <div id="financeDashboard" style="display:none;">
+      <div class="card">
+        <strong>📷 Photo Audit</strong>
+        <div class="hint">Finance copy of Photo Audit. Review the same trip, odometer and GPS information.</div>
+        <button type="button" class="save-btn" id="financePhotosToggle" style="width:auto;padding:8px 12px;margin:8px 0 2px;background:#374151;">Hide Photos</button>
+        <label data-i18n="Filter by Engineer">Filter by Engineer</label><div class="search-select admin-filter-control" id="financeFilterEngineerSearchWrap"><input type="text" id="financeFilterEngineer" class="admin-filter-control" placeholder="Search or select engineer" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"><div class="search-options" id="financeFilterEngineerOptions"></div></div>
+        <label>Filter by Driver</label><div class="search-select admin-filter-control" id="financeFilterDriverSearchWrap"><input type="text" id="financeFilterDriver" class="admin-filter-control" placeholder="Search or select driver" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"><div class="search-options" id="financeFilterDriverOptions"></div></div>
+        <label>Filter by Month</label><input type="month" id="financeFilterMonth" class="month-input admin-filter-control">
+        <div class="row2" style="margin-top:10px;"><button type="button" class="save-btn" id="financeApplyFiltersBtn">Apply Filters</button><button type="button" class="save-btn" style="background:#374151;" id="financeClearFiltersBtn">Clear</button></div>
+      </div>
+      <div class="card"><div id="financeTripsList"><div class="empty">No trips loaded yet.</div></div></div>
+    </div>
+  </section>
+
+  <div class="card">
+    <strong data-i18n="Recent activity">Recent activity</strong>
+    <div id="logList"><div class="empty">Nothing yet.</div></div>
+  </div>
+
+</main>
+
+<div class="modal-bg" id="settingsModal" style="display:none;">
+  <div class="modal">
+    <button class="close" id="closeSettings">✕</button>
+    <h2 data-i18n="Settings">Settings</h2>
+    <label data-i18n="Language">Language</label>
+    <select id="languageSelect">
+      <option value="en">English</option>
+      <option value="ar">العربية</option>
+    </select>
+    <div class="hint" data-i18n="Choose the app language. The interface will switch between English and Arabic.">Choose the app language. The interface will switch between English and Arabic.</div>
+
+    <div class="engineer-login-card">
+      <div class="engineer-login-head">
+        <div class="engineer-login-icon">↗</div>
+        <div>
+          <div class="engineer-login-title">Engineer Access</div>
+          <div class="engineer-login-sub">Use the same Engineer Name and PIN as the Custody app.</div>
+        </div>
+      </div>
+
+      <label>Engineer Name</label>
+      <div class="search-select" id="engineerSearchWrap">
+        <input type="text" id="loginEngineerSelect" placeholder="Search your name" autocomplete="username" autocorrect="off" autocapitalize="none" spellcheck="false">
+        <div class="search-options" id="engineerOptions"></div>
+      </div>
+
+      <label>4-digit PIN</label>
+      <input type="password" inputmode="numeric" maxlength="4" id="loginPin" autocomplete="current-password" placeholder="••••">
+
+      <label>Project</label>
+      <select id="projectNameSelect"><option value="">Sign in to load projects</option></select>
+
+      <label>Default Driver</label>
+      <div class="search-select" id="defaultDriverSearchWrap">
+        <input type="text" id="defaultDriver" placeholder="Search or select driver" autocomplete="off">
+        <div class="search-options" id="defaultDriverOptions"></div>
+      </div>
+
+      <button type="button" class="engineer-login-btn" id="loginBtn">Log in</button>
+      <div class="engineer-login-status" id="loginStatus">Secure employee access</div>
+    </div>
+    <button class="save-btn" id="saveSettings">Save Settings</button>
+    <button type="button" class="save-btn" style="background:#374151;margin-top:8px;" id="enableRemindersBtn">🔔 Enable Finish Reminders</button>
+    <div class="hint" id="reminderStatus"></div>
+    <button type="button" class="save-btn" style="background:#374151;margin-top:8px;" id="refreshListBtn">📋 Refresh Engineer/Driver list</button>
+    <button type="button" class="save-btn" style="background:#374151;margin-top:8px;" id="syncNowBtn">🔄 Sync pending now</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="resultModal" style="display:none;">
+  <div class="modal result-modal">
+    <div class="result-icon" id="resultIcon">✅</div>
+    <h2 id="resultTitle" style="text-align:center;">Success</h2>
+    <p id="resultMessage" style="text-align:center;color:var(--muted);"></p>
+    <button type="button" class="save-btn" id="resultOkBtn">OK</button>
+  </div>
+</div>
+
+
+<div class="modal-bg photo-source-modal" id="photoSourceModal" style="display:none">
+  <div class="photo-source-box" role="dialog" aria-modal="true" aria-labelledby="photoSourceTitle">
+    <div class="photo-source-head">
+      <div>
+        <div class="photo-source-kicker">PHOTO</div>
+        <h3 id="photoSourceTitle">Choose Photo Source</h3>
+        <p>How would you like to add this photo?</p>
+      </div>
+      <button type="button" class="photo-source-x" id="photoSourceX" aria-label="Close">×</button>
+    </div>
+    <div class="photo-source-actions">
+      <button type="button" class="photo-source-choice" id="photoSourceCamera">
+        <span class="photo-source-icon">📷</span>
+        <span><b>Camera</b><small>Take a new photo now</small></span>
+        <span class="photo-source-arrow">›</span>
+      </button>
+      <button type="button" class="photo-source-choice" id="photoSourceGallery">
+        <span class="photo-source-icon">🖼️</span>
+        <span><b>Gallery</b><small>Choose an existing photo</small></span>
+        <span class="photo-source-arrow">›</span>
+      </button>
+    </div>
+    <button type="button" class="photo-source-cancel" id="photoSourceCancel">Cancel</button>
+  </div>
+</div>
+
+<input id="rentGalleryInput" type="file" accept="image/*" style="display:none">
+<div class="modal-bg camera-modal" id="cameraModal" style="display:none;">
+  <div class="modal">
+    <button class="close" id="closeCamera">✕</button>
+    <h2 id="cameraTitle">Take photo</h2>
+    <video id="cameraPreview" class="camera-preview" autoplay playsinline muted></video>
+    <div class="camera-status" id="cameraStatus">Use the rear mobile camera to capture the dashboard.</div>
+    <div class="camera-actions">
+      <button type="button" class="save-btn" id="capturePhotoBtn">📷 Capture</button>
+      <button type="button" class="save-btn" style="background:#374151;" id="cancelCameraBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="photoLightbox" style="display:none;">
+  <div class="lightbox-content">
+    <button type="button" class="lightbox-close" id="closeLightbox">✕</button>
+    <img id="lightboxImg" src="" alt="odometer photo">
+    <a id="lightboxOpenOriginal" href="#" target="_blank" rel="noopener" class="lightbox-link">Open full resolution in Drive ↗</a>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const todayISO = () => {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
+const dayName = (iso) => new Date(iso+'T00:00:00').toLocaleDateString('en-US',{weekday:'long'});
+const genId = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-'+Date.now()+'-'+Math.random().toString(16).slice(2));
+const DEFAULT_SCRIPT_URL = '/_legacy/km';
+const DEFAULT_SHARED_TOKEN = 'CHANGE-ME-TO-A-SECRET';
+
+// ---------- side menu ----------
+const sideMenu = $('sideMenu');
+const sideMenuOverlay = $('sideMenuOverlay');
+
+function openSideMenu(){
+  sideMenu.classList.add('open');
+  sideMenuOverlay.classList.add('open');
+  sideMenu.setAttribute('aria-hidden','false');
+  $('menuBtn').setAttribute('aria-expanded','true');
+}
+function closeSideMenu(){
+  sideMenu.classList.remove('open');
+  sideMenuOverlay.classList.remove('open');
+  sideMenu.setAttribute('aria-hidden','true');
+  $('menuBtn').setAttribute('aria-expanded','false');
+}
+$('menuBtn').onclick = openSideMenu;
+$('closeSideMenu').onclick = closeSideMenu;
+sideMenuOverlay.onclick = closeSideMenu;
+
+$('menuHomeBtn').onclick = () => { closeSideMenu(); showTab('start'); };
+$('menuHistoryBtn').onclick = () => { closeSideMenu(); showTab('history'); };
+$('menuAdminBtn').onclick = () => { closeSideMenu(); if (financeAuthed) return toast('Finance access cannot open Admin'); showTab('admin'); };
+$('menuFinanceBtn').onclick = () => { closeSideMenu(); showTab('finance'); };
+$('menuSettingsBtn').onclick = () => { closeSideMenu(); $('settingsModal').style.display='flex'; };
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && sideMenu.classList.contains('open')) closeSideMenu();
+});
+
+// ---------- language / localization ----------
+const I18N = {
+  ar: {
+    'Settings':'الإعدادات','Language':'اللغة','English':'English','العربية':'العربية',
+    'Choose the app language. The interface will switch between English and Arabic.':'اختر لغة التطبيق. سيتم تغيير واجهة التطبيق بين الإنجليزية والعربية.',
+    
+    'Engineer Login':'تسجيل دخول المهندس','My Name':'اسمي','Search or select engineer':'ابحث عن المهندس أو اختره',
+    'My PIN':'الرقم السري','Enter Your Pin':'أدخل الرقم السري','Project Name':'اسم المشروع','— Select Project —':'— اختر المشروع —',
+    'The selected project determines the Benzine rate used for your trips.':'المشروع المختار يحدد سعر البنزين المستخدم في رحلاتك.',
+    'Default Driver Name':'اسم السائق الافتراضي','Search or select driver':'ابحث عن السائق أو اختره',
+    'Login':'تسجيل الدخول','Log out':'تسجيل الخروج','Save Settings':'حفظ الإعدادات','Enable Finish Reminders':'تفعيل تذكيرات إنهاء الرحلة',
+    'Refresh Engineer/Driver list':'تحديث قائمة المهندسين والسائقين','Sync pending now':'مزامنة العمليات المعلقة الآن',
+    'Not logged in yet.':'لم يتم تسجيل الدخول بعد.','Home':'الرئيسية','History':'السجل','Admin':'المشرف','Finance':'المالية',
+    'Switch':'تبديل','Not logged in':'لم يتم تسجيل الدخول','Engineer':'مهندس','Start':'بدء','Finish':'إنهاء',
+    'Driver Name':'اسم السائق','Date *':'التاريخ *','Day':'اليوم','Area *':'المنطقة *','Task *':'المهمة *',
+    'Start KM *':'عداد البداية *','Start Photo *':'صورة البداية *','Finish KM *':'عداد النهاية *','Finish Photo *':'صورة النهاية *',
+    'Over Night Stay':'مبيت','Static':'ثابت','Start Trip':'بدء الرحلة','Finish Trip':'إنهاء الرحلة',
+    'Recent activity':'آخر النشاطات','Nothing yet.':'لا يوجد شيء حتى الآن.','Finance PIN':'الرقم السري للمالية',
+    'Login as Finance':'تسجيل الدخول كمالية','Finance has separate access and cannot open the Admin section.':'المالية لها صلاحيات منفصلة ولا يمكنها فتح قسم المشرف.',
+    'Log out of Finance':'تسجيل الخروج من المالية','Admin PIN':'الرقم السري للمشرف','Login as Admin':'تسجيل الدخول كمشرف',
+    'Log out of Admin':'تسجيل الخروج من المشرف','Admin access required':'يتطلب الوصول إلى قسم المشرف تسجيل الدخول',
+    'Hide Photos':'إخفاء الصور','Show Photos':'إظهار الصور','Apply':'تطبيق','Clear':'مسح','Filter by Engineer':'تصفية حسب المهندس',
+    'Filter by Month':'تصفية حسب الشهر','Engineer Name':'اسم المهندس','Amount':'المبلغ','Date':'التاريخ','Upload':'رفع',
+    'Balances':'الأرصدة','Photo Audit':'مراجعة الصور','Solfa':'السلفة','Rent':'الإيجار','Loading…':'جارٍ التحميل…',
+    'No trips loaded yet.':'لم يتم تحميل رحلات بعد.','No trips match these filters.':'لا توجد رحلات مطابقة لهذه الفلاتر.',
+    'Could not load trips — check connection.':'تعذر تحميل الرحلات — تحقق من الاتصال.',
+    'Search or select engineer':'ابحث عن المهندس أو اختره','Search or select driver':'ابحث عن السائق أو اختره',
+    'No matching name':'لا يوجد اسم مطابق','Close':'إغلاق','Save':'حفظ','Cancel':'إلغاء','OK':'موافق',
+    'Amount to Pay':'المبلغ المطلوب دفعه','Amount Spent':'المبلغ المصروف','Total KM':'إجمالي الكيلومترات',
+    'Trip KM':'كيلومترات الرحلة','F&B':'بدل الطعام والشراب','Received':'المستلم','Spent':'المصروف','Balance Remaining':'الرصيد المتبقي',
+    'Project':'المشروع','GPS':'الموقع','Driver':'السائق','Engineer':'المهندس','Area':'المنطقة','Task':'المهمة',
+    'Start':'بدء','Finish':'إنهاء','Status':'الحالة','Today\'s Trip':'رحلة اليوم','Today Total':'إجمالي اليوم',
+    'Amount to pay':'المبلغ المطلوب دفعه','Amount Spent uploaded':'المبلغ المصروف المرفوع',
+    'This is locked to your login. Not you? Switch in ☰ Menu → Settings.':'هذا الحقل مرتبط بتسجيل دخولك. إذا لم تكن أنت، انتقل إلى القائمة ☰ ← الإعدادات.',
+    'Start typing to search registered drivers.':'ابدأ بالكتابة للبحث عن السائقين المسجلين.',
+    'Admin request failed':'فشل طلب المشرف','Server request failed':'فشل طلب الخادم',
+    'Select a Project Name':'اختر اسم المشروع','Select your name':'اختر اسمك','Enter your PIN':'أدخل الرقم السري',
+'Enter the admin PIN':'أدخل الرقم السري للمشرف',
+    'Enter the finance PIN':'أدخل الرقم السري للمالية','Wrong admin PIN':'الرقم السري للمشرف غير صحيح','Wrong finance PIN':'الرقم السري للمالية غير صحيح',
+    'Settings saved and login verified':'تم حفظ الإعدادات والتحقق من تسجيل الدخول','Logged out':'تم تسجيل الخروج',
+    'Could not verify login — check your connection':'تعذر التحقق — تحقق من الاتصال أو رمز المزامنة',
+    'Checking…':'جارٍ التحقق…','Syncing…':'جارٍ المزامنة…','Sync attempt finished':'انتهت محاولة المزامنة',
+    'Refresh':'تحديث','Back':'رجوع','Next':'التالي','Required':'مطلوب'
+  }
+};
+function localizeApp(){
+  if (typeof i18nObserver !== 'undefined') i18nObserver.disconnect();
+  const lang = settings.language || 'en';
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.body.classList.toggle('rtl', lang === 'ar');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    if(!el.dataset.enText) el.dataset.enText = el.textContent;
+    const en = el.dataset.enText;
+    el.textContent = lang === 'ar' ? (I18N.ar[en] || en) : en;
+  });
+  document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
+    if(!el.dataset.enPlaceholder) el.dataset.enPlaceholder = el.getAttribute('placeholder');
+    const en=el.dataset.enPlaceholder;
+    if(lang==='ar' && I18N.ar[en]) el.setAttribute('placeholder',I18N.ar[en]); else el.setAttribute('placeholder',en);
+  });
+  document.querySelectorAll('option').forEach(el=>{
+    if(!el.dataset.enText) el.dataset.enText=el.textContent;
+    const en=el.dataset.enText;
+    el.textContent = lang==='ar' ? (I18N.ar[en] || en) : en;
+  });
+  $('languageSelect').value = lang;
+  if (typeof i18nObserver !== 'undefined') i18nObserver.observe(document.body, {subtree:true, childList:true});
+}
+function setLanguage(lang){ settings.language = lang === 'ar' ? 'ar' : 'en'; saveSettingsToStorage(settings); localizeApp(); }
+const i18nObserver = new MutationObserver(() => { if ((settings.language || 'en') === 'ar') localizeApp(); });
+i18nObserver.observe(document.body, {subtree:true, childList:true});
+
+function showEngineerLoginBuffer(){const e=$('engineerLoginBuffer');if(e){e.classList.add('show');e.setAttribute('aria-hidden','false')}}
+function hideEngineerLoginBuffer(){const e=$('engineerLoginBuffer');if(e){e.classList.remove('show');e.setAttribute('aria-hidden','true')}}
+
+// ---------- settings ----------
+function loadSettings(){ try { return JSON.parse(localStorage.getItem('tmx_dev_benzine_settings')) || {}; } catch(e){ return {}; } }
+function saveSettingsToStorage(s){ localStorage.setItem('tmx_dev_benzine_settings', JSON.stringify(s)); }
+let settings = loadSettings();
+settings.language = settings.language || 'en';
+let financeAuthed = false;
+let financeManagementToken = sessionStorage.getItem('tmx_km_app_finance_token') || '';
+let financeManagementName = sessionStorage.getItem('tmx_km_app_finance_name') || '';
+let adminAuthed = false;
+let adminManagementToken = sessionStorage.getItem('tmx_km_app_admin_token') || '';
+let adminManagementName = sessionStorage.getItem('tmx_km_app_admin_name') || '';
+settings.scriptUrl = DEFAULT_SCRIPT_URL;
+saveSettingsToStorage(settings);
+
+let engineerSessionToken = sessionStorage.getItem('tmx_km_engineer_token') || '';
+let engineerSessionName = sessionStorage.getItem('tmx_km_engineer_name') || '';
+
+function clearEngineerSession_(){
+  engineerSessionToken = '';
+  engineerSessionName = '';
+  sessionStorage.removeItem('tmx_km_engineer_token');
+  sessionStorage.removeItem('tmx_km_engineer_name');
+}
+function engineerSessionError_(data){
+  if (data && data.error === 'engineer-session-required'){
+    clearEngineerSession_();
+    toast('Session expired. Please log in again from Menu → Settings.');
+    return true;
+  }
+  return false;
+}
+
+
+function fillSettingsForm(){
+  $('languageSelect').value = settings.language || 'en';
+  $('loginEngineerSelect').value = settings.engineer || '';
+  $('loginPin').value = settings.pin || '';
+  $('projectNameSelect').value = settings.projectName || '';
+  $('defaultDriver').value = settings.defaultDriver || '';
+}
+if (settings.engineer && !engineerSessionToken) {
+  // V40 intentionally requires a fresh Name + PIN login when no valid browser session exists.
+  delete settings.engineer;
+  delete settings.pin;
+  saveSettingsToStorage(settings);
+}
+fillSettingsForm();
+$('languageSelect').addEventListener('change', e => setLanguage(e.target.value));
+
+$('closeSettings').onclick = () => { $('settingsModal').style.display='none'; };
+
+function updateLoginStatus(){
+  const loggedIn = !!(settings.engineer && engineerSessionToken);
+  $('loginStatus').textContent = loggedIn ? ('✅ Logged in as ' + settings.engineer) : 'Not logged in yet.';
+  $('startEngineerDisplay').textContent = loggedIn ? settings.engineer : '— not logged in —';
+  $('historyWhoami').textContent = loggedIn ? ('Showing history for: ' + settings.engineer) : '';
+  $('userRowText').textContent = loggedIn ? (settings.engineer + ' · Engineer') : 'Not logged in';
+  if ($('sideMenuUserName')) $('sideMenuUserName').textContent = adminAuthed ? (adminManagementName||'Admin') : (financeAuthed ? (financeManagementName||'Finance') : (loggedIn ? settings.engineer : 'Not logged in'));
+  const roleEl = document.querySelector('.side-menu-role');
+  if (roleEl) roleEl.textContent = adminAuthed ? 'Admin' : (financeAuthed ? 'Finance' : 'Engineer');
+  $('loginBtn').textContent = loggedIn ? 'Log out' : 'Log in';
+  if (loggedIn) $('loginEngineerSelect').value = settings.engineer;
+}
+updateLoginStatus();
+localizeApp();
+$('switchUserBtn').onclick = () => { $('settingsModal').style.display='flex'; };
+
+$('loginBtn').onclick = async () => {
+  const loggedIn = !!(settings.engineer && engineerSessionToken);
+  if (loggedIn){
+    // Unified engineer logout: end KM session and the Portal session, then return to Portal login.
+    try{
+      sessionStorage.clear();
+      localStorage.removeItem('tmx_portal_user_persist');
+      localStorage.removeItem('tmx_portal_user');
+    }catch(_e){}
+    location.replace('/index.html?logout=1');
+    return;
+    delete settings.engineer; delete settings.pin; delete settings.projectName; delete settings.defaultDriver;
+    engineerSessionToken=''; engineerSessionName=''; sessionStorage.removeItem('tmx_km_engineer_token'); sessionStorage.removeItem('tmx_km_engineer_name');
+    financeAuthed = false; financeManagementToken = ''; financeManagementName = '';
+    sessionStorage.removeItem('tmx_km_app_finance_token');
+    sessionStorage.removeItem('tmx_km_app_finance_name');
+    saveSettingsToStorage(settings);
+    $('projectNameSelect').value = '';
+    $('defaultDriver').value = '';
+    $('loginEngineerSelect').value = '';
+    $('loginPin').value = '';
+    $('driver').value = '';
+    updateLoginStatus();
+    updateLockState();
+    renderLog();
+    toast('Logged out');
+    return;
+  }
+
+  const name = $('loginEngineerSelect').value;
+  const pin = $('loginPin').value.trim();
+  const projectName = $('projectNameSelect').value;
+  if (engineerSessionToken && !projectName) return toast('Select a Project Name');
+  if (!name) return toast('Select your name');
+  if (!pin) return toast('Enter your PIN');
+  showEngineerLoginBuffer();
+  $('loginBtn').disabled = true; $('loginBtn').textContent = 'Checking…';
+  try {
+    const res = await TMX.fetch(DEFAULT_SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'engineerLogin', engineer:name, pin }) });
+    const data = JSON.parse(await res.text());
+    if (data.ok){
+      settings.scriptUrl = DEFAULT_SCRIPT_URL;
+      settings.engineer = data.name || name; settings.projectName = projectName;
+      engineerSessionToken = data.engineerToken || '';
+      engineerSessionName = data.engineer || name;
+      sessionStorage.setItem('tmx_km_engineer_token', engineerSessionToken);
+      sessionStorage.setItem('tmx_km_engineer_name', engineerSessionName);
+      settings.defaultDriver = $('defaultDriver').value.trim();
+      settings.language = $('languageSelect').value || settings.language || 'en';
+      saveSettingsToStorage(settings);
+      $('driver').value = settings.defaultDriver || $('driver').value;
+      updateLoginStatus();
+      updateLockState();
+      renderLog();
+      $('settingsModal').style.display='none';
+      toast('✅ Logged in as ' + name);
+    } else {
+      toast('❌ Wrong PIN for ' + name);
+    }
+  } catch (err) {
+    toast('Could not verify login — check your connection');
+  }
+  $('loginBtn').disabled = false;
+  hideEngineerLoginBuffer();
+  updateLoginStatus();
+};
+
+function updateReminderStatus(){
+  const supported = 'Notification' in window;
+  if (!supported){ $('reminderStatus').textContent = 'Notifications are not supported in this browser.'; return; }
+  if (Notification.permission === 'granted') $('reminderStatus').textContent = '✅ Reminders enabled — you\'ll get a notification if a trip stays open past 10 hours (while the app is installed/open).';
+  else if (Notification.permission === 'denied') $('reminderStatus').textContent = '🚫 Notifications blocked in phone settings. You\'ll still see a banner in the app itself.';
+  else $('reminderStatus').textContent = 'Not enabled yet — you\'ll still see a banner in the app when a trip is overdue.';
+}
+updateReminderStatus();
+$('enableRemindersBtn').onclick = async () => {
+  if (!('Notification' in window)) return toast('Notifications not supported on this browser');
+  const perm = await Notification.requestPermission();
+  updateReminderStatus();
+  if (perm === 'granted') toast('Reminders enabled');
+};
+$('saveSettings').onclick = async () => {
+  settings.scriptUrl = DEFAULT_SCRIPT_URL;
+  const engineer = $('loginEngineerSelect').value.trim();
+  const pin = $('loginPin').value.trim();
+  const projectName = $('projectNameSelect').value;
+  const driverName = $('defaultDriver').value.trim();
+  const language = $('languageSelect').value || 'en';
+  if (!engineer) return toast('Select your name');
+  if (!pin) return toast('Enter your PIN');
+  if (engineerSessionToken && !projectName) return toast('Select a Project Name');
+  $('saveSettings').disabled = true;
+  try {
+    const res = await TMX.fetch(DEFAULT_SCRIPT_URL, { method:'POST', body: JSON.stringify({ action:'engineerLogin', engineer, pin }) });
+    const data = JSON.parse(await res.text());
+    if (!data.ok) return toast('❌ Wrong PIN for ' + engineer);
+    settings.engineer = data.name || engineer;
+    engineerSessionToken = data.engineerToken || '';
+    engineerSessionName = data.engineer || engineer;
+    sessionStorage.setItem('tmx_km_engineer_token', engineerSessionToken);
+    sessionStorage.setItem('tmx_km_engineer_name', engineerSessionName);
+    settings.projectName = projectName;
+    settings.defaultDriver = driverName;
+    settings.language = language;
+    saveSettingsToStorage(settings);
+    $('driver').value = driverName;
+    updateLoginStatus();
+    updateLockState();
+    renderLog();
+    recalcFinish();
+    $('settingsModal').style.display='none';
+    toast('Settings saved and login verified');
+  } catch (err) {
+    toast('Could not verify login — check your connection');
+  } finally {
+    $('saveSettings').disabled = false;
+  }
+};
+
+// ---------- tabs ----------
+function showTab(which, skipFinishLoad = false){
+  if (which==='admin' && financeAuthed) { toast('Finance access cannot open Admin'); return; }
+  if (which==='start' && $('tabStartBtn').disabled) which = 'finish';
+  if (which==='finish' && $('tabFinishBtn').disabled) which = 'start';
+  const mainWorkflow = which==='start' || which==='finish';
+  $('tabs').style.display = mainWorkflow ? 'flex' : 'none';
+  $('lockNote').style.display = mainWorkflow ? ($('lockNote').textContent ? 'block' : 'none') : 'none';
+  $('tabStartBtn').classList.toggle('active', which==='start');
+  $('tabFinishBtn').classList.toggle('active', which==='finish');
+  $('startSection').classList.toggle('active', which==='start');
+  $('finishSection').classList.toggle('active', which==='finish');
+  $('historySection').classList.toggle('active', which==='history');
+  $('adminSection').classList.toggle('active', which==='admin');
+  $('financeSection').classList.toggle('active', which==='finance');
+
+  if ($('menuHomeBtn')) $('menuHomeBtn').classList.toggle('active', which==='start' || which==='finish');
+  if ($('menuHistoryBtn')) $('menuHistoryBtn').classList.toggle('active', which==='history');
+  if ($('menuAdminBtn')) $('menuAdminBtn').classList.toggle('active', which==='admin');
+  if ($('menuFinanceBtn')) $('menuFinanceBtn').classList.toggle('active', which==='finance');
+
+  if (which==='finish' && !skipFinishLoad) loadOpenTripsForFinish();
+  if (which==='history') loadHistory();
+  if (which==='finance') showFinanceSection();
+}
+
+$('tabStartBtn').onclick = () => { if (!$('tabStartBtn').disabled) showTab('start'); };
+$('tabFinishBtn').onclick = () => { if (!$('tabFinishBtn').disabled) showTab('finish'); };
+$('historyMonth').value = new Date().toISOString().slice(0,7);
+$('historyMonth').addEventListener('change', () => loadHistory());
+$('historyClearMonthBtn').onclick = () => { $('historyMonth').value=''; loadHistory(); };
+
+let historyPhotosVisible = localStorage.getItem('historyPhotosVisible') !== '0';
+function updateHistoryPhotosToggle(){
+  $('historyList').classList.toggle('history-photos-hidden', !historyPhotosVisible);
+  $('historyPhotosToggle').textContent = historyPhotosVisible ? 'Hide Photos' : 'Show Photos';
+}
+$('historyPhotosToggle').onclick = () => {
+  historyPhotosVisible = !historyPhotosVisible;
+  localStorage.setItem('historyPhotosVisible', historyPhotosVisible ? '1' : '0');
+  updateHistoryPhotosToggle();
+};
+updateHistoryPhotosToggle();
+
+// One trip open at a time per device: Start is locked while a trip is open, Finish is locked when none is.
+// Both are locked entirely until the engineer logs in.
+// NOTE: local device storage can hold open trips from a PREVIOUS login on a shared phone —
+// always filter to the currently logged-in engineer before using it for lock state or display.
+function localOpenTripsForCurrentUser(){
+  const mine = (settings.engineer || '').trim().toLowerCase();
+  if (!mine) return [];
+  return getOpenTrips().filter(t => (t.engineer || '').trim().toLowerCase() === mine);
+}
+
+let deferFinishNavigation = false;
+
+async function syncOpenTripStateFromServer(){
+  if(!settings.engineer || !engineerSessionToken){ updateLockState(); return false; }
+  const loader=$('tripStateLoader');
+  document.body.classList.add('tmx-checking-trip');
+  if(loader) loader.classList.add('active');
+  try{
+    const data=await trySend({action:'openTrips'});
+    const serverTrips=Array.isArray(data.trips)?data.trips:[];
+    const mine=(settings.engineer||'').trim().toLowerCase();
+    const otherLocal=getOpenTrips().filter(x=>(x.engineer||'').trim().toLowerCase()!==mine);
+    setOpenTrips([...otherLocal,...serverTrips]);
+
+    if(serverTrips.length){
+      // Select the correct tab before revealing the trip workspace.
+      showTab('finish', true);
+      await loadOpenTripsForFinish();
+      updateLockState();
+      return true;
+    }
+
+    showTab('start');
+    updateLockState();
+    return false;
+  }catch(e){
+    // Offline/unreachable: use this device's cached state without blocking the rest of the app.
+    updateLockState();
+    const hasLocal=localOpenTripsForCurrentUser().length>0;
+    if(hasLocal) showTab('finish');
+    else showTab('start');
+    return hasLocal;
+  }finally{
+    document.body.classList.remove('tmx-checking-trip');
+    if(loader) loader.classList.remove('active');
+  }
+}
+
+function updateLockState(){
+  const loggedIn = !!(settings.engineer && engineerSessionToken);
+  const hasOpen = localOpenTripsForCurrentUser().length > 0;
+  $('tabStartBtn').disabled = !loggedIn || hasOpen;
+  $('tabFinishBtn').disabled = !loggedIn || !hasOpen;
+  if (!loggedIn) {
+    $('lockNote').style.display = 'block';
+    $('lockNote').textContent = '🔒 Log in from ☰ Menu → Settings to start or finish a trip.';
+    return;
+  }
+  if (hasOpen && $('startSection').classList.contains('active') && !deferFinishNavigation) showTab('finish');
+  if (!hasOpen && $('finishSection').classList.contains('active')) showTab('start');
+  $('lockNote').style.display = hasOpen ? 'block' : 'none';
+  $('lockNote').textContent = hasOpen
+    ? '🔒 You have a trip in progress — submit Finish before starting a new one.'
+    : '';
+}
+
+// ---------- init start form ----------
+// Trip Date is always today's local device date. It is display-only (no calendar picker).
+function setTodayDateField(){
+  const today = todayISO();
+  $('date').value = today;
+  $('date').setAttribute('aria-label', `Today's date: ${today}`);
+  $('day').value = dayName(today);
+}
+setTodayDateField();
+if (!settings.engineer || !engineerSessionToken) setTimeout(() => { $('settingsModal').style.display='flex'; toast('Log in with your name and PIN first'); }, 300);
+
+// ---------- engineer/driver dropdown lists ----------
+function getCachedLists(){ try { return JSON.parse(localStorage.getItem('tmx_dev_benzine_lists')) || {engineers:[],drivers:[],driverDefaults:{},vehicles:[],driverVehicles:{}}; } catch(e){ return {engineers:[],drivers:[],driverDefaults:{},vehicles:[],driverVehicles:{}}; } }
+function setCachedLists(l){ localStorage.setItem('tmx_dev_benzine_lists', JSON.stringify(l)); }
+
+function setupSearchableInput(inputEl, optionsEl, list){
+  inputEl._searchList = Array.isArray(list) ? list : [];
+  const render = () => {
+    const q = inputEl.value.trim().toLowerCase();
+    const matches = inputEl._searchList.filter(name => String(name).toLowerCase().includes(q)).slice(0,50);
+    optionsEl.innerHTML = matches.length
+      ? matches.map(name => `<div class="search-option" data-value="${String(name).replace(/"/g,'&quot;')}">${String(name)}</div>`).join('')
+      : '<div class="search-empty">No matching name</div>';
+    optionsEl.classList.add('open');
+  };
+  inputEl.addEventListener('focus', render);
+  inputEl.addEventListener('input', render);
+  optionsEl.addEventListener('mousedown', e => {
+    const item = e.target.closest('.search-option');
+    if (!item) return;
+    e.preventDefault();
+    inputEl.value = item.dataset.value;
+    optionsEl.classList.remove('open');
+    inputEl.dispatchEvent(new Event('change', {bubbles:true}));
+  });
+  inputEl.addEventListener('blur', () => setTimeout(() => optionsEl.classList.remove('open'), 150));
+  inputEl._setSearchList = (newList, currentValue) => {
+    inputEl._searchList = Array.isArray(newList) ? newList : [];
+    if (currentValue !== undefined && currentValue !== null) inputEl.value = currentValue || '';
+  };
+}
+
+function populateSearchInput(inputEl, optionsEl, list, currentValue){
+  if (!inputEl._setSearchList) setupSearchableInput(inputEl, optionsEl, list);
+  else inputEl._setSearchList(list, currentValue);
+  if (currentValue !== undefined && currentValue !== null) inputEl.value = currentValue || '';
+}
+
+function populateVehicleList(list,currentValue){ populateSearchInput($('vehicle'),$('vehicleOptions'),list,currentValue); }
+function populateAreaList(list,currentValue){ const a=$('area'),o=$('areaOptions'); if(a&&o)populateSearchInput(a,o,list,currentValue); }
+function syncVehicleForSelectedDriver(){
+  const c=getCachedLists(),dk=String($('driver').value||'').trim().toLowerCase();
+  const vehicles=(c.driverVehicles||{})[dk]||[];
+  const firstVehicle=vehicles.length ? vehicles[0] : '';
+  populateVehicleList(vehicles,firstVehicle);
+  $('vehicle').value=firstVehicle;
+}
+$('driver').addEventListener('input',()=>{
+  const c=getCachedLists(),dk=String($('driver').value||'').trim().toLowerCase();
+  const exact=(c.drivers||[]).some(d=>String(d).trim().toLowerCase()===dk);
+  if(exact) syncVehicleForSelectedDriver();
+});
+$('driver').addEventListener('change',syncVehicleForSelectedDriver);
+function populateDriverList(list, currentValue){
+  populateSearchInput($('driver'), $('driverOptions'), list, currentValue);
+}
+function populateEngineerList(list, currentValue){
+  populateSearchInput($('loginEngineerSelect'), $('engineerOptions'), list, currentValue);
+}
+function populateDefaultDriverList(list, currentValue){
+  populateSearchInput($('defaultDriver'), $('defaultDriverOptions'), list, currentValue);
+}
+
+function getDriverValue(){ return $('driver').value.trim(); }
+
+function findRegisteredName(value, list){
+  const target = String(value || '').trim().toLowerCase();
+  if (!target) return null;
+  return (list || []).find(name => String(name || '').trim().toLowerCase() === target) || null;
+}
+function validateStartNamesClient(){
+  const cached = getCachedLists();
+  const engineer = findRegisteredName(settings.engineer, cached.engineers || []);
+  const driver = findRegisteredName(getDriverValue(), cached.drivers || []);
+  const eh = $('startEngineerHint'), dh = $('startDriverHint');
+  if (eh) {
+    eh.style.display='block';
+    eh.className = engineer ? 'hint' : 'validation-error';
+    eh.textContent = engineer ? 'This is locked to your login. Not you? Switch in ☰ Menu → Settings.' : '❌ Engineer name is not registered. Please log in again with the correct registered engineer name.';
+  }
+  if (dh) {
+    dh.style.display='block';
+    dh.className = driver ? 'hint' : 'validation-error';
+    dh.textContent = driver ? 'Start typing to search registered drivers.' : '❌ Invalid driver name. Please select a driver from the registered searchable list.';
+  }
+  return { engineer, driver };
+}
+
+
+function populateSimpleSelect(selectEl, list, currentValue, placeholder){
+  const prev = selectEl.value;
+  selectEl.innerHTML = '';
+  const blank = document.createElement('option'); blank.value=''; blank.textContent = placeholder || '— Select —';
+  selectEl.appendChild(blank);
+  (list || []).forEach(name => {
+    const o = document.createElement('option'); o.value = name; o.textContent = name;
+    selectEl.appendChild(o);
+  });
+  const want = currentValue || prev;
+  if (want && (list || []).includes(want)) selectEl.value = want;
+}
+
+
+function validAreaClient(){
+  if(!$('area'))return '';
+  const typed=$('area').value.trim().toLowerCase(), list=(getCachedLists().areas||[]);
+  return list.find(a=>String(a).trim().toLowerCase()===typed)||'';
+}
+
+async function refreshLists(silent){
+  if (!settings.scriptUrl) return;
+  try {
+    const res = await TMX.fetch(settings.scriptUrl + '?action=config');
+    const data = await res.json();
+    if (data.engineers || data.drivers){ const project=$('projectNameSelect'),previous=project.value||settings.projectName; project.replaceChildren(new Option('Select your project','')); for(const code of data.projects||[])project.add(new Option(code,code)); project.value=previous;
+      setCachedLists({ engineers: data.engineers||[], drivers: data.drivers||[], driverDefaults: data.driverDefaults||{}, areas: data.areas||[], vehicles:data.vehicles||[], driverVehicles:data.driverVehicles||{} });
+      populateAreaList(data.areas||[]);
+      populateDriverList(data.drivers||[], $('driver').value || settings.defaultDriver);
+      syncVehicleForSelectedDriver();
+      populateEngineerList(data.engineers||[], settings.engineer);
+      populateDefaultDriverList(data.drivers||[], settings.defaultDriver);
+      if (!silent) toast('Engineer/Driver list updated');
+    }
+  } catch (err) {
+    const cached = getCachedLists();
+    populateDriverList(cached.drivers, $('driver').value || settings.defaultDriver);
+    syncVehicleForSelectedDriver();
+    populateEngineerList(cached.engineers, settings.engineer);
+    populateDefaultDriverList(cached.drivers, settings.defaultDriver);
+    if (!silent) toast('Could not refresh — showing last saved list');
+  }
+}
+$('refreshListBtn').onclick = () => refreshLists(false);
+const cachedAtStart = getCachedLists();
+populateDriverList(cachedAtStart.drivers, settings.defaultDriver);
+syncVehicleForSelectedDriver(true);
+populateEngineerList(cachedAtStart.engineers, settings.engineer);
+populateDefaultDriverList(cachedAtStart.drivers, settings.defaultDriver);
+refreshLists(true);
+setTimeout(()=>syncVehicleForSelectedDriver(),0);
+setTimeout(()=>syncVehicleForSelectedDriver(),350);
+
+// ---------- mobile camera capture (camera only; no file/gallery picker) ----------
+let startPhoto = null;
+let finishPhoto = null;
+let startPhotoLocation = null;
+let finishPhotoLocation = null;
+let cameraStream = null;
+let activeCameraTarget = null;
+
+function isMobilePhone(){
+  return !!(navigator.userAgentData?.mobile || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent));
+}
+
+function getCurrentPhotoLocation(){
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject(new Error('geolocation-not-supported'));
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({ latitude:Number(pos.coords.latitude.toFixed(7)), longitude:Number(pos.coords.longitude.toFixed(7)), accuracy:pos.coords.accuracy||null }),
+      err => reject(err || new Error('location-denied')),
+      {enableHighAccuracy:true, timeout:15000, maximumAge:0}
+    );
+  });
+}
+
+// Submission GPS is independent of the location captured with the odometer photo.
+// Always request a new browser fix when Start/Finish is pressed.
+function getFreshSubmissionLocation(){
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) return reject(new Error('Location is not supported by this browser.'));
+    const requestedAt = Date.now();
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const ageMs = Date.now() - pos.timestamp;
+        const accuracy = Number(pos.coords.accuracy);
+        if (!Number.isFinite(pos.coords.latitude) || !Number.isFinite(pos.coords.longitude) ||
+            !Number.isFinite(pos.timestamp) || pos.timestamp < requestedAt - 5000 ||
+            ageMs > 15000 || ageMs < -5000) {
+          return reject(new Error('Location is outdated. Please try again with GPS enabled.'));
+        }
+        if (!Number.isFinite(accuracy) || accuracy > 200) {
+          return reject(new Error('Location accuracy is too low. Move to an open area and try again.'));
+        }
+        resolve({latitude: Number(pos.coords.latitude.toFixed(7)), longitude: Number(pos.coords.longitude.toFixed(7))});
+      },
+      err => reject(new Error(err?.code === 1 ? 'Location permission is required to submit the trip.' : 'Could not get a fresh location. Check GPS and try again.')),
+      {enableHighAccuracy:true, maximumAge:0, timeout:20000}
+    );
+  });
+}
+
+function stopCamera(){
+  if(cameraStream){ cameraStream.getTracks().forEach(t=>{try{t.stop()}catch(e){}}); cameraStream=null; }
+  const video=$('cameraPreview');
+  try{ video.pause(); }catch(e){}
+  video.srcObject=null;
+  video.removeAttribute('src');
+  video.load();
+  video.onloadedmetadata=null; video.oncanplay=null;
+  $('cameraModal').style.display='none';
+  activeCameraTarget=null;
+}
+
+async function openCamera(which, btnId, missingId, setter, locationSetter){
+  if(!isMobilePhone()){
+    toast('📱 Please use the Telecomax app on a mobile phone. Photos can only be taken with the mobile camera.');
+    return;
+  }
+  if(!navigator.mediaDevices?.getUserMedia){
+    toast('📷 Your mobile browser does not support camera access. Please use Chrome/Safari on the phone.');
+    return;
+  }
+  if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}
+  activeCameraTarget={which,btnId,missingId,setter,locationSetter};
+  const trigger=$(btnId); if(trigger){trigger.disabled=false; trigger.dataset.cameraOpening='1';}
+  $('cameraTitle').textContent = which==='start' ? 'Take Start KM photo' : 'Take Finish KM photo';
+  $('cameraStatus').textContent='Opening camera…';
+  $('cameraModal').style.display='flex';
+  try{
+    try{cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:1280}},audio:false});}
+    catch(firstErr){cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});}
+    const video=$('cameraPreview'); video.srcObject=cameraStream;
+    await new Promise((resolve,reject)=>{let done=false;const ok=()=>{if(done)return;done=true;resolve()};video.onloadedmetadata=ok;video.oncanplay=ok;setTimeout(()=>video.videoWidth?ok():reject(new Error('camera-timeout')),6000);video.play().catch(()=>{});});
+    $('cameraStatus').textContent='Camera ready — point at the dashboard, then press Capture.';
+  }catch(err){
+    stopCamera();
+    toast('📷 Camera could not start. Check Camera permission, close other apps using the camera, then try again.');
+  }finally{if(trigger) trigger.disabled=false;}
+}
+
+async function captureMobilePhoto(){
+  const target=activeCameraTarget;
+  if(!target || !cameraStream) return;
+  const video=$('cameraPreview');
+  if(!video.videoWidth || !video.videoHeight){ toast('Camera is not ready yet.'); return; }
+  const canvas=document.createElement('canvas');
+  const maxW=1000, scale=Math.min(1,maxW/video.videoWidth);
+  canvas.width=Math.round(video.videoWidth*scale); canvas.height=Math.round(video.videoHeight*scale);
+  canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);
+  target.setter(canvas.toDataURL('image/jpeg',0.55));
+  if(currentDriverAllowsGallery(target.which)){
+    target.locationSetter(null);
+    $(target.missingId).textContent='Photo captured';
+    $(target.missingId).style.display='block';
+    $(target.missingId).style.color='var(--ok)';
+    $(target.btnId).disabled=false;
+    $(target.btnId).removeAttribute('data-camera-opening');
+    $(target.btnId).textContent='Retake / Replace';
+    $(target.btnId).classList.add('retake');
+    let img2=document.getElementById(target.which+'Thumb');
+    if(!img2){img2=document.createElement('img');img2.id=target.which+'Thumb';const row=$(target.btnId).closest('.km-row');(row||$(target.btnId)).insertAdjacentElement('afterend',img2);}
+    img2.src=canvas.toDataURL('image/jpeg',0.55);
+    stopCamera();
+    return;
+  }
+  $(target.btnId).textContent='Getting GPS…';
+  $(target.btnId).disabled=true;
+  try{
+    const location=await getCurrentPhotoLocation();
+    target.locationSetter(location);
+    $(target.missingId).textContent=`GPS captured: ${location.latitude}, ${location.longitude}`;
+    $(target.missingId).style.display='block';
+    $(target.missingId).style.color='var(--ok)';
+    $(target.btnId).disabled=false;
+    $(target.btnId).removeAttribute('data-camera-opening');
+    $(target.btnId).textContent='Retake / Replace';
+    $(target.btnId).classList.add('retake');
+    let img2=document.getElementById(target.which+'Thumb');
+    if(!img2){img2=document.createElement('img');img2.id=target.which+'Thumb';const row=$(target.btnId).closest('.km-row');(row||$(target.btnId)).insertAdjacentElement('afterend',img2);}
+    img2.src=canvas.toDataURL('image/jpeg',0.55);
+    stopCamera();
+  }catch(err){
+    target.setter(null);
+    target.locationSetter(null);
+    $(target.btnId).disabled=false;
+    $(target.btnId).textContent='Take photo';
+    $(target.missingId).textContent='Required — photo + GPS location';
+    $(target.missingId).style.display='block';
+    toast('📍 Location is required for each photo. Allow Location permission and retake the photo.');
+  }
+}
+
+function driverAllowsGallery(driverName){
+  const d=String(driverName||'').trim().toLowerCase();
+  return d==='rent' || d==='item transfer' || d==='unlocated car';
+}
+function currentDriverAllowsGallery(which){
+  if(which==='finish'){
+    const trip=openTripsCache.find(t=>String(t.tripId)===String($('openTripSelect')?.value||''));
+    return driverAllowsGallery(trip?.driver);
+  }
+  return driverAllowsGallery($('driver')?.value);
+}
+let pendingPhotoSource=null;
+function closePhotoSourceDialog(){
+  const m=$('photoSourceModal');
+  if(m){m.classList.remove('open');m.style.display='none'}
+  pendingPhotoSource=null;
+}
+function openPhotoSourceDialog(config){
+  pendingPhotoSource=config;
+  const m=$('photoSourceModal');
+  m.style.display='flex';
+  requestAnimationFrame(()=>m.classList.add('open'));
+}
+function openGalleryForPending(){
+  const cfg=pendingPhotoSource;if(!cfg)return;
+  closePhotoSourceDialog();
+  const input=$('rentGalleryInput');
+  input.value='';
+  input.onchange=()=>{
+    const f=input.files&&input.files[0];if(!f)return;
+    if(!f.type.startsWith('image/'))return toast('Please choose an image.');
+    const reader=new FileReader();
+    reader.onload=()=>{
+      cfg.setter(reader.result);
+      cfg.locationSetter(null);
+      $(cfg.missingId).textContent='Photo loaded from gallery';
+      $(cfg.missingId).style.display='block';
+      $(cfg.missingId).style.color='var(--ok)';
+      $(cfg.btnId).disabled=false;
+      $(cfg.btnId).removeAttribute('data-camera-opening');
+      $(cfg.btnId).textContent='Retake / Replace';
+      $(cfg.btnId).classList.add('retake');
+      let im=document.getElementById(cfg.which+'Thumb');
+      if(!im){
+        im=document.createElement('img');
+        im.id=cfg.which+'Thumb';
+        const row=$(cfg.btnId).closest('.km-row');
+        (row||$(cfg.btnId)).insertAdjacentElement('afterend',im);
+      }
+      im.src=reader.result;
+    };
+    reader.readAsDataURL(f);
+  };
+  input.click();
+}
+function choosePhotoSource(which,btnId,missingId,setter,locationSetter){
+  stopCamera();
+  const cfg={which,btnId,missingId,setter,locationSetter};
+  if(!currentDriverAllowsGallery(which)){
+    return setTimeout(()=>openCamera(which,btnId,missingId,setter,locationSetter),120);
+  }
+  openPhotoSourceDialog(cfg);
+}
+$('photoSourceCamera').onclick=()=>{
+  const cfg=pendingPhotoSource;if(!cfg)return;
+  closePhotoSourceDialog();
+  setTimeout(()=>openCamera(cfg.which,cfg.btnId,cfg.missingId,cfg.setter,cfg.locationSetter),120);
+};
+$('photoSourceGallery').onclick=openGalleryForPending;
+$('photoSourceCancel').onclick=closePhotoSourceDialog;
+$('photoSourceX').onclick=closePhotoSourceDialog;
+$('photoSourceModal').addEventListener('click',e=>{if(e.target===$('photoSourceModal'))closePhotoSourceDialog()});
+$('startPhotoBtn').addEventListener('click',()=>choosePhotoSource('start','startPhotoBtn','startPhotoMissing',(d)=>startPhoto=d,(p)=>startPhotoLocation=p));
+$('finishPhotoBtn').addEventListener('click',()=>choosePhotoSource('finish','finishPhotoBtn','finishPhotoMissing',(d)=>finishPhoto=d,(p)=>finishPhotoLocation=p));
+$('capturePhotoBtn').addEventListener('click',captureMobilePhoto);
+$('cancelCameraBtn').addEventListener('click',stopCamera);
+$('closeCamera').addEventListener('click',stopCamera);
+$('cameraModal').addEventListener('click',e=>{if(e.target===$('cameraModal'))stopCamera();});
+
+function resetPhotoCaptureState(which){
+  stopCamera();
+  const isStart=which==='start',btn=$(isStart?'startPhotoBtn':'finishPhotoBtn'),miss=$(isStart?'startPhotoMissing':'finishPhotoMissing');
+  if(isStart){startPhoto=null;startPhotoLocation=null}else{finishPhoto=null;finishPhotoLocation=null}
+  if(btn){btn.disabled=false;btn.textContent='Take photo';btn.classList.remove('retake')}
+  if(miss){miss.textContent='Required — photo + GPS location';miss.style.color='var(--danger)'}
+  const im=document.getElementById(which+'Thumb');if(im)im.remove();
+}
+// ---------- open trips (started, not yet finished) ----------
+function getOpenTrips(){ try { return JSON.parse(localStorage.getItem('tmx_dev_benzine_open_trips')) || []; } catch(e){ return []; } }
+function setOpenTrips(l){ localStorage.setItem('tmx_dev_benzine_open_trips', JSON.stringify(l)); }
+
+// In-memory cache of whatever the Finish dropdown currently shows (server list, merged with
+// any not-yet-synced local trips so offline-started trips still show up here too).
+let openTripsCache = [];
+
+async function loadOpenTripsForFinish(){
+  const sel = $('openTripSelect');
+  $('tripSummary').style.display = 'none';
+  if (!settings.engineer || !engineerSessionToken){
+    sel.innerHTML = '<option value="">— Select an open trip —</option>';
+    openTripsCache = [];
+    $('noOpenTrips').style.display = 'block';
+    $('noOpenTrips').textContent = 'Please log in first.';
+    return;
+  }
+
+  let serverTrips = [];
+  let serverOk = false;
+  try {
+    const data = await trySend({ action: 'openTrips' });
+    serverTrips = data.trips || [];
+    serverOk = true;
+  } catch (err) {
+    if (err.message === 'invalid-pin') {
+      $('noOpenTrips').style.display = 'block';
+      $('noOpenTrips').textContent = '🔒 Login invalid — please log in again in Settings.';
+      sel.innerHTML = '<option value="">— Select an open trip —</option>';
+      openTripsCache = [];
+      return;
+    }
+    // offline/unreachable — fall back to whatever this device knows locally
+  }
+
+  // Merge in any locally-started trips not yet reflected on the server (e.g. Start is still
+  // queued offline), so the engineer can still pick them to finish even without a connection.
+  // Filtered to the current login — a shared phone must never surface another engineer's trip here.
+  const local = localOpenTripsForCurrentUser();
+  // A trip can exist in both the server response and localStorage after a successful
+  // Start. Compare IDs as strings so numeric/string representations cannot create a
+  // duplicate option. Also de-duplicate the final list defensively.
+  const merged = [];
+  const seenTripIds = new Set();
+  [...serverTrips, ...local].forEach(t => {
+    const id = String(t && t.tripId || '').trim();
+    if (!id || seenTripIds.has(id)) return;
+    seenTripIds.add(id);
+    merged.push(t);
+  });
+  openTripsCache = merged;
+
+  sel.innerHTML = '<option value="">— Select an open trip —</option>';
+  merged.forEach(t => {
+    const o = document.createElement('option');
+    o.value = t.tripId;
+    o.textContent = `${t.task||'Task'} · ${t.date} (Start KM: ${t.startKm})`;
+    sel.appendChild(o);
+  });
+  $('noOpenTrips').style.display = merged.length ? 'none' : 'block';
+  $('noOpenTrips').textContent = merged.length ? '' : 'No open trips found. Start a trip first.';
+
+  // Never leave Finish on the placeholder while open trips exist.
+  // Preserve a valid current selection; otherwise automatically select the latest open trip.
+  const previousSelection=String(sel.dataset.preferredTripId||sel.value||'');
+  let selectedTrip=merged.find(t=>String(t.tripId)===previousSelection);
+  if(!selectedTrip && merged.length){
+    selectedTrip=[...merged].sort((a,b)=>{
+      const ta=Date.parse(a.startedAt||a.date||0)||0;
+      const tb=Date.parse(b.startedAt||b.date||0)||0;
+      return tb-ta;
+    })[0];
+  }
+  if(selectedTrip){
+    sel.value=String(selectedTrip.tripId);
+    sel.dataset.preferredTripId=String(selectedTrip.tripId);
+    sel.dispatchEvent(new Event('change'));
+  }else{
+    sel.value='';
+    delete sel.dataset.preferredTripId;
+  }
+  if (!serverOk && merged.length) toast('Showing locally saved trips — could not refresh from the Sheet');
+}
+
+// ---------- overdue trip reminders (10 hours) ----------
+const OVERDUE_HOURS = 10;
+const RENOTIFY_AFTER_HOURS = 2; // once flagged overdue, nudge again every 2h if still open
+
+function checkOverdueTrips(){
+  const trips = localOpenTripsForCurrentUser();
+  let changed = false;
+  const overdue = [];
+  const all = getOpenTrips(); // full list, for the setOpenTrips() write-back below
+  trips.forEach(t => {
+    const hoursOpen = (Date.now() - new Date(t.startedAt).getTime()) / 3600000;
+    if (hoursOpen >= OVERDUE_HOURS){
+      overdue.push({ trip: t, hoursOpen });
+      const lastNotified = t.remindedAt ? new Date(t.remindedAt).getTime() : 0;
+      const hoursSinceNotify = (Date.now() - lastNotified) / 3600000;
+      if (!t.remindedAt || hoursSinceNotify >= RENOTIFY_AFTER_HOURS){
+        fireOverdueNotification(t, hoursOpen);
+        t.remindedAt = new Date().toISOString();
+        changed = true;
+        const idx = all.findIndex(a => a.tripId === t.tripId);
+        if (idx >= 0) all[idx] = t;
+      }
+    }
+  });
+  if (changed) setOpenTrips(all);
+  renderOverdueBanner(overdue);
+}
+
+function fireOverdueNotification(trip, hoursOpen){
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.ready.then(reg => {
+    reg.showNotification('⏰ Finish trip reminder', {
+      body: `${trip.engineer}'s trip (${trip.area||'no area'}, started ${trip.date}) has been open ${Math.floor(hoursOpen)}h. Submit Finish when done.`,
+      icon: 'icon-192.png',
+      tag: 'benzine-trip-' + trip.tripId,
+    });
+  }).catch(()=>{});
+}
+
+function renderOverdueBanner(list){
+  const el = $('overdueBanner');
+  if (!list.length){ el.style.display='none'; return; }
+  el.style.display='flex';
+  el.querySelector('.msg').textContent = list.length===1
+    ? `⏰ ${list[0].trip.engineer}'s trip has been open ${Math.floor(list[0].hoursOpen)}h — remember to submit Finish.`
+    : `⏰ ${list.length} trips have been open over 10 hours — remember to submit Finish.`;
+}
+$('bannerGoFinish').onclick = () => showTab('finish');
+$('bannerDismiss').onclick = () => { $('overdueBanner').style.display='none'; };
+
+checkOverdueTrips();
+setInterval(checkOverdueTrips, 5 * 60 * 1000); // re-check every 5 min while app is open
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkOverdueTrips(); });
+updateLockState();
+
+function taskLocationsForTrip(trip){
+  if(!trip)return [];
+  if(Array.isArray(trip.taskLocations))return trip.taskLocations;
+  try{return JSON.parse(trip.taskLocationsJson||'[]')||[]}catch(e){return []}
+}
+function renderTaskLocations(trip){
+  const list=$('taskLocationList'),status=$('taskLocationStatus'),btn=$('submitTaskLocationBtn');
+  if(!list||!status||!btn)return;
+  list.innerHTML='';
+  if(!trip){
+    btn.disabled=true;status.className='task-location-status';
+    status.textContent='Select an open trip, then submit the location when you reach the task destination.';
+    return;
+  }
+  btn.disabled=false;
+  const locations=taskLocationsForTrip(trip);
+  if(!locations.length){
+    status.className='task-location-status';
+    status.textContent='No task location submitted yet for this trip.';
+    return;
+  }
+  const latest=locations[locations.length-1];
+  status.className='task-location-status ok';
+  status.textContent='✓ Latest task location: '+([latest.governorate,latest.city].filter(Boolean).join(' / ')||'Detected')+(latest.submittedAt?' · '+new Date(latest.submittedAt).toLocaleString():'');
+  locations.forEach((x,i)=>{
+    const d=document.createElement('div');d.className='task-location-item';
+    const gov=document.createElement('strong');
+    gov.textContent=[x.governorate,x.city].filter(Boolean).join(' / ')||'Task Location';
+    const when=document.createElement('span');
+    when.textContent=x.submittedAt?new Date(x.submittedAt).toLocaleString():'';
+    d.appendChild(gov);d.appendChild(when);list.appendChild(d);
+  });
+}
+async function submitCurrentTaskLocation(){
+  const tripId=$('openTripSelect').value;
+  const trip=openTripsCache.find(t=>String(t.tripId)===String(tripId));
+  if(!trip)return toast('Select which trip this task location belongs to');
+  if(!navigator.geolocation)return toast('Location is not supported on this phone/browser');
+  const btn=$('submitTaskLocationBtn'),status=$('taskLocationStatus');
+  btn.disabled=true;btn.textContent='Getting location…';
+  status.className='task-location-status';status.textContent='Getting your current GPS location…';
+  let serverSaved=false;
+  try{
+    const loc=await getCurrentPhotoLocation();
+    btn.textContent='Detecting location…';
+    status.textContent='GPS captured. Detecting governorate and city…';
+    const data=await trySend({action:'taskLocation',tripId,latitude:loc.latitude,longitude:loc.longitude,accuracy:loc.accuracy||'',submittedAt:new Date().toISOString()});
+    if(!data.ok)throw new Error(data.error||'location-submit-failed');
+    serverSaved=true;
+    const item={governorate:data.governorate,city:data.city||'',latitude:loc.latitude,longitude:loc.longitude,accuracy:loc.accuracy||'',submittedAt:data.submittedAt||new Date().toISOString()};
+    trip.taskLocations=Array.isArray(data.taskLocations)?data.taskLocations:[...taskLocationsForTrip(trip),item];
+    trip.taskGovernorates=(data.taskGovernorates||trip.taskLocations.map(x=>x.governorate).filter(Boolean).join(', '));
+    // Keep the same trip updated in localStorage too, if it exists there.
+    const local=getOpenTrips(),idx=local.findIndex(t=>String(t.tripId)===String(tripId));
+    if(idx>=0){local[idx]={...local[idx],taskLocations:trip.taskLocations,taskGovernorates:trip.taskGovernorates};setOpenTrips(local)}
+    renderTaskLocations(trip);
+    toast('📍 Task location submitted: '+([data.governorate,data.city].filter(Boolean).join(' / ')));
+  }catch(err){
+    console.error(err);
+    if(serverSaved){
+      status.className='task-location-status ok';
+      status.textContent='✓ Task location was submitted successfully. Refreshing the trip will show the saved location.';
+      toast('📍 Task location submitted successfully.');
+    }else{
+      status.className='task-location-status';
+      status.textContent='Location was not submitted. Check Location permission and internet connection, then try again.';
+      toast('📍 Could not submit task location. Please try again at the task destination.');
+    }
+  }finally{
+    btn.disabled=false;btn.textContent='📍 Submit Task Location';
+  }
+}
+$('submitTaskLocationBtn').addEventListener('click',submitCurrentTaskLocation);
+
+$('openTripSelect').addEventListener('change', () => {
+  if($('openTripSelect').value) $('openTripSelect').dataset.preferredTripId=$('openTripSelect').value;
+  const trip = openTripsCache.find(t => t.tripId === $('openTripSelect').value);
+  if (trip){
+    $('tripSummary').style.display='block';
+    $('tripSummary').textContent = `Started ${trip.startedAt ? new Date(trip.startedAt).toLocaleString() : ''} · Driver: ${trip.driver||'—'} · Task: ${trip.task||'—'}`;
+  } else {
+    $('tripSummary').style.display='none';
+  }
+  renderTaskLocations(trip||null);
+  recalcFinish();
+});
+
+// ---------- computed fields (finish) ----------
+function recalcFinish(){
+  const trip = openTripsCache.find(t => String(t.tripId) === String($('openTripSelect').value));
+  const selectedDriver=String(trip?.driver||'').trim().toLowerCase();
+  // Show payment to Item Transfer and all normal drivers; hide it only for Rent.
+  const showEngineerPayment=!!trip && selectedDriver!=='rent';
+  $('engineerPaymentCard').style.display=showEngineerPayment ? '' : 'none';
+  const start = trip ? parseFloat(trip.startKm) : NaN;
+  const finish = parseFloat($('finishKm').value);
+  const rate = trip && isFinite(parseFloat(trip.rate)) ? parseFloat(trip.rate) : 0;
+  // Backend is the source of truth. Defensive 40 KM cap prevents any stale
+  // legacy/local value from ever displaying above the agreed F&B maximum.
+  const serverLastForthBack = trip && isFinite(parseFloat(trip.lastForthBack)) ? parseFloat(trip.lastForthBack) : 0;
+  const normalLastForthBack = Math.max(0, Math.min(40, serverLastForthBack));
+  const lastForthBack = $('overNightStay').checked ? 0 : normalLastForthBack;
+
+  // Today's Trip = Finish odometer - Start odometer.
+  let tripKm = 0;
+  if (!isNaN(start) && !isNaN(finish) && finish >= start) tripKm = finish - start;
+
+  // Driver payment only: Today's Trip + the last calculated Forth & Back.
+  const todayTotalKm = tripKm + lastForthBack;
+  const amountToPay = (todayTotalKm + (Number($('staticKm').value)||0)*10) * rate;
+
+  $('todayTripOut').textContent = tripKm;
+  $('lastForthBackOut').textContent = lastForthBack;
+  $('totalOut').textContent = todayTotalKm;
+  $('amountOut').textContent = amountToPay.toFixed(2) + ' EGP';
+}
+['finishKm','staticKm'].forEach(id => $(id).addEventListener('input', recalcFinish));
+$('overNightStay').addEventListener('change', recalcFinish);
+
+// ---------- queue + log ----------
+function getQueue(){ try { return JSON.parse(localStorage.getItem('tmx_dev_benzine_queue')) || []; } catch(e){ return []; } }
+function setQueue(q){ localStorage.setItem('tmx_dev_benzine_queue', JSON.stringify(q)); }
+function getLog(){ try { return JSON.parse(localStorage.getItem('tmx_dev_benzine_log')) || []; } catch(e){ return []; } }
+function setLog(l){ localStorage.setItem('tmx_dev_benzine_log', JSON.stringify(l.slice(0,30))); }
+
+// One entry per trip, keyed by tripId — updating it (e.g. start -> finish) replaces the
+// same entry instead of adding a new one, so "awaiting" clears once the trip is actually synced.
+function upsertLogEntry(tripId, patch){
+  const log = getLog();
+  const idx = log.findIndex(it => it.tripId === tripId);
+  let entry;
+  if (idx >= 0) { entry = Object.assign({}, log[idx], patch); log.splice(idx, 1); }
+  else { entry = Object.assign({ tripId }, patch); }
+  log.unshift(entry);
+  setLog(log);
+}
+
+function renderLog(){
+  const log = getLog();
+  const mine = (settings.engineer || '').trim().toLowerCase();
+  const items = log.filter(it => (it.engineer || '').trim().toLowerCase() === mine).slice(0, 20);
+  if (!items.length){ $('logList').innerHTML = '<div class="empty">Nothing yet.</div>'; return; }
+  $('logList').innerHTML = items.map(it => `
+    <div class="log-item">
+      <span>${it.display}</span>
+      <span class="badge ${it.status}">${it.status}</span>
+    </div>`).join('');
+}
+renderLog();
+
+async function trySend(payload){
+    const res = await TMX.fetch(settings.scriptUrl, {
+    method: 'POST',
+    body: JSON.stringify({ engineerToken: engineerSessionToken, engineer: settings.engineer, ...payload })
+  });
+  const text = await res.text();
+  let json; try { json = JSON.parse(text); } catch(e){ throw new Error('bad-response'); }
+  if (!json.ok) throw new Error(json.error || 'server-error');
+  return json;
+}
+
+// If Telecomax API committed the row but the browser failed while reading/parsing the
+// response, verify the Trip ID before treating the submission as failed.
+async function confirmTripCommitted(tripId, expectedState){
+  if(!tripId) return false;
+  try{
+    const data=await trySend({action:'openTrips'});
+    const trips=(data && data.trips)||[];
+    const found=trips.some(t=>String(t.tripId||'')===String(tripId));
+    if(expectedState==='start')return found;const history=await trySend({action:'history'});return history.trips.some(t=>t.tripId===tripId&&t.status==='Completed');
+  }catch(e){ return false; }
+}
+
+async function flushQueue(){
+  const q = getQueue();
+  if (!q.length) return;
+  const remaining = [];
+  for (const item of q) {
+    try {
+      const serverResult = await trySend(item.payload);
+      if (item.action === 'start' && serverResult && serverResult.autoForthBack && serverResult.autoForthBack.updated) {
+        const fb = Number(serverResult.autoForthBack.forthBack) || 0;
+        const updatedOpenTrips = getOpenTrips().map(t =>
+          t.tripId === item.tripId ? Object.assign({}, t, { lastForthBack: fb }) : t
+        );
+        setOpenTrips(updatedOpenTrips);
+        recalcFinish();
+      }
+      upsertLogEntry(item.tripId, { engineer: item.engineer, display: item.display, status: item.action === 'finish' ? 'synced' : 'awaiting' });
+    } catch (e) {
+      // A previous Start may already have been committed even if its response was lost.
+      // Confirm by Trip ID before keeping it in the retry queue.
+      if(item.action==='start' && await confirmTripCommitted(item.tripId,'start')){
+        upsertLogEntry(item.tripId,{engineer:item.engineer,display:item.display,status:'awaiting'});
+        continue;
+      }
+      remaining.push(item);
+      if (e.message === 'invalid-pin') {
+        upsertLogEntry(item.tripId, { engineer: item.engineer, display: item.display, status: 'error' });
+      }
+    }
+  }
+  setQueue(remaining);
+  renderLog();
+}
+$('syncNowBtn').onclick = async () => { toast('Syncing…'); await flushQueue(); toast('Sync attempt finished'); };
+
+// ---------- admin tab ----------
+
+let adminTripsCache = [];
+let financeTripsCache = [];
+
+function adminTodayISO(){
+  const d = new Date();
+  const local = new Date(d.getTime() - d.getTimezoneOffset()*60000);
+  return local.toISOString().slice(0,10);
+}
+function showAdminPanel(which){
+  const panels={balances:'adminBalancesPanel',photos:'adminPhotoAuditPanel',solfa:'adminSolfaPanel',rent:'adminRentPanel'};
+  const buttons={balances:'adminBalancesTabBtn',photos:'adminPhotoAuditTabBtn',solfa:'adminSolfaTabBtn',rent:'adminRentTabBtn'};
+  Object.keys(panels).forEach(k=>{$(panels[k]).classList.toggle('active',k===which);$(buttons[k]).classList.toggle('active',k===which);});
+  if(which==='balances') loadAdminSummary();
+  if(which==='photos') loadAdminTrips();
+  if(which==='solfa') populateAdminSolfaEngineer();
+  if(which==='rent') loadAdminRentTrips();
+}
+$('adminBalancesTabBtn').onclick=()=>showAdminPanel('balances');
+$('adminPhotoAuditTabBtn').onclick=()=>showAdminPanel('photos');
+$('adminSolfaTabBtn').onclick=()=>{ $('adminSolfaDate').value=adminTodayISO(); showAdminPanel('solfa'); };
+$('adminRentTabBtn').onclick=()=>showAdminPanel('rent');
+
+function updateFinanceUI(){
+  const roleEl = document.querySelector('.side-menu-role');
+  if (roleEl) roleEl.textContent = financeAuthed ? 'Finance' : (adminAuthed ? 'Admin' : 'Engineer');
+  $('financeLoginCard').style.display = financeAuthed ? 'none' : 'block';
+  $('financeDashboard').style.display = financeAuthed ? 'block' : 'none';
+  if ($('menuAdminBtn')) $('menuAdminBtn').style.display = financeAuthed ? 'none' : '';
+  if ($('menuFinanceBtn')) $('menuFinanceBtn').style.display = adminAuthed ? 'none' : '';
+  if ($('sideAdminLogoutBtn')) $('sideAdminLogoutBtn').style.display = adminAuthed ? 'flex' : 'none';
+  if ($('sideFinanceLogoutBtn')) $('sideFinanceLogoutBtn').style.display = financeAuthed ? 'flex' : 'none';
+}
+
+function showFinanceSection(){
+  updateFinanceUI();
+  if (!financeAuthed) return;
+  populateFinanceEngineerFilter();
+  loadFinanceTrips();
+}
+$('financeLoginBtn').onclick = async () => {
+  const name = $('financeNameInput').value.trim();
+  const pin = $('financePinInput').value.trim();
+  if (!name || !pin) return toast('Enter your name and 4-digit PIN');
+  showEngineerLoginBuffer();
+  $('financeLoginBtn').disabled = true; $('financeLoginBtn').textContent = 'Checking…';
+  try {
+    const res = await TMX.fetch(settings.scriptUrl, { method:'POST', body: JSON.stringify({ action:'managementLogin', name, pin, portalRole:'Finance' }) });
+    const data = JSON.parse(await res.text());
+    if (!data.ok) throw new Error(data.error || 'finance-session-required');
+    financeAuthed = true;
+    financeManagementToken = data.token;
+    financeManagementName = data.name || name;
+    sessionStorage.setItem('tmx_km_app_finance_token', financeManagementToken);
+    sessionStorage.setItem('tmx_km_app_finance_name', financeManagementName);
+
+    adminAuthed = false; adminManagementToken = ''; adminManagementName = '';
+    sessionStorage.removeItem('tmx_km_app_admin_token');
+    sessionStorage.removeItem('tmx_km_app_admin_name');
+    $('adminLoginCard').style.display = 'block'; $('adminDashboard').style.display = 'none';
+
+    updateFinanceUI();
+    showTab('finance');
+    toast('Logged in as ' + financeManagementName);
+    await loadFinanceTrips();
+  } catch (err) {
+    financeAuthed = false; financeManagementToken = ''; financeManagementName = '';
+    toast(adminErrorMessage(err));
+  } finally {
+    $('financeLoginBtn').disabled = false; $('financeLoginBtn').textContent = 'Log in';
+    hideEngineerLoginBuffer();
+  }
+};
+$('financeNameInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('financePinInput').focus()});
+$('financePinInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('financeLoginBtn').click()});
+
+function logoutFinance(){
+  financeAuthed = false; financeManagementToken = ''; financeManagementName = '';
+  sessionStorage.removeItem('tmx_km_app_finance_token');
+  sessionStorage.removeItem('tmx_km_app_finance_name');
+  $('financeNameInput').value = '';
+  $('financePinInput').value = '';
+  updateFinanceUI();
+  showTab('start');
+  closeSideMenu();
+  toast('Finance logged out');
+}
+$('sideFinanceLogoutBtn').onclick = logoutFinance;
+$('financeFilterEngineer').addEventListener('change', loadFinanceTrips);
+$('financeFilterDriver').addEventListener('change', loadFinanceTrips);
+$('financeApplyFiltersBtn').onclick=()=>loadFinanceTrips();
+$('financeClearFiltersBtn').onclick=()=>{ $('financeFilterEngineer').value=''; $('financeFilterDriver').value=''; $('financeFilterMonth').value=''; loadFinanceTrips(); };
+let financePhotosVisible = localStorage.getItem('financePhotosVisible') !== '0';
+function applyFinancePhotosVisibility(){ $('financeTripsList').classList.toggle('finance-photos-hidden', !financePhotosVisible); $('financePhotosToggle').textContent = financePhotosVisible ? 'Hide Photos' : 'Show Photos'; }
+$('financePhotosToggle').onclick=()=>{ financePhotosVisible=!financePhotosVisible; localStorage.setItem('financePhotosVisible', financePhotosVisible?'1':'0'); applyFinancePhotosVisibility(); };
+applyFinancePhotosVisibility();
+function populateFinanceEngineerFilter(){ const cached=getCachedLists(); populateSearchInput($('financeFilterEngineer'), $('financeFilterEngineerOptions'), cached.engineers||[], $('financeFilterEngineer').value||''); populateSearchInput($('financeFilterDriver'), $('financeFilterDriverOptions'), cached.drivers||[], $('financeFilterDriver').value||''); }
+async function loadFinanceTrips(){
+  if(!financeAuthed) return;
+  $('financeTripsList').innerHTML='<div class="empty">Loading…</div>';
+  try{
+    const data=await financeFetch('financeTrips',{filterEngineer:$('financeFilterEngineer').value,filterDriver:$('financeFilterDriver').value,filterMonth:$('financeFilterMonth').value});
+    financeTripsCache=data.trips||[];
+    renderTripListInto('financeTripsList', financeTripsCache);
+  }catch(err){
+    if(String(err.message)==='finance-session-required') logoutFinance();
+    $('financeTripsList').innerHTML='<div class="empty">Could not load trips — check connection.</div>';
+  }
+}
+
+async function financeFetch(action, extra){
+  const res = await TMX.fetch(settings.scriptUrl, {
+    method: 'POST',
+    body: JSON.stringify({ action, managementToken: financeManagementToken, ...(extra||{}) })
+  });
+  const text = await res.text();
+  const data = JSON.parse(text);
+  if (!data.ok) throw new Error(data.error || 'server-error');
+  return data;
+}
+
+async function restoreFinanceSession(){
+  if (!financeManagementToken) { updateFinanceUI(); return; }
+  if ($('financeNameInput')) $('financeNameInput').value = financeManagementName;
+  try {
+    await financeFetch('financeFilterOptions');
+    financeAuthed = true;
+    adminAuthed = false; adminManagementToken = ''; adminManagementName = '';
+    sessionStorage.removeItem('tmx_km_app_admin_token');
+    sessionStorage.removeItem('tmx_km_app_admin_name');
+    $('adminLoginCard').style.display = 'block'; $('adminDashboard').style.display = 'none';
+    updateFinanceUI();
+  } catch (err) {
+    financeAuthed = false; financeManagementToken = ''; financeManagementName = '';
+    sessionStorage.removeItem('tmx_km_app_finance_token');
+    sessionStorage.removeItem('tmx_km_app_finance_name');
+    updateFinanceUI();
+  }
+}
+restoreFinanceSession();
+
+function renderTripListInto(containerId,trips){
+  const el=$(containerId);
+  if(!trips.length){el.innerHTML='<div class="empty">No trips match these filters.</div>';return;}
+  const byDate={};
+  trips.forEach(t=>{const d=t.date||'Unknown date';if(!byDate[d])byDate[d]={};const eng=t.engineer||'Unknown';if(!byDate[d][eng])byDate[d][eng]=[];byDate[d][eng].push(t);});
+  const dates=Object.keys(byDate).sort((a,b)=>a<b?1:a>b?-1:0);
+  let html=''; dates.forEach(d=>{html+=`<div class="admin-date-header">${d}</div>`;Object.keys(byDate[d]).sort().forEach(eng=>{html+=`<div class="admin-engineer-header">${eng}</div>`;byDate[d][eng].forEach(t=>{html+=renderAdminTripCard(t);});});});
+  el.innerHTML=html;
+}
+$('financeTripsList').addEventListener('click',(e)=>{const img=e.target.closest('.audit-thumb');if(!img)return;openLightbox(img.src,img.dataset.full);});
+
+
+async function adminFetch(action, extra){
+    const res = await TMX.fetch(settings.scriptUrl, {
+    method: 'POST',
+    body: JSON.stringify({ action, managementToken: adminManagementToken, ...(extra||{}) })
+  });
+  const text = await res.text();
+  const data = JSON.parse(text);
+  if (!data.ok) throw new Error(data.error || 'server-error');
+  return data;
+}
+
+function adminErrorMessage(err){
+  const code = String(err && err.message || 'server-error');
+  const messages = {
+    'invalid-admin-pin': '❌ Wrong admin PIN',
+    'invalid-finance-pin': '❌ Wrong finance PIN',
+    'admin-session-required': 'Admin session expired. Please log in again.',
+    'finance-session-required': 'Finance session expired. Please log in again.',
+    'invalid-management-login': 'Wrong name or PIN.',
+    'management-user-inactive': 'This management account is inactive.',
+    'management-role-denied': 'Your account does not have access to this section.',
+    'engineer-required': 'Engineer is required',
+    'invalid-engineer': 'Engineer is not registered in Config',
+    'invalid-date': 'Invalid date',
+    'invalid-amount': 'Enter a valid amount',
+    'trip-required': 'Select a Rent trip',
+    'rent-required': 'Enter a valid Rent amount',
+    'invalid-rent-deduction': 'Select On TMX or On Driver',
+    'trip-not-found': 'Trip was not found',
+    'not-rent-trip': 'Selected trip is not a Rent trip',
+    'trip-required': 'Select a Rent trip',
+    'rent-required': 'Enter a valid Rent amount',
+    'invalid-rent-deduction': 'Select On TMX or On Driver',
+    'trip-not-found': 'Trip was not found',
+    'not-rent-trip': 'Selected trip is not a Rent trip',
+    'failed-to-fetch': 'Could not reach the Google Telecomax API backend',
+    'server-error': 'Admin request failed'
+  };
+  if (messages[code]) return messages[code];
+  if (/^SyntaxError/i.test(code)) return '❌ Backend returned an invalid response';
+  return '❌ Admin error: ' + code;
+}
+
+$('adminLoginTabBtn').onclick = async () => {
+  if (financeAuthed) return toast('Finance access cannot open Admin. Log out of Finance first.');
+  const name = $('adminNameInputTab').value.trim();
+  const pin = $('adminPinInputTab').value.trim();
+  if (!name || !pin) return toast('Enter your name and 4-digit PIN');
+  showEngineerLoginBuffer();
+  $('adminLoginTabBtn').disabled = true; $('adminLoginTabBtn').textContent = 'Checking…';
+  try {
+    const res = await TMX.fetch(settings.scriptUrl, { method:'POST', body: JSON.stringify({ action:'managementLogin', name, pin, portalRole:'Admin' }) });
+    const data = JSON.parse(await res.text());
+    if (!data.ok) throw new Error(data.error || 'admin-session-required');
+    adminAuthed = true;
+    adminManagementToken = data.token;
+    adminManagementName = data.name || name;
+    sessionStorage.setItem('tmx_km_app_admin_token', adminManagementToken);
+    sessionStorage.setItem('tmx_km_app_admin_name', adminManagementName);
+
+    financeAuthed = false; financeManagementToken = ''; financeManagementName = '';
+    sessionStorage.removeItem('tmx_km_app_finance_token');
+    sessionStorage.removeItem('tmx_km_app_finance_name');
+
+    updateFinanceUI();
+    $('adminLoginCard').style.display = 'none';
+    $('adminDashboard').style.display = 'block';
+    populateAdminEngineerFilter();
+    populateAdminSolfaEngineer();
+    $('adminSolfaDate').value = adminTodayISO();
+    toast('Logged in as ' + adminManagementName);
+    await loadAdminSummary();
+    await loadAdminTrips();
+    await loadAdminRentTrips();
+  } catch (err) {
+    adminAuthed = false; adminManagementToken = ''; adminManagementName = '';
+    sessionStorage.removeItem('tmx_km_app_admin_token');
+    sessionStorage.removeItem('tmx_km_app_admin_name');
+    toast(adminErrorMessage(err));
+  } finally {
+    $('adminLoginTabBtn').disabled = false; $('adminLoginTabBtn').textContent = 'Log in';
+    hideEngineerLoginBuffer();
+  }
+};
+$('adminNameInputTab').addEventListener('keydown',e=>{if(e.key==='Enter')$('adminPinInputTab').focus()});
+$('adminPinInputTab').addEventListener('keydown',e=>{if(e.key==='Enter')$('adminLoginTabBtn').click()});
+
+function logoutAdmin(){
+  adminAuthed = false; adminManagementToken = ''; adminManagementName = '';
+  sessionStorage.removeItem('tmx_km_app_admin_token');
+  sessionStorage.removeItem('tmx_km_app_admin_name');
+  $('adminNameInputTab').value = '';
+  $('adminPinInputTab').value = '';
+  $('adminLoginCard').style.display = 'block';
+  $('adminDashboard').style.display = 'none';
+  updateFinanceUI();
+  showTab('start');
+  closeSideMenu();
+  toast('Admin logged out');
+}
+$('sideAdminLogoutBtn').onclick = logoutAdmin;
+
+async function restoreAdminSession(){
+  if (!adminManagementToken) return;
+  if ($('adminNameInputTab')) $('adminNameInputTab').value = adminManagementName;
+  try {
+    await adminFetch('adminSummary', {});
+    adminAuthed = true;
+    updateFinanceUI();
+    $('adminLoginCard').style.display = 'none';
+    $('adminDashboard').style.display = 'block';
+    populateAdminEngineerFilter();
+    populateAdminSolfaEngineer();
+    $('adminSolfaDate').value = adminTodayISO();
+    await loadAdminTrips();
+    await loadAdminRentTrips();
+  } catch (err) {
+    adminAuthed = false; adminManagementToken = ''; adminManagementName = '';
+    sessionStorage.removeItem('tmx_km_app_admin_token');
+    sessionStorage.removeItem('tmx_km_app_admin_name');
+    $('adminLoginCard').style.display = 'block';
+    $('adminDashboard').style.display = 'none';
+  }
+}
+restoreAdminSession();
+
+async function loadAdminSummary(){
+  if (!adminAuthed) return;
+  try { renderAdminSummary(await adminFetch('adminSummary', { filterMonth: $('adminBalanceMonth').value, filterEngineer: $('adminBalanceEngineer').value })); }
+  catch (err) { toast(adminErrorMessage(err)); }
+}
+$('adminRefreshTabBtn').onclick = async () => {
+  try {
+    await loadAdminSummary();
+    await loadAdminTrips();
+    populateAdminSolfaEngineer();
+    await loadAdminRentTrips();
+    toast('Refreshed');
+  } catch (err) {
+    toast(adminErrorMessage(err));
+  }
+};
+
+function renderAdminSummary(data){
+  const totals = data.totals || { totalSolfa:0, totalSpent:0, balance:0 };
+  const solfaEntries = data.solfaEntries || [];
+  const engineerSelected = !!$('adminBalanceEngineer').value;
+  $('adminSolfaEntries').innerHTML = engineerSelected
+    ? (solfaEntries.length
+      ? solfaEntries.map(e => `<div class="solfa-entry"><span class="solfa-entry-date">${formatSolfaDate(e.date)}</span><span class="solfa-entry-amount">${Number(e.amount||0).toFixed(2)} EGP</span></div>`).join('')
+        + `<div class="solfa-entry-total"><span>Total</span><span>${Number(totals.totalSolfa||0).toFixed(2)} EGP</span></div>`
+      : '<div class="hint" style="padding:7px 0 2px;">No Solfa received for this period.</div>')
+    : '';
+  $('adminTotalReceived').textContent = engineerSelected ? (totals.totalSolfa||0).toFixed(2) : Math.round(totals.totalSolfa||0).toString();
+  $('adminTotalSpent').textContent = (totals.totalSpent||0).toFixed(2);
+  $('adminTotalBalance').textContent = (totals.balance||0).toFixed(2);
+  $('adminTotalBalance').classList.toggle('negative', (totals.balance||0) < 0);
+
+  const list = data.engineers || [];
+  if (!list.length){ $('adminEngineerList').innerHTML = '<div class="empty">No trip data yet.</div>'; return; }
+  $('adminEngineerList').innerHTML = list.map(e => `
+    <div class="history-item">
+      <div class="top-row">
+        <span><strong>${e.name}</strong></span>
+        <span class="badge ${e.balance<0?'error':'synced'}">${e.balance.toFixed(2)} EGP</span>
+      </div>
+      <div class="sub-row">Received ${e.totalSolfa.toFixed(2)} · Spent ${e.totalSpent.toFixed(2)} · ${e.tripCount} trip${e.tripCount===1?'':'s'}${e.openCount?' · '+e.openCount+' open':''}</div>
+    </div>`).join('');
+}
+
+function populateAdminEngineerFilter(){
+  const cached = getCachedLists();
+  const engineers = cached.engineers || [];
+  populateSearchInput($('adminFilterEngineer'), $('adminFilterEngineerOptions'), engineers, $('adminFilterEngineer').value || '');
+  populateSearchInput($('adminFilterDriver'), $('adminFilterDriverOptions'), cached.drivers || [], $('adminFilterDriver').value || '');
+  populateSearchInput($('adminBalanceEngineer'), $('adminBalanceEngineerOptions'), engineers, $('adminBalanceEngineer').value || '');
+}
+
+function populateAdminRentDeductionDriver(currentValue){
+  const cached=getCachedLists();
+  populateSearchInput($('adminRentDeductionDriver'), $('adminRentDeductionDriverOptions'), cached.drivers||[], currentValue);
+}
+
+function populateAdminSolfaEngineer(){
+  const cached = getCachedLists();
+  populateSearchInput($('adminSolfaEngineer'), $('adminSolfaEngineerOptions'), cached.engineers || [], $('adminSolfaEngineer').value || '');
+}
+$('adminSolfaUploadBtn').onclick=async()=>{
+  const engineer=$('adminSolfaEngineer').value;
+  const date=$('adminSolfaDate').value||adminTodayISO();
+  const amount=parseFloat($('adminSolfaAmount').value);
+  if(!engineer)return toast('Select an engineer');
+  if(!date)return toast('Select a date');
+  if(!isFinite(amount)||amount<=0)return toast('Enter a valid amount');
+  $('adminSolfaUploadBtn').disabled=true;$('adminSolfaUploadBtn').textContent='Uploading…';$('adminSolfaStatus').textContent='';
+  try{
+    await adminFetch('adminSolfa',{engineer,date,amount});
+    $('adminSolfaStatus').textContent=`✅ ${amount.toFixed(2)} EGP added for ${engineer} on ${date}.`;
+    $('adminSolfaAmount').value=''; toast('Solfa uploaded'); await loadAdminSummary();
+  }catch(err){
+    const m={'engineer-required':'Select an engineer','invalid-date':'Invalid date','invalid-amount':'Enter a valid amount','invalid-engineer':'Engineer is not registered'};
+    $('adminSolfaStatus').textContent='❌ '+(m[err.message]||'Could not upload Solfa — check connection.');
+  }
+  $('adminSolfaUploadBtn').disabled=false;$('adminSolfaUploadBtn').textContent='⬆ Upload';
+}
+
+
+async function loadAdminRentTrips(){
+  if(!adminAuthed) return;
+  populateAdminRentDeductionDriver();
+  try{
+    const data=await adminFetch('adminRentTrips');
+    adminTripsRentCache=data.trips||[];
+    const select=$('adminRentTrip');
+    const current=select.value;
+    select.innerHTML='<option value="">— Select Rent Trip —</option>' + (data.trips||[]).map(t=>`<option value="${String(t.tripId).replace(/"/g,'&quot;')}">${t.date} · ${t.engineer} · ${t.area||'—'} · ${t.task||'—'} · ${Number(t.benzineAmount||0).toFixed(2)} EGP</option>`).join('');
+    if(current && [...select.options].some(o=>o.value===current)) select.value=current;
+    updateAdminRentTripFields();
+  }catch(err){ toast(adminErrorMessage(err)); }
+}
+function selectedAdminRentTrip(){
+  const id=$('adminRentTrip').value;
+  return adminTripsRentCache.find(t=>String(t.tripId)===String(id));
+}
+let adminTripsRentCache=[];
+function updateAdminRentTripFields(){
+  const t=selectedAdminRentTrip();
+  $('adminRentEngineer').value=t ? (t.engineer||'') : '';
+  $('adminRentBenzine').value=t ? Number(t.benzineAmount||0).toFixed(2) : '0';
+  $('adminRentAmount').value=t && Number(t.rent||0)>0 ? Number(t.rent).toFixed(2) : '';
+  $('adminRentDeduction').value=t && t.rentDeduction ? t.rentDeduction : '';
+  populateAdminRentDeductionDriver(t && t.rentDeductionDriver ? t.rentDeductionDriver : '');
+  $('adminRentTotal').textContent=(t ? (Number(t.benzineAmount||0)+Number(t.rent||0)) : 0).toFixed(2)+' EGP';
+  $('adminRentStatus').textContent='';
+}
+$('adminRentTrip').addEventListener('change', updateAdminRentTripFields);
+$('adminRentSumBtn').onclick=()=>{
+  const t=selectedAdminRentTrip();
+  if(!t)return toast('Select a Rent trip');
+  const rent=parseFloat($('adminRentAmount').value);
+  if(!isFinite(rent)||rent<=0)return toast('Enter a valid Rent amount');
+  $('adminRentTotal').textContent=(Number(t.benzineAmount||0)+rent).toFixed(2)+' EGP';
+};
+$('adminRentUploadBtn').onclick=async()=>{
+  const t=selectedAdminRentTrip();
+  const rent=parseFloat($('adminRentAmount').value);
+  const deduction=$('adminRentDeduction').value;
+  const deductionDriver=$('adminRentDeductionDriver').value.trim();
+  if(!t)return toast('Select a Rent trip');
+  if(!isFinite(rent)||rent<=0)return toast('Enter a valid Rent amount');
+  if(!['On TMX','On Driver'].includes(deduction))return toast('Select Rent Deduction');
+  $('adminRentUploadBtn').disabled=true;$('adminRentUploadBtn').textContent='Uploading…';
+  try{
+    const result=await adminFetch('adminRent',{tripId:t.tripId,rent,rentDeduction:deduction,rentDeductionDriver:deductionDriver});
+    $('adminRentTotal').textContent=Number(result.totalRentBenzine||0).toFixed(2)+' EGP';
+    $('adminRentStatus').textContent=`✅ ${Number(result.totalRentBenzine||0).toFixed(2)} EGP uploaded for ${t.engineer} on ${t.date}.`;
+    toast('Rent uploaded');
+
+    // Reset the current trip and fields so the next unprocessed Rent trip can be selected.
+    $('adminRentTrip').value='';
+    updateAdminRentTripFields();
+    await loadAdminRentTrips();
+    $('adminRentTrip').value='';
+    updateAdminRentTripFields();
+    await loadAdminSummary();
+  }catch(err){ $('adminRentStatus').textContent='❌ '+adminErrorMessage(err); }
+  $('adminRentUploadBtn').disabled=false;$('adminRentUploadBtn').textContent='⬆ Upload';
+};
+
+
+$('adminBalanceMonth').value = new Date().toISOString().slice(0,7);
+$('adminFilterMonth').value = new Date().toISOString().slice(0,7);
+$('financeFilterMonth').value = new Date().toISOString().slice(0,7);
+$('adminBalanceMonth').addEventListener('change', () => loadAdminSummary());
+$('adminClearBalanceMonthBtn').onclick = () => { $('adminBalanceMonth').value=''; $('adminBalanceEngineer').value=''; loadAdminSummary(); };
+$('adminBalanceEngineer').addEventListener('change', loadAdminSummary);
+$('adminFilterDriver').addEventListener('change', loadAdminTrips);
+let adminPhotosVisible = localStorage.getItem('adminPhotosVisible') !== '0';
+function applyAdminPhotosVisibility(){
+  $('adminTripsList').classList.toggle('admin-photos-hidden', !adminPhotosVisible);
+  $('adminPhotosToggle').textContent = adminPhotosVisible ? 'Hide Photos' : 'Show Photos';
+}
+$('adminPhotosToggle').onclick = () => {
+  adminPhotosVisible = !adminPhotosVisible;
+  localStorage.setItem('adminPhotosVisible', adminPhotosVisible ? '1' : '0');
+  applyAdminPhotosVisibility();
+};
+applyAdminPhotosVisibility();
+
+$('adminApplyFiltersBtn').onclick = () => loadAdminTrips();
+$('adminClearFiltersBtn').onclick = () => {
+  $('adminFilterEngineer').value = '';
+  $('adminFilterDriver').value = '';
+  $('adminFilterMonth').value = '';
+  loadAdminTrips();
+};
+
+async function loadAdminTrips(){
+  if (!adminAuthed) return;
+  $('adminTripsList').innerHTML = '<div class="empty">Loading…</div>';
+  try {
+    const data = await adminFetch('adminTrips', {
+      filterEngineer: $('adminFilterEngineer').value,
+      filterDriver: $('adminFilterDriver').value,
+      filterMonth: $('adminFilterMonth').value,
+    });
+    adminTripsCache = data.trips || [];
+    renderAdminTrips(adminTripsCache);
+  } catch (err) {
+    $('adminTripsList').innerHTML = '<div class="empty">Could not load trips — check connection.</div>';
+  }
+}
+
+// ---------- photo lightbox ----------
+function openLightbox(thumbSrc, fullUrl){
+  $('lightboxImg').src = thumbSrc;
+  $('lightboxOpenOriginal').href = fullUrl || thumbSrc;
+  $('photoLightbox').style.display = 'flex';
+}
+$('closeLightbox').onclick = () => { $('photoLightbox').style.display = 'none'; $('lightboxImg').src = ''; };
+$('photoLightbox').addEventListener('click', (e) => {
+  if (e.target.id === 'photoLightbox') { $('photoLightbox').style.display = 'none'; $('lightboxImg').src = ''; }
+});
+$('adminTripsList').addEventListener('click', (e) => {
+  const img = e.target.closest('.audit-thumb');
+  if (!img) return;
+  openLightbox(img.src, img.dataset.full);
+});
+$('historyList').addEventListener('click', (e) => {
+  const img = e.target.closest('.history-audit-thumb');
+  if (!img) return;
+  openLightbox(img.src, img.dataset.full);
+});
+
+function renderAdminTrips(trips){
+  if (!trips.length){ $('adminTripsList').innerHTML = '<div class="empty">No trips match these filters.</div>'; return; }
+  // Group by date (newest first), then by engineer within each date
+  const byDate = {};
+  trips.forEach(t => {
+    const d = t.date || 'Unknown date';
+    if (!byDate[d]) byDate[d] = {};
+    const eng = t.engineer || 'Unknown';
+    if (!byDate[d][eng]) byDate[d][eng] = [];
+    byDate[d][eng].push(t);
+  });
+  const dates = Object.keys(byDate).sort((a,b) => a < b ? 1 : a > b ? -1 : 0);
+  let html = '';
+  dates.forEach(d => {
+    html += `<div class="admin-date-header">${d}</div>`;
+    Object.keys(byDate[d]).sort().forEach(eng => {
+      html += `<div class="admin-engineer-header">${eng}</div>`;
+      byDate[d][eng].forEach(t => { html += renderAdminTripCard(t); });
+    });
+  });
+  $('adminTripsList').innerHTML = html;
+}
+
+function renderAdminTripCard(t){
+  const statusBadge = t.status === 'Completed' ? 'synced' : 'awaiting';
+  const startThumb = t.startPhotoThumb
+    ? `<img class="audit-thumb" src="${t.startPhotoThumb}" data-full="${t.startPhoto}" alt="start odometer photo" loading="lazy">`
+    : '<span class="hint">No start photo</span>';
+  const finishThumb = t.finishPhotoThumb
+    ? `<img class="audit-thumb" src="${t.finishPhotoThumb}" data-full="${t.finishPhoto}" alt="finish odometer photo" loading="lazy">`
+    : '<span class="hint">No finish photo</span>';
+  return `
+    <div class="admin-trip-card">
+      <div class="top-row">
+        <span>${t.projectName ? t.projectName+' · ' : ''}${t.area||'—'} · ${t.task||'—'}</span>
+        <span class="badge ${statusBadge}">${t.status||'—'}</span>
+      </div>
+      <div class="audit-row">
+        <div class="audit-col">
+          <div class="audit-lbl">Start KM: <strong>${t.startKm||'—'}</strong></div>
+          ${startThumb}
+          <div class="hint">GPS: ${t.startLatitude!=null && t.startLongitude!=null ? t.startLatitude+', '+t.startLongitude : '—'}</div>
+        </div>
+        <div class="audit-col">
+          <div class="audit-lbl">Finish KM: <strong>${t.finishKm||'—'}</strong></div>
+          ${finishThumb}
+          <div class="hint">GPS: ${t.finishLatitude!=null && t.finishLongitude!=null ? t.finishLatitude+', '+t.finishLongitude : '—'}</div>
+        </div>
+      </div>
+      <div class="sub-row">${t.totalKm||0} km · ${Number(t.amountSpent||0).toFixed(2)} EGP</div>
+      <div class="sub-row" style="margin-top:6px;"><strong>Driver Name:</strong> ${t.driver || '—'}</div>
+    </div>`;
+}
+
+window.addEventListener('online', flushQueue);
+flushQueue();
+
+// ---------- START submit ----------
+$('startForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!settings.engineer || !engineerSessionToken) return toast('Please log in first (☰ Menu → Settings)');
+  if (!settings.projectName) return toast('Select a Project Name in Settings first');
+  const engineer = settings.engineer;
+  const start = $('startKm').value;
+  setTodayDateField();
+  if (!$('task').value.trim()) return toast('Task is required');
+  if (!start) return toast('Start KM is required');
+  if (!startPhoto) { $('startPhotoMissing').style.display='block'; return toast('Start KM photo is required'); }
+  if (!currentDriverAllowsGallery('start') && !startPhotoLocation) return toast('📍 Start photo GPS is required. Retake the photo with Location enabled.');
+
+  const validNames = validateStartNamesClient();
+  if (!validNames.engineer || !validNames.driver) {
+    return toast(!validNames.engineer ? '❌ Re-enter the correct registered Engineer name in Settings' : '❌ Re-enter the correct Driver name from the searchable list');
+  }
+  const canonicalEngineer = validNames.engineer;
+  const canonicalDriver = validNames.driver;
+  const _lists=getCachedLists(), _dk=String(canonicalDriver||'').trim().toLowerCase();
+  const vehicleOptional=(_dk==='rent' || _dk==='item transfer' || _dk==='unlocated car');
+  const canonicalVehicle=vehicleOptional ? '' : findRegisteredName($('vehicle').value,((_lists.driverVehicles||{})[_dk]||[]));
+  if(!vehicleOptional && !canonicalVehicle)return toast('❌ Please select a valid Vehicle ID for this Driver');
+  // Do not create a local open trip until the submit-time GPS request succeeds.
+  const startButton = $('startSubmitBtn');
+  startButton.disabled = true;
+  startButton.textContent = 'Getting current location…';
+  let submitLocation;
+  try { submitLocation = await getFreshSubmissionLocation(); }
+  catch (error) {
+    toast('📍 ' + error.message);
+    startButton.disabled = false;
+    startButton.textContent = '▶ Submit Start';
+    return;
+  }
+  const tripId = genId();
+  const trip = {
+    tripId, engineer: canonicalEngineer, driver: canonicalDriver, vehicle: canonicalVehicle, projectName: settings.projectName || '',
+    date: $('date').value, day: $('day').value,
+    area: '', task: $('task').value.trim(),
+    startKm: parseFloat(start), startedAt: new Date().toISOString(),
+    rate: 2.225,
+    lastForthBack: 0,
+    startLatitude: submitLocation.latitude,
+    startLongitude: submitLocation.longitude,
+  };
+  const payload = { action: 'start', ...trip, startPhoto, startLatitude: submitLocation.latitude, startLongitude: submitLocation.longitude };
+  const display = `${trip.engineer} · ${trip.task||'Task'} · Start ${trip.startKm}km`;
+
+  // Do not switch to Finish yet. The server must first calculate and return the
+  // final Forth & Back value so the engineer never sees a stale/old value.
+  deferFinishNavigation = true;
+  // The adapter persists the pending submission. Only confirmed trips enter the open list.
+
+  $('startSubmitBtn').disabled = true; $('startSubmitBtn').textContent = 'Submitting…';
+  showResultDialog('loading', 'Uploading start reading…');
+  try {
+    const serverResult = await trySend(payload);
+    const confirmed = await trySend({action:"openTrips"}); setOpenTrips(confirmed.trips || []);
+    const autoForthBack = serverResult && serverResult.autoForthBack;
+    if (autoForthBack && autoForthBack.forthBack !== undefined && autoForthBack.forthBack !== null) {
+      const updatedOpenTrips = getOpenTrips().map(t =>
+        t.tripId === tripId ? Object.assign({}, t, {
+          lastForthBack: Number(autoForthBack.forthBack) || 0,
+          rate: isFinite(parseFloat(serverResult.ratePerKm))
+            ? Number(serverResult.ratePerKm)
+            : (isFinite(parseFloat(autoForthBack.ratePerKm)) ? Number(autoForthBack.ratePerKm) : t.rate)
+        }) : t
+      );
+      setOpenTrips(updatedOpenTrips);
+      recalcFinish();
+    }
+    upsertLogEntry(tripId, { engineer, display, status: 'awaiting' });
+    toast('✅ Trip started — submit Finish later today');
+    showResultDialog('success', `${trip.task} - ${trip.startKm} KM`);
+  } catch (err) {
+    // A fetch/read error does not necessarily mean the write failed. Telecomax API can
+    // successfully append the row and the phone can still fail to receive/parse the reply.
+    const committed = await confirmTripCommitted(tripId,'start');
+    if(committed){ const confirmed=await trySend({action:'openTrips'});setOpenTrips(confirmed.trips||[]);
+      upsertLogEntry(tripId,{engineer,display,status:'awaiting'});
+      toast('✅ Trip started and confirmed in the database');
+      showResultDialog('success',`${trip.task} - ${trip.startKm} KM`);
+    } else {
+    const classified = classifySendError(err);
+    if (classified.kind === 'invalid-pin' || classified.kind === 'invalid-engineer-name' || classified.kind === 'invalid-driver-name') {
+      // Validation errors must never be queued as uploads. Remove the local trip too,
+      // because nothing was accepted by the database.
+      setOpenTrips(getOpenTrips().filter(t => t.tripId !== tripId));
+      upsertLogEntry(tripId, { engineer, display, status: 'error' });
+      if (classified.kind === 'invalid-pin') toast('🔒 Login invalid — log in again in Settings');
+      else toast('❌ Please re-enter the correct registered name');
+      showResultDialog('failure', classified.text);
+    } else {
+      const q = getQueue(); q.push({ tripId, action: 'start', payload, display, engineer }); setQueue(q);
+      upsertLogEntry(tripId, { engineer, display, status: 'pending' });
+      toast(classified.kind === 'offline' ? '📴 No internet — will sync automatically' : '⚠️ Upload failed — will retry automatically');
+      showResultDialog(classified.kind === 'offline' ? 'offline' : 'failure', classified.text);
+    }
+    }
+  }
+
+  // Only now move to Finish. At this point the Start request has completed, the
+  // backend has recorded the final F&B, and local state has been updated.
+  deferFinishNavigation = false;
+  updateLockState();
+  if (getOpenTrips().some(t => t.tripId === tripId)) {
+    showTab('finish', true);
+    if($('openTripSelect')) $('openTripSelect').dataset.preferredTripId=String(tripId);
+    await loadOpenTripsForFinish();
+    if ($('openTripSelect')) {
+      $('openTripSelect').value = tripId;
+      $('openTripSelect').dispatchEvent(new Event('change'));
+    }
+  }
+  renderLog();
+  resetStartForm();
+  $('startSubmitBtn').disabled = false; $('startSubmitBtn').textContent = '▶ Submit Start';
+});
+
+function resetStartForm(){
+  $('task').value=''; $('startKm').value='';
+  startPhoto = null;
+  startPhotoLocation = null;
+  const thumb = document.getElementById('startThumb'); if (thumb) thumb.remove();
+  $('startPhotoBtn').textContent = 'Take photo';
+  $('startPhotoBtn').classList.remove('retake');
+  if (settings.defaultDriver) $('driver').value = settings.defaultDriver;
+  setTodayDateField();
+}
+
+// ---------- FINISH submit ----------
+$('finishForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!settings.engineer || !engineerSessionToken) return toast('Please log in first (☰ Menu → Settings)');
+  if (!settings.projectName) return toast('Select a Project Name in Settings first');
+  const tripId = $('openTripSelect').value;
+  const trip = openTripsCache.find(t => t.tripId === tripId);
+  if (!trip) return toast('Select which trip you are finishing');
+  const finish = $('finishKm').value;
+  if (!finish) return toast('Finish KM is required');
+  if (!finishPhoto) { $('finishPhotoMissing').style.display='block'; return toast('Finish KM photo is required'); }
+  if (!currentDriverAllowsGallery('finish') && !finishPhotoLocation) return toast('📍 Finish photo GPS is required. Retake the photo with Location enabled.');
+  if (parseFloat(finish) < parseFloat(trip.startKm)) return toast('Finish KM must be ≥ Start KM (' + trip.startKm + ')');
+
+  const finishButton = $('finishSubmitBtn');
+  finishButton.disabled = true;
+  finishButton.textContent = 'Getting current location…';
+  let submitLocation;
+  try { submitLocation = await getFreshSubmissionLocation(); }
+  catch (error) {
+    toast('📍 ' + error.message);
+    finishButton.disabled = false;
+    finishButton.textContent = '⏹ Submit Finish';
+    return;
+  }
+  const payload = {
+    action: 'finish', tripId, driver: trip.driver,
+    finishKm: parseFloat(finish),
+    // database stores today's actual Trip KM and today's actual fuel amount.
+    // The Forth & Back is added only to the driver's payment calculation.
+    trip: parseFloat($('todayTripOut').textContent),
+    totalKm: parseFloat($('totalOut').textContent),
+    amountSpent: parseFloat($('todayTripOut').textContent) * (isFinite(parseFloat(trip.rate)) ? parseFloat(trip.rate) : 0),
+    rate: (isFinite(parseFloat(trip.rate)) ? parseFloat(trip.rate) : 0),
+    staticHours: parseFloat($('staticKm').value)||0,staticKm:0,
+    overNightStay: $('overNightStay').checked,
+    finishPhoto, startLatitude: trip.startLatitude || '', startLongitude: trip.startLongitude || '', finishLatitude: submitLocation.latitude, finishLongitude: submitLocation.longitude, finishedAt: new Date().toISOString(),
+  };
+  const display = `${trip.engineer} · ${trip.task||'Task'} · ${$('totalOut').textContent}km total`;
+  const engineerForLog = trip.engineer || settings.engineer;
+
+  // remove from open list — engineer is done with it regardless of sync outcome
+  // Keep the open trip until the backend confirms Finish.
+
+  $('finishSubmitBtn').disabled = true; $('finishSubmitBtn').textContent = 'Submitting…';
+  showResultDialog('loading', 'Uploading finish reading…');
+  try {
+    await trySend(payload);
+    setOpenTrips(getOpenTrips().filter(t => t.tripId !== tripId)); updateLockState();
+    upsertLogEntry(tripId, { engineer: engineerForLog, display, status: 'synced' });
+    toast('✅ Synced to the database');
+    showResultDialog('success', `Today Total KM : ${$('totalOut').textContent} & Amount to Pay now : ${$('amountOut').textContent} EGP`);
+  } catch (err) {
+    const classified = classifySendError(err);
+    if (classified.kind === 'invalid-pin') {
+      upsertLogEntry(tripId, { engineer: engineerForLog, display, status: 'error' });
+      toast('🔒 Login invalid — log in again in Settings');
+      showResultDialog('failure', classified.text);
+    } else {
+      const q = getQueue(); q.push({ tripId, action: 'finish', payload, display, engineer: engineerForLog }); setQueue(q);
+      upsertLogEntry(tripId, { engineer: engineerForLog, display, status: 'pending' });
+      toast(classified.kind === 'offline' ? '📴 No internet — will sync automatically' : '⚠️ Upload failed — will retry automatically');
+      showResultDialog(classified.kind === 'offline' ? 'offline' : 'failure', classified.text);
+    }
+  }
+  renderLog();
+  resetFinishForm();
+  loadOpenTripsForFinish();
+  checkOverdueTrips();
+  $('finishSubmitBtn').disabled = false; $('finishSubmitBtn').textContent = '⏹ Submit Finish';
+});
+
+function resetFinishForm(){
+  $('finishKm').value=''; $('staticKm').value='0'; $('overNightStay').checked=false;
+  finishPhoto = null;
+  finishPhotoLocation = null;
+  const thumb = document.getElementById('finishThumb'); if (thumb) thumb.remove();
+  $('finishPhotoBtn').textContent = 'Take photo';
+  $('finishPhotoBtn').classList.remove('retake');
+  recalcFinish();
+}
+
+// ---------- history / balance ----------
+async function loadHistory(){
+  if (!settings.engineer || !engineerSessionToken){
+    $('balanceGrid').style.display='none';
+    $('historyHint').style.display='block';
+    $('historyHint').textContent='Log in from ☰ Menu → Settings to view your history and balance.';
+    $('historyList').innerHTML = '<div class="empty">Not logged in.</div>';
+    return;
+  }
+    $('historyHint').style.display='block';
+  $('historyHint').textContent='Loading…';
+  try {
+    const data = await trySend({ action: 'history', filterMonth: $('historyMonth').value });
+    renderHistory(data);
+  } catch (err) {
+    if (err.message === 'invalid-pin'){
+      $('historyHint').textContent = '🔒 Login invalid — please log in again in Settings.';
+    } else {
+      $('historyHint').textContent = 'Could not load history — check your connection and try again.';
+    }
+    $('balanceGrid').style.display='none';
+  }
+}
+
+function formatSolfaDate(value){
+  if (!value) return '—';
+  const parts = String(value).split('-');
+  if (parts.length === 3) {
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const day = String(Number(parts[2]));
+    const month = months[Number(parts[1]) - 1] || parts[1];
+    return `${day}-${month}`;
+  }
+  return String(value);
+}
+
+function renderHistory(data){
+  $('historyHint').style.display='none';
+  $('balanceGrid').style.display='grid';
+  $('balReceived').textContent = (data.totalSolfa||0).toFixed(2);
+  const solfaEntries = data.solfaEntries || [];
+  $('solfaEntries').innerHTML = solfaEntries.length
+    ? solfaEntries.map(e => `<div class="solfa-entry"><span class="solfa-entry-date">${formatSolfaDate(e.date)}</span><span class="solfa-entry-amount">${Number(e.amount||0).toFixed(2)} EGP</span></div>`).join('')
+      + `<div class="solfa-entry-total"><span>Total</span><span>${Number(data.totalSolfa||0).toFixed(2)} EGP</span></div>`
+    : '<div class="hint" style="padding:7px 0 2px;">No Solfa received for this period.</div>';
+  $('balSpent').textContent = (data.totalSpent||0).toFixed(2);
+  const balance = data.balance||0;
+  $('balBalance').textContent = balance.toFixed(2);
+  $('balBalance').classList.toggle('negative', balance < 0);
+
+  const trips = data.trips || [];
+  if (!trips.length){
+    $('historyList').innerHTML = '<div class="empty">No trips recorded yet for this engineer.</div>';
+    return;
+  }
+  $('historyList').innerHTML = trips.map(t => {
+    const statusBadge = t.status === 'Completed' ? 'synced' : 'awaiting';
+    const amountText = t.amountSpent ? Number(t.amountSpent).toFixed(2) + ' EGP' : '—';
+    const startThumb = t.startPhotoThumb || t.startPhoto
+      ? `<img class="audit-thumb history-audit-thumb" src="${t.startPhotoThumb || t.startPhoto}" data-full="${t.startPhoto || t.startPhotoThumb}" alt="start odometer photo" loading="lazy">`
+      : '<span class="hint">No start photo</span>';
+    const finishThumb = t.finishPhotoThumb || t.finishPhoto
+      ? `<img class="audit-thumb history-audit-thumb" src="${t.finishPhotoThumb || t.finishPhoto}" data-full="${t.finishPhoto || t.finishPhotoThumb}" alt="finish odometer photo" loading="lazy">`
+      : '<span class="hint">No finish photo</span>';
+    return `
+      <div class="admin-trip-card history-trip-card">
+        <div class="top-row">
+          <strong>${t.date || '—'} · ${t.projectName ? t.projectName+' · ' : ''}${t.area || 'No area'} · ${t.task || 'No task'}</strong>
+          <span class="badge ${statusBadge}">${t.status || '—'}</span>
+        </div>
+        <div class="sub-row" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;text-align:center;">
+          <span><strong>Trip KM</strong><br>${t.tripKm||0}</span>
+          <span><strong>F&amp;B</strong><br>${t.forthBack||0}</span>
+          <span><strong>Total KM</strong><br>${t.totalKm||0}</span>
+        </div>
+        <div class="sub-row" style="margin-top:10px;"><strong>Amount spent:</strong> <span class="amount">${amountText}</span></div>
+        <div class="sub-row" style="margin-top:6px;"><strong>Driver Name:</strong> ${t.driver || '—'}</div>
+        <div class="audit-row">
+          <div class="audit-col">
+            <div class="audit-lbl">Start KM: <strong>${t.startKm||'—'}</strong></div>
+            ${startThumb}
+          </div>
+          <div class="audit-col">
+            <div class="audit-lbl">Finish KM: <strong>${t.finishKm||'—'}</strong></div>
+            ${finishThumb}
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function showResultDialog(state, message){
+  const icons = { loading: '⏳', success: '✅', offline: '📴', failure: '❌' };
+  const titles = { loading: 'Uploading…', success: 'Upload Succeeded', offline: 'No Internet Connection', failure: 'Upload Failed' };
+  $('resultIcon').textContent = icons[state] || '';
+  $('resultIcon').classList.toggle('spin', state === 'loading');
+  $('resultTitle').textContent = titles[state] || '';
+  $('resultTitle').className = (state === 'success' || state === 'failure' || state === 'offline') ? state : '';
+  $('resultMessage').textContent = message || '';
+  $('resultOkBtn').style.display = state === 'loading' ? 'none' : 'block';
+  $('resultModal').style.display = 'flex';
+}
+
+// Classifies a trySend() failure so the dialog can tell "no internet" apart from a real error.
+// Our own thrown errors are always plain Error objects with a known message (invalid-pin,
+// trip-not-found, etc.); a TypeError bubbling up from TMX.fetch() itself almost always means the
+// request never left the phone — i.e. no connection.
+function classifySendError(err){
+  if (err && err.message === 'invalid-pin') {
+    return { kind: 'invalid-pin', text: 'Your login is invalid. Please log in again in Settings, then try again.' };
+  }
+  if (err && err.message === 'invalid-engineer-name') {
+    return { kind: 'invalid-engineer-name', text: 'Engineer name is not registered. Please re-enter the correct registered name in Settings.' };
+  }
+  if (err && err.message === 'invalid-driver-name') {
+    return { kind: 'invalid-driver-name', text: 'Driver name is not registered. Please select the correct driver from the searchable list.' };
+  }
+  if (!navigator.onLine || err instanceof TypeError) {
+    return { kind: 'offline', text: 'No internet connection — this upload will be saved and sent automatically once you\'re back online.' };
+  }
+  return { kind: 'error', text: 'Something went wrong uploading this. It has been saved on this phone and will retry automatically.' };
+}
+
+$('resultOkBtn').onclick = () => { $('resultModal').style.display = 'none'; };
+
+function toast(msg){
+  let t = document.querySelector('.toast');
+  if (t) t.remove();
+  t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2800);
+}
+
+// Migration: retire stale app-shell service workers so the latest GitHub/Vercel HTML is loaded.
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => Promise.all(regs.filter(r => new URL(r.scope).origin === location.origin).map(r => r.unregister()))).catch(()=>{});
+}
+if ('caches' in window) caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('telecomax-km-')).map(k => caches.delete(k)))).catch(()=>{});
+</script>
+<script>
+function openRequestedEngineerView(){
+ const v=new URLSearchParams(location.search).get('view');
+ if(v==='history'){
+   if(typeof showTab==='function') { setTimeout(()=>showTab('history'),0); return; }
+   const b=document.querySelector('[data-tab="history"],[data-page="history"],#historyTab,.history-tab');
+   if(b&&typeof b.click==='function') setTimeout(()=>b.click(),0);
+ }else if(v==='start'){
+   if(typeof showTab==='function') { setTimeout(()=>showTab('start'),0); return; }
+   const b=document.querySelector('[data-tab="start"],[data-page="start"],#startTab,.start-tab');
+   if(b&&typeof b.click==='function') setTimeout(()=>b.click(),0);
+ }
+}
+setTimeout(openRequestedEngineerView,250);
+window.addEventListener('load',()=>setTimeout(openRequestedEngineerView,500));
+function portalSSOStatus_(title,detail){ document.documentElement.classList.remove('portal-sso-pending');
+ let x=document.getElementById('portalSsoStatus');
+ if(!x){x=document.createElement('div');x.id='portalSsoStatus';x.className='sso-status';document.body.appendChild(x)}
+ x.innerHTML='<div class="sso-status-box"><b>'+title+'</b><span>'+detail+'</span></div>';
+}
+(async function portalAutoLogin(){
+ const m=location.hash.match(/(?:^|[&#])sso=([^&]+)/); if(!m)return;
+ const portalToken=decodeURIComponent(m[1]); history.replaceState(null,'',location.pathname+location.search);
+ try{
+  const r=await TMX.fetch(DEFAULT_SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'portalSSO',portalToken,portalRole:'Engineer'})});
+  const d=await r.json(); if(!d.ok||!d.engineerToken){portalSSOStatus_('Single Sign-On failed',d.error||'The KM module rejected the portal session.');return;}
+  engineerSessionToken=d.engineerToken; engineerSessionName=d.name||'';
+  settings.engineer=engineerSessionName;
+  sessionStorage.setItem('tmx_km_engineer_token',engineerSessionToken);
+  sessionStorage.setItem('tmx_km_engineer_name',engineerSessionName);
+  saveSettingsToStorage(settings);
+  fillSettingsForm();
+  document.documentElement.classList.remove('portal-sso-pending');
+  if(typeof updateLoginStatus==='function') updateLoginStatus();
+  if(typeof updateLockState==='function') updateLockState();
+  try{ if(typeof refreshLists==='function') refreshLists(true); }catch(_e){}
+  const requestedView=new URLSearchParams(location.search).get('view');
+  if(requestedView==='history'){
+    if(typeof showTab==='function') showTab('history');
+    if(typeof loadHistory==='function') loadHistory();
+  }else{
+    // For Trips App, resolve server-side open trip first; it will reveal Start or Finish directly.
+    if(typeof syncOpenTripStateFromServer==='function') syncOpenTripStateFromServer();
+    else if(typeof openRequestedEngineerView==='function') openRequestedEngineerView();
+  }
+ }catch(e){portalSSOStatus_('Single Sign-On connection error',String(e&&e.message||e));console.error('Portal SSO failed',e)}
+})();
+</script>
+
+<script id="v8323UnifiedPortalLogout">
+(function(){
+ const PORTAL_LOGIN='/index.html?logout=1';
+ function isLogoutTarget(el){
+   const b=el&&el.closest?el.closest('button,a'):null;if(!b)return false;
+   const id=String(b.id||'').toLowerCase(),txt=String(b.textContent||'').trim().toLowerCase();
+   return id==='logout'||id==='logoutbtn'||id==='navadmlogout'||id==='menulogoutbtn'||id==='loginbtn' && !!(settings.engineer && engineerSessionToken);
+ }
+ document.addEventListener('click',function(e){
+   if(!isLogoutTarget(e.target))return;
+   e.preventDefault();e.stopImmediatePropagation();
+   try{sessionStorage.clear();}catch(_e){}
+   location.replace(PORTAL_LOGIN);
+ },true);
+})();
+</script>
+
+<script id="v8329CrossDeviceOpenTripSync">
+(function(){
+  async function run(){
+    try{
+      const requestedView=new URLSearchParams(location.search).get('view');
+      if(requestedView==='history') return; // History route owns the screen; do not switch to Start/Finish.
+      if(typeof syncOpenTripStateFromServer==='function') await syncOpenTripStateFromServer();
+    }catch(e){ console.warn('Open trip sync skipped',e); }
+  }
+  window.addEventListener('load',()=>setTimeout(run,350));
+  window.addEventListener('pageshow',()=>setTimeout(run,150));
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(run,100);});
+})();
+</script>
+
+<script src="/tmx/tail.js"></script></body>
+</html>
