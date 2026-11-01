@@ -1,6 +1,7 @@
 import {op,write,login,logout,session,today,digest} from './client.js';
 import {config,collect,kmRows,expenseRows,engineers,allUsers,memo,invalidate,filterTrips,trip,expense,page,totals,combos,summary,custodyFilter,split,equal} from './records.js';
 import {jpeg,base64,submitTrip,jobs,retry,drain} from './photos.js';
+import {allowanceView} from './allowance-view.js';
 const manager=()=>session()?.user.roles.some(r=>['pm','finance','admin','super_admin'].includes(r));
 const administrator=()=>session()?.user.roles.some(r=>['admin','super_admin'].includes(r));
 function role(){const roles=session().user.roles;return roles.includes('super_admin')||roles.includes('admin')?'Admin':roles.includes('pm')?'PM':roles.includes('finance')?'Finance':'Engineer'}
@@ -68,7 +69,7 @@ async function readTrips(action,q){
  let selected=rows.filter(t=>t.status!=='Solfa'&&t.status!=='In Progress');
  if(action==='adminRentTrips')selected=rows.filter(t=>t.driver?.toLowerCase()==='rent'&&t.status==='Completed');
  if(action==='adminApprovedSummary'||action==='financeSummary')selected=selected.filter(t=>t.pmStatus==='Approved'&&t.financeStatus==='Approved');
- if(action==='financeTrips')selected=selected.filter(t=>t.pmStatus==='Approved');
+ if(action==='financeTrips')selected=selected.filter(t=>t.status==='Completed');
  if(q.filterAuditStatus&&q.filterAuditStatus!=='All'){
   const field=action==='financeTrips'?'financeStatus':'pmStatus';selected=selected.filter(t=>equal(t[field],q.filterAuditStatus));
  }
@@ -91,7 +92,7 @@ async function dashboard(kind){
  if(kind==='km'){
   const rows=await kmRows(),a=await op('allowances.list',{month:today().slice(0,7),filterStatus:'Pending',limit:1});
   return {ok:true,pmAuditPending:rows.filter(t=>t.status==='Completed'&&(!t.pm_status||t.pm_status==='Pending')).length,
-   financeAuditPending:rows.filter(t=>t.pm_status==='Approved'&&(!t.finance_status||t.finance_status==='Pending')).length,allowancePendingCount:a.totalMatched,allowancePendingAmount:a.summary.pending};
+   financeAuditPending:rows.filter(t=>t.status==='Completed'&&(!t.finance_status||t.finance_status==='Pending')).length,allowancePendingCount:a.totalMatched,allowancePendingAmount:a.summary.pending};
  }
  const rows=await expenseRows(),ready=rows.filter(t=>t.pmStatus==='Approved'&&t.financeStatus==='Approved'&&t.transferStatus!=='Transferred'),done=rows.filter(t=>t.transferStatus==='Transferred');
  return {ok:true,pmPending:rows.filter(t=>t.pmStatus==='Pending').length,financePending:rows.filter(t=>t.pmStatus==='Approved'&&t.financeStatus==='Pending').length,
@@ -126,10 +127,7 @@ export async function dispatch(kind,action,q={}){
   invalidate();return r;
  }
  if(action.startsWith('allowance')){
-  const body={...q,month:split(q.filterMonth)[0]||today().slice(0,7)};
-  if(action==='allowanceFilterOptions'||action==='allowanceData'){
-   const r=await op('allowances.list',{...body,limit:q.limit||31});return {...r,combinations:r.combos,records:r.records.map(x=>({...x,calculatedAmount:x.amount}))};
-  }
+  if(action==='allowanceFilterOptions'||action==='allowanceData')return allowanceView(action,q);
   const items=q.items||[{type:q.type,name:q.name,date:q.date,amount:q.calculatedAmount}];
   const r=await write(action==='allowanceExportLock'?'allowances.export':'allowances.review',{items,status:q.status,reason:q.reason||''});invalidate();return r;
  }

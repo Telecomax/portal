@@ -35,3 +35,5 @@ Portal includes the original engineer KM and Custody pages under `/km/` and `/cu
 - Checked all three API rewrite configurations and confirmed the restored pages contain no Apps Script endpoint URLs.
 
 Business writes were simulated during verification. Actual financial submission, approval, payroll export locking, and transfer completion should be checked with an authorized test record in the preview. Authentication tests used real DEV sessions. Phone-browser layout and offline behavior were not exhaustively tested.
+
+Finance Photo Audit now includes completed trips with every PM status. Ready to Transfer still requires both approvals. The audit card shows Static Hours between Total KM and Rate. Allowance filters and monthly working days use the trip dates and people in the selected months. Payroll amounts come from the allowance ledger.

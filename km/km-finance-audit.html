@@ -297,7 +297,7 @@ $('logoutBtn').onclick=()=>{managementToken='';managementName='';sessionStorage.
 let v832FinanceTotal=0,v832FinanceHasMore=false,v832FinanceTotals={};
 async function loadTrips(mode='reset'){
  if(!managementToken)return;
- if(!$('auditStatus').value){trips=[];v832FinanceTotal=0;v832FinanceHasMore=false;$('tableWrap').innerHTML='<div class="empty">Choose filters, then click Apply to load trips.</div>';return;}
+
  const append=mode==='more',loadAll=mode==='all',offset=append?trips.length:0;
  showBuffer(loadAll?'Loading all matching trips...':append?'Loading 31 more trips...':'Applying filters...');
  if(!append)$('tableWrap').innerHTML='<div class="empty">Loading audit records…</div>';
@@ -334,12 +334,12 @@ function render(totalMatched){
       ${summary('Status','<span class="badge '+(t.status==='Completed'?'':'open')+'">'+esc(t.status||'—')+'</span>')}
     </div>
     <div class="trip-metrics">
-      ${metric('Odometer',esc(t.startKm||'—')+' → '+esc(t.finishKm||'—'))}
+      
       ${metric('Trip KM',num(t.tripKm).toFixed(0))}
       ${metric('F&B',num(t.forthBack).toFixed(0))}
       ${metric('Total KM',num(t.totalKm).toFixed(0))}
-      ${metric('Amount Spent',num(t.amountSpent).toFixed(2)+' EGP','amount')}
-      ${metric('Rate',esc(t.rateDisplay||'22.25 EGP / 10 KM'))}
+      ${metric('Static Hours',num(t.staticHours)+' h')}
+      ${metric('Rate',esc(t.rateDisplay||'22.25 EGP / 10 KM'))}${metric('Amount Spent',num(t.amountSpent).toFixed(2)+' EGP','amount')}
     </div>
     <div class="audit-actions"><input class="audit-check" type="checkbox" data-trip="${esc(t.tripId)}" ${t.financeStatus==='Approved'||t.financeStatus==='Rejected'?'disabled':''}><b>Finance: ${esc(t.financeStatus||'Pending')}</b><span>PM: ${esc(t.pmStatus||'Pending')}</span><button class="btn edit-km" data-trip="${esc(t.tripId)}" data-start="${t.startKm}" data-finish="${t.finishKm}">Edit KM</button><button class="btn deduct" data-trip="${esc(t.tripId)}">Deduct</button><button class="btn danger reject" data-trip="${esc(t.tripId)}">Reject</button></div>
     <div class="photo-pair">

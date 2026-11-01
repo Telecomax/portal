@@ -587,7 +587,7 @@ function renderLiveKpis(){
    h+=liveCard('Custody PM Review',c.pmPending??'—','Pending receipt reviews',moduleUrls.custodyPMReview);
    h+=liveCard('Needs Transfer',c.needsTransferCount??'—',fmtEgp(c.needsTransferAmount||0),moduleUrls.custodyPMTransfers);
  }else if(role==='Finance'){
-   h+=liveCard('KM Finance Audit',k.financeAuditPending??'—','Approved by PM, pending Finance',moduleUrls.kmFinanceAudit);
+   h+=liveCard('KM Finance Audit',k.financeAuditPending??'—','Pending Finance review',moduleUrls.kmFinanceAudit);
    h+=liveCard('Custody Finance Review',c.financePending??'—','Pending Finance verification',moduleUrls.custodyFinanceReview);
    h+=liveCard('Needs Transfer',c.needsTransferCount??'—',fmtEgp(c.needsTransferAmount||0),moduleUrls.custodyFinanceTransfers);
    h+=liveCard('Transferred',c.transferredCount??'—',fmtEgp(c.transferredAmount||0)+' total',moduleUrls.custodyFinanceTransfers);
@@ -690,7 +690,7 @@ function renderAttention(){
    add(c.needsTransferCount,'Custody Transfer',fmtEgp(c.needsTransferAmount||0)+' ready to transfer',moduleUrls.custodyPMTransfers,'custody');
    add(c.clarification,'Needs Clarification','Custody expenses requiring clarification',moduleUrls.custodyPMReview,'custody');
  }else if(role==='Finance'){
-   add(k.financeAuditPending,'KM Finance Audit','KM records approved by PM, waiting for Finance',moduleUrls.kmFinanceAudit,'km');
+   add(k.financeAuditPending,'KM Finance Audit','Completed trips waiting for Finance review',moduleUrls.kmFinanceAudit,'km');
    add(c.financePending,'Custody Finance Review','Expenses waiting for Finance verification',moduleUrls.custodyFinanceReview,'custody');
    add(c.needsTransferCount,'Needs Transfer',fmtEgp(c.needsTransferAmount||0)+' ready to transfer',moduleUrls.custodyFinanceTransfers,'custody');
    add(c.clarification,'Needs Clarification','Custody expenses requiring clarification',moduleUrls.custodyFinanceReview,'custody');
