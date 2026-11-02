@@ -444,7 +444,10 @@ function applyPhotos(){
 function summary(label,value){return `<div class="summary-item"><div class="summary-label">${label}</div><div class="summary-value">${value}</div></div>`}
 function metric(label,value,cls=''){return `<div class="metric ${cls}"><div class="k">${label}</div><div class="v">${value}</div></div>`}
 function photoPanel(thumb,full,lat,lng,label,km,kind){
-  return `<section class="photo-panel"><div class="photo-title">${esc(label)} <span class="photo-km" data-photo-km="${kind}">${esc(km||'—')}</span></div><div class="photo-frame" data-evidence-side="${kind}">Loading photo…</div><div class="gps">GPS: ${lat!==''&&lat!=null&&lng!==''&&lng!=null?esc(lat)+', '+esc(lng):'—'}</div></section>`;
+  const src=thumb||full||'';
+  const fullSrc=full||thumb||'';
+  const media=src?`<img class="audit-photo" src="${esc(src)}" data-full="${esc(fullSrc)}" alt="${esc(label)}">`:'<div class="photo-missing">No photo available</div>';
+  return `<section class="photo-panel"><div class="photo-title">${esc(label)} <span class="photo-km" data-photo-km="${kind}">${esc(km||'—')}</span></div><div class="photo-frame" data-evidence-side="${kind}">${media}</div><div class="gps">GPS: ${lat!==''&&lat!=null&&lng!==''&&lng!=null?esc(lat)+', '+esc(lng):'—'}</div></section>`;
 }
 $('tableWrap').addEventListener('click',async e=>{
  let b=e.target.closest('button');if(!b)return;let id=b.dataset.trip,c=auditCard(id);if(!c)return;

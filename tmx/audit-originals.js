@@ -1,9 +1,9 @@
 import {op} from './client.js';
 
-// Only insert a photo into its card once the stored original has decoded.
+// The list remains usable while thumbnails are replaced by the stored evidence.
 const selector='[data-evidence-side]';
-const jobs=new WeakMap();
-
+const waiting=new Set(), jobs=new WeakMap();
+let active=0;
 
 async function resolveImage(frame,viaBridge){
     const tripId=frame.closest('[data-audit-trip]').dataset.auditTrip;
@@ -15,7 +15,6 @@ async function resolveImage(frame,viaBridge){
         image.onerror=()=>reject(Error('Original photo could not be loaded'));
         image.src=descriptor.url;
     });
-    await image.decode();
     return image;
 }
 
@@ -29,20 +28,19 @@ function original(frame){
             image=await resolveImage(frame,false);
         }
         if(!frame.isConnected)return image;
-        if(frame.classList.contains('photo-frame'))image.className='audit-photo';
+        const previous=frame.querySelector('img');
+        image.className=previous?.className||'';
         image.style.cssText='width:100%;height:100%;object-fit:contain;cursor:zoom-in';
         image.dataset.full=image.src;
         frame.replaceChildren(image);
         return image;
     })().catch(error=>{
         jobs.delete(frame);
-        const missing=error.message==='not found'||error.message==='not_found';
-        if(frame.isConnected)frame.textContent=missing?'No photo':'Original photo unavailable';
-        if(frame.isConnected&&!missing){
+        if(frame.isConnected&&!(error.message==='not found'||error.message==='not_found')){
             if(!frame.nextElementSibling?.classList.contains('original-retry')){
                 const retry=document.createElement('button');retry.type='button';retry.className='btn original-retry';
-                retry.textContent='Retry original photo';
-                retry.onclick=()=>{retry.remove();frame.textContent='Loading photo…';start(frame)};
+                retry.textContent=frame.querySelector('img')?'Preview shown · Retry original':'Retry original photo';
+                retry.onclick=()=>{retry.remove();waiting.add(frame);drain()};
                 frame.after(retry);
             }
         }
@@ -51,20 +49,39 @@ function original(frame){
     jobs.set(frame,job);return job;
 }
 
-function start(frame){
-    if(frame.isConnected)original(frame).catch(()=>{ /* Retry is offered on the card. */ });
+function drain(){
+    while(active<2&&waiting.size){
+        const frame=waiting.values().next().value;waiting.delete(frame);
+        if(!frame.isConnected||!frame.getClientRects().length)continue;
+        active++;
+        original(frame).catch(()=>{}).finally(()=>{active--;drain()});
+    }
 }
-function loadAdded(node){
+
+const visibility=new IntersectionObserver(entries=>{
+    for(const {target,isIntersecting} of entries){
+        if(isIntersecting)waiting.add(target);else waiting.delete(target);
+    }
+    drain();
+},{rootMargin:'100px 0px'});
+function observe(node){
     if(node.nodeType!==1)return;
-    if(node.matches(selector))start(node);
-    node.querySelectorAll(selector).forEach(start);
+    if(node.matches(selector))visibility.observe(node);
+    for(const frame of node.querySelectorAll(selector))visibility.observe(frame);
+}
+function forget(node){
+    if(node.nodeType!==1)return;
+    const frames=node.matches(selector)?[node]:node.querySelectorAll(selector);
+    for(const frame of frames){visibility.unobserve(frame);waiting.delete(frame)}
 }
 const root=document.querySelector('#auditList,#tableWrap');
 if(root){
-    loadAdded(root);
-    new MutationObserver(records=>{
-        for(const record of records)record.addedNodes.forEach(loadAdded);
-    }).observe(root,{childList:true,subtree:true});
+    observe(root);
+    new MutationObserver(records=>{for(const record of records){
+        for(const removed of record.removedNodes)forget(removed);
+        for(const added of record.addedNodes)observe(added);
+    }})
+        .observe(root,{childList:true,subtree:true});
 }
 
 let closeViewer;
