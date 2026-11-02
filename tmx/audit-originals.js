@@ -1,6 +1,6 @@
 import {op} from './client.js';
 
-// The list remains usable while thumbnails are replaced by the stored evidence.
+// Only insert a photo into its card once the stored original has decoded.
 const selector='[data-evidence-side]';
 const jobs=new WeakMap();
 
@@ -15,6 +15,7 @@ async function resolveImage(frame,viaBridge){
         image.onerror=()=>reject(Error('Original photo could not be loaded'));
         image.src=descriptor.url;
     });
+    await image.decode();
     return image;
 }
 
@@ -28,19 +29,20 @@ function original(frame){
             image=await resolveImage(frame,false);
         }
         if(!frame.isConnected)return image;
-        const previous=frame.querySelector('img');
-        image.className=previous?.className||'';
+        if(frame.classList.contains('photo-frame'))image.className='audit-photo';
         image.style.cssText='width:100%;height:100%;object-fit:contain;cursor:zoom-in';
         image.dataset.full=image.src;
         frame.replaceChildren(image);
         return image;
     })().catch(error=>{
         jobs.delete(frame);
-        if(frame.isConnected&&!(error.message==='not found'||error.message==='not_found')){
+        const missing=error.message==='not found'||error.message==='not_found';
+        if(frame.isConnected)frame.textContent=missing?'No photo':'Original photo unavailable';
+        if(frame.isConnected&&!missing){
             if(!frame.nextElementSibling?.classList.contains('original-retry')){
                 const retry=document.createElement('button');retry.type='button';retry.className='btn original-retry';
-                retry.textContent=frame.querySelector('img')?'Preview shown · Retry original':'Retry original photo';
-                retry.onclick=()=>{retry.remove();start(frame)};
+                retry.textContent='Retry original photo';
+                retry.onclick=()=>{retry.remove();frame.textContent='Loading photo…';start(frame)};
                 frame.after(retry);
             }
         }
@@ -71,6 +73,67 @@ function nativeViewerState(open){
     if(window.auditCall)window.auditCall('auditViewerState',{open}).catch(()=>{});
 }
 
+function zoomableImage(pane,image){
+    let scale=1,x=0,y=0,fit=1;
+    const pointers=new Map();
+    let press=null,dragged=false;
+    const clamp=(value,bound)=>Math.max(-bound,Math.min(bound,value));
+    function draw(){
+        const w=pane.clientWidth,h=pane.clientHeight;
+        if(!w||!h)return;
+        fit=Math.min(w/image.naturalWidth,h/image.naturalHeight);
+        const width=image.naturalWidth*fit*scale,height=image.naturalHeight*fit*scale;
+        x=clamp(x,Math.max(0,(width-w)/2));y=clamp(y,Math.max(0,(height-h)/2));
+        Object.assign(image.style,{width:width+'px',height:height+'px',left:(w-width)/2+x+'px',top:(h-height)/2+y+'px'});
+        pane.style.cursor=scale===1?'zoom-in':'zoom-out';
+    }
+    function zoom(factor,from,to=from){
+        const next=Math.max(1,Math.min(8,scale*factor)),ratio=next/scale;
+        x=to.x-(from.x-x)*ratio;y=to.y-(from.y-y)*ratio;scale=next;draw();
+    }
+    function position(e){
+        const r=pane.getBoundingClientRect();
+        return {x:e.clientX-r.left-r.width/2,y:e.clientY-r.top-r.height/2};
+    }
+    const middle=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
+    const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+    pane.onpointerdown=e=>{
+        if(e.button!==0||pointers.size>=2)return;
+        const p=position(e);
+        if(!pointers.size){press=p;dragged=false}else dragged=true;
+        pointers.set(e.pointerId,p);pane.setPointerCapture(e.pointerId);
+    };
+    pane.onpointermove=e=>{
+        if(!pointers.has(e.pointerId))return;
+        const prev=pointers.get(e.pointerId),p=position(e);
+        pointers.set(e.pointerId,p);
+        const other=[...pointers].find(([id])=>id!==e.pointerId)?.[1];
+        if(other){
+            const d=distance(prev,other);
+            if(d>0)zoom(distance(p,other)/d,middle(prev,other),middle(p,other));
+        }else{
+            if(press&&distance(p,press)>4)dragged=true;
+            x+=p.x-prev.x;y+=p.y-prev.y;draw();
+        }
+    };
+    pane.onpointerup=e=>{
+        if(!pointers.delete(e.pointerId))return;
+        if(e.pointerType==='mouse'&&e.button===0&&!dragged){
+            zoom(scale===1?Math.max(2,1/fit):1/scale,position(e));
+        }
+    };
+    pane.onlostpointercapture=pane.onpointercancel=e=>pointers.delete(e.pointerId);
+    pane.onkeydown=e=>{
+        if(['+','=','-','0'].includes(e.key)){
+            e.preventDefault();zoom(e.key==='0'?1/scale:e.key==='-'?0.5:2,{x:0,y:0});
+        }
+    };
+    image.draggable=false;image.style.cssText='position:absolute;display:block;max-width:none;max-height:none;pointer-events:none;margin:0';
+    pane.replaceChildren(image);draw();
+    const resize=new ResizeObserver(draw);resize.observe(pane);
+    return ()=>resize.disconnect();
+}
+
 function openViewer(frame){
     closeViewer?.();
     const overlay=document.createElement('section'),bar=document.createElement('div'),pane=document.createElement('div');
@@ -79,11 +142,12 @@ function openViewer(frame){
     overlay.setAttribute('aria-label',title);
     overlay.style.cssText='position:fixed;z-index:2147483647;display:grid;grid-template-rows:auto minmax(0,1fr);box-sizing:border-box;padding:8px;margin:0;background:#091a2b;color:white';
     bar.style.cssText='display:flex;align-items:center;gap:8px;min-height:44px;padding-bottom:6px';
-    pane.style.cssText='min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;background:#030813';
-    const label=document.createElement('strong'),zoom=document.createElement('button'),close=document.createElement('button');
+    pane.style.cssText='position:relative;min-width:0;min-height:0;overflow:hidden;touch-action:none;user-select:none;background:#030813';
+    pane.tabIndex=0;pane.setAttribute('aria-label','Photo: pinch to zoom, or click to toggle zoom. Use + and − on the keyboard.');
+    const label=document.createElement('strong'),close=document.createElement('button');
     label.textContent=title;label.style.marginRight='auto';
-    zoom.className=close.className='btn';zoom.disabled=true;zoom.textContent='Actual size';close.textContent='Close';
-    bar.append(label,zoom,close);pane.textContent='Loading original photo…';overlay.append(bar,pane);
+    close.className='btn';close.textContent='Close';
+    bar.append(label,close);pane.textContent='Loading original photo…';overlay.append(bar,pane);
     const viewport=window.visualViewport;
     function size(){
         Object.assign(overlay.style,{left:(viewport?.offsetLeft||0)+'px',top:(viewport?.offsetTop||0)+'px',
@@ -107,15 +171,8 @@ function openViewer(frame){
     original(frame).then(image=>{
         if(!overlay.isConnected)return;
         const css=image.style.cssText;
-        restoreImage=()=>{image.style.cssText=css;if(frame.isConnected)frame.replaceChildren(image)};
-        let natural=false;
-        function paint(){
-            image.style.cssText=natural?'display:block;margin:0;max-width:none;max-height:none;width:'+image.naturalWidth+'px;height:'+image.naturalHeight+'px':
-                'display:block;margin:0;width:100%;height:100%;object-fit:contain';
-            zoom.textContent=natural?'Fit to screen':'Actual size';pane.scrollTo(0,0);
-        }
-        pane.replaceChildren(image);paint();zoom.disabled=false;
-        zoom.onclick=()=>{natural=!natural;paint()};
+        const stop=zoomableImage(pane,image);
+        restoreImage=()=>{stop();image.style.cssText=css;if(frame.isConnected)frame.replaceChildren(image)};
     }).catch(()=>{pane.textContent='Original photo unavailable. Close and retry on the card.'});
 }
 
