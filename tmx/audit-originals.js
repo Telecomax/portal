@@ -2,8 +2,8 @@ import {op} from './client.js';
 
 // The list remains usable while thumbnails are replaced by the stored evidence.
 const selector='[data-evidence-side]';
-const waiting=new Set(), jobs=new WeakMap();
-let active=0;
+const jobs=new WeakMap();
+
 
 async function resolveImage(frame,viaBridge){
     const tripId=frame.closest('[data-audit-trip]').dataset.auditTrip;
@@ -40,7 +40,7 @@ function original(frame){
             if(!frame.nextElementSibling?.classList.contains('original-retry')){
                 const retry=document.createElement('button');retry.type='button';retry.className='btn original-retry';
                 retry.textContent=frame.querySelector('img')?'Preview shown · Retry original':'Retry original photo';
-                retry.onclick=()=>{retry.remove();waiting.add(frame);drain()};
+                retry.onclick=()=>{retry.remove();start(frame)};
                 frame.after(retry);
             }
         }
@@ -49,71 +49,79 @@ function original(frame){
     jobs.set(frame,job);return job;
 }
 
-function drain(){
-    while(active<2&&waiting.size){
-        const frame=waiting.values().next().value;waiting.delete(frame);
-        if(!frame.isConnected||!frame.getClientRects().length)continue;
-        active++;
-        original(frame).catch(()=>{}).finally(()=>{active--;drain()});
-    }
+function start(frame){
+    if(frame.isConnected)original(frame).catch(()=>{ /* Retry is offered on the card. */ });
 }
-
-const visibility=new IntersectionObserver(entries=>{
-    for(const {target,isIntersecting} of entries){
-        if(isIntersecting)waiting.add(target);else waiting.delete(target);
-    }
-    drain();
-},{rootMargin:'100px 0px'});
-function observe(node){
+function loadAdded(node){
     if(node.nodeType!==1)return;
-    if(node.matches(selector))visibility.observe(node);
-    for(const frame of node.querySelectorAll(selector))visibility.observe(frame);
-}
-function forget(node){
-    if(node.nodeType!==1)return;
-    const frames=node.matches(selector)?[node]:node.querySelectorAll(selector);
-    for(const frame of frames){visibility.unobserve(frame);waiting.delete(frame)}
+    if(node.matches(selector))start(node);
+    node.querySelectorAll(selector).forEach(start);
 }
 const root=document.querySelector('#auditList,#tableWrap');
 if(root){
-    observe(root);
-    new MutationObserver(records=>{for(const record of records){
-        for(const removed of record.removedNodes)forget(removed);
-        for(const added of record.addedNodes)observe(added);
-    }})
-        .observe(root,{childList:true,subtree:true});
+    loadAdded(root);
+    new MutationObserver(records=>{
+        for(const record of records)record.addedNodes.forEach(loadAdded);
+    }).observe(root,{childList:true,subtree:true});
+}
+
+let closeViewer;
+window.addEventListener('audit-close-viewer',()=>closeViewer?.());
+function nativeViewerState(open){
+    if(window.auditCall)window.auditCall('auditViewerState',{open}).catch(()=>{});
 }
 
 function openViewer(frame){
-    const dialog=document.createElement('dialog');
-    dialog.style.cssText='width:96vw;height:90vh;max-width:none;max-height:94vh;padding:10px;box-sizing:border-box;background:#091a2b;color:white;border:1px solid #495566;border-radius:12px';
-    const tools=document.createElement('div');tools.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:8px';
-    const title=document.createElement('strong');title.textContent=frame.dataset.evidenceSide==='start'?'Start photo':'Finish photo';title.style.marginRight='auto';
-    const zoom=document.createElement('button'),close=document.createElement('button');
-    zoom.className=close.className='btn';zoom.disabled=true;zoom.textContent='Fit to screen';close.textContent='Close';
-    close.onclick=()=>dialog.close();tools.append(title,zoom,close);
-    const pane=document.createElement('div');pane.style.cssText='overflow:auto;height:calc(100% - 52px);background:#030813;overscroll-behavior:contain';
-    pane.textContent='Loading original photo…';dialog.append(tools,pane);document.body.append(dialog);
-    dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.showModal();
-    original(frame).then(source=>{
-        if(!dialog.open)return;
-        // Keep the decoded image: re-requesting a short-lived URL here could
-        // fail after an auditor has spent several minutes reviewing a trip.
-        const image=source,cardStyle=image.style.cssText;let natural=true;
-        dialog.addEventListener('close',()=>{
-            image.style.cssText=cardStyle;
-            if(frame.isConnected)frame.replaceChildren(image);
-        },{once:true});
+    closeViewer?.();
+    const overlay=document.createElement('section'),bar=document.createElement('div'),pane=document.createElement('div');
+    overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
+    const title=frame.dataset.evidenceSide==='start'?'Start photo':'Finish photo';
+    overlay.setAttribute('aria-label',title);
+    overlay.style.cssText='position:fixed;z-index:2147483647;display:grid;grid-template-rows:auto minmax(0,1fr);box-sizing:border-box;padding:8px;margin:0;background:#091a2b;color:white';
+    bar.style.cssText='display:flex;align-items:center;gap:8px;min-height:44px;padding-bottom:6px';
+    pane.style.cssText='min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;background:#030813';
+    const label=document.createElement('strong'),zoom=document.createElement('button'),close=document.createElement('button');
+    label.textContent=title;label.style.marginRight='auto';
+    zoom.className=close.className='btn';zoom.disabled=true;zoom.textContent='Actual size';close.textContent='Close';
+    bar.append(label,zoom,close);pane.textContent='Loading original photo…';overlay.append(bar,pane);
+    const viewport=window.visualViewport;
+    function size(){
+        Object.assign(overlay.style,{left:(viewport?.offsetLeft||0)+'px',top:(viewport?.offsetTop||0)+'px',
+            width:(viewport?.width||window.innerWidth)+'px',height:(viewport?.height||window.innerHeight)+'px'});
+    }
+    const previousFocus=document.activeElement,background=[...document.body.children].filter(el=>!el.inert);
+    background.forEach(el=>el.inert=true);
+    const overflow=document.documentElement.style.overflow;
+    document.documentElement.style.overflow='hidden';
+    document.body.append(overlay);size();close.focus({preventScroll:true});nativeViewerState(true);
+    viewport?.addEventListener('resize',size);window.addEventListener('resize',size);
+    let restoreImage=()=>{};
+    function escape(event){if(event.key==='Escape'){event.preventDefault();dismiss()}}
+    function dismiss(){
+        restoreImage();overlay.remove();background.forEach(el=>el.inert=false);
+        document.documentElement.style.overflow=overflow;previousFocus?.focus?.({preventScroll:true});
+        viewport?.removeEventListener('resize',size);window.removeEventListener('resize',size);
+        document.removeEventListener('keydown',escape);closeViewer=null;nativeViewerState(false);
+    }
+    closeViewer=dismiss;close.onclick=dismiss;document.addEventListener('keydown',escape);
+    original(frame).then(image=>{
+        if(!overlay.isConnected)return;
+        const css=image.style.cssText;
+        restoreImage=()=>{image.style.cssText=css;if(frame.isConnected)frame.replaceChildren(image)};
+        let natural=false;
         function paint(){
-            image.style.cssText=natural?'display:block;max-width:none;max-height:none;width:'+source.naturalWidth+'px;height:auto':'display:block;width:100%;height:100%;object-fit:contain';
-            zoom.textContent=natural?'Fit to screen':'Actual size';
+            image.style.cssText=natural?'display:block;margin:0;max-width:none;max-height:none;width:'+image.naturalWidth+'px;height:'+image.naturalHeight+'px':
+                'display:block;margin:0;width:100%;height:100%;object-fit:contain';
+            zoom.textContent=natural?'Fit to screen':'Actual size';pane.scrollTo(0,0);
         }
         pane.replaceChildren(image);paint();zoom.disabled=false;
         zoom.onclick=()=>{natural=!natural;paint()};
     }).catch(()=>{pane.textContent='Original photo unavailable. Close and retry on the card.'});
 }
+
 document.addEventListener('click',event=>{
     const frame=event.target.closest(selector);
-    if(!frame||!frame.querySelector('img'))return;
+    if(!frame)return;
     event.preventDefault();event.stopImmediatePropagation();openViewer(frame);
 },true);
+
