@@ -65,9 +65,13 @@ async function auditBatch(action,q){
  sessionStorage.removeItem(batchKey);return {ok:true,updated};
 }
 async function readTrips(action,q){
+ if(action==='adminRentTrips'){
+  const {trips}=await collect('km.list',{},'trips');
+  const unpaid=trips.filter(t=>t.status==='Completed'&&t.driver_name?.trim().toLowerCase()==='rent'&&Number(t.rent_amount??0)<=0).map(trip);
+  return {ok:true,trips:unpaid};
+ }
  const rows=filterTrips(await kmRows(),q).map(trip);
  let selected=rows.filter(t=>t.status!=='Solfa'&&t.status!=='In Progress');
- if(action==='adminRentTrips')selected=rows.filter(t=>t.driver?.toLowerCase()==='rent'&&t.status==='Completed');
  if(action==='adminApprovedSummary'||action==='financeSummary')selected=selected.filter(t=>t.pmStatus==='Approved'&&t.financeStatus==='Approved');
  if(action==='financeTrips')selected=selected.filter(t=>t.status==='Completed');
  if(q.filterAuditStatus&&q.filterAuditStatus!=='All'){
@@ -123,6 +127,7 @@ export async function dispatch(kind,action,q={}){
  if(['adminTrips','financeTrips','adminApprovedSummary','financeSummary','adminRentTrips'].includes(action))return readTrips(action,q);
  if(action==='adminSaveAuditBatch'||action==='financeSaveAuditBatch')return auditBatch(action,q);
  if(action==='adminSolfa'||action==='adminRent'){
+  if(action==='adminRent'&&!(await readTrips('adminRentTrips',{})).trips.some(t=>t.tripId===q.tripId))throw Error('This trip is no longer awaiting rent payment. Refresh the list.');
   const r=await write(action==='adminSolfa'?'km.solfa':'km.rent',action==='adminSolfa'?{engineer:q.engineer,date:q.date,amount:q.amount}:{tripId:q.tripId,rent:q.rent,rentDeduction:q.rentDeduction,rentDeductionDriver:q.rentDeductionDriver});
   invalidate();return r;
  }

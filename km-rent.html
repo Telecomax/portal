@@ -193,6 +193,25 @@ html.tmx-auth-resolving body::before{content:none!important;display:none!importa
 <style id="v838SilentSession">
 #portalSsoStatus,.sso-status,.portal-transition,.frame-loading{display:none!important}
 html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{content:none!important;display:none!important}
+</style><style>#rent .rent-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:8px 0 18px}
+#rent h1,#rent h2,#rent p{margin:0}
+#rent .rent-title p,#rent dt{color:var(--muted,#64748b)}
+#rent .rent-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,1fr);gap:18px;align-items:start}
+#rent .rent-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+#rent .rent-entry,#rent .rent-summary{padding:22px;margin:0}
+#rent label{margin-top:18px}
+#rent dl{margin:12px 0}
+#rent dl div,#rent .rent-total{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line,#d9dee7)}
+#rent dd{margin:0;text-align:right;font-weight:700}
+#rent .rent-total{align-items:center;border:1px solid #34445d;background:#121f34;color:#fff;border-radius:10px;padding:14px}
+#rent .rent-total strong{color:#77dfab}
+#rent .rent-summary dl div,#rent #rentNotice:not(:empty){border-color:#34445d}
+#rent .opts .opt{display:block;width:100%;text-align:left}
+#rent .rent-total strong{font-size:1.35rem}
+#rent #rentUpload{width:100%;margin-top:16px}
+#rent button:disabled{opacity:.55;cursor:default}
+#rent #rentNotice:not(:empty){margin:0 0 14px;padding:12px 14px;border:1px solid var(--line,#d9dee7);border-radius:10px}
+@media(max-width:760px){#rent .rent-layout{grid-template-columns:1fr}#rent .rent-pair{grid-template-columns:1fr;gap:0}#rent .rent-title{align-items:flex-start}}
 </style></head><body>
 
 <div id="loginBuffer" class="login-buffer-overlay" aria-hidden="true">
@@ -207,7 +226,23 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 <div id="balances" class="panel active"><div class="card"><h2>Balances</h2><div class="grid3"><div><label>Engineer</label><div class="search"><input id="balEng" class="input" placeholder="Search or select engineer" autocomplete="off"><div id="balEngOpts" class="opts"></div></div></div><div><label>Months</label><input id="balMonth" class="input" type="text" data-multimonth></div><div><button id="balApply" class="btn primary">Apply</button> <button id="balClear" class="btn">Clear</button></div></div></div><div class="stats"><div class="stat"><div class="k">Total Received</div><div id="received" class="v">0.00 EGP</div></div><div class="stat"><div class="k">Total Spent</div><div id="spent" class="v">0.00 EGP</div></div><div class="stat accent"><div class="k">Total Balance</div><div id="balance" class="v">0.00 EGP</div></div></div><div class="card"><h3>Engineer Balances</h3><div id="balanceRows" class="empty">Load balances to view records.</div></div></div>
 <div id="audit" class="panel"><div class="card"><h2>Photo Audit</h2><div class="filters"><div><label>Engineer</label><div class="search"><input id="eng" class="input" placeholder="Search engineer" autocomplete="off"><div id="engOpts" class="opts"></div></div></div><div><label>Driver</label><div class="search"><input id="drv" class="input" placeholder="Search driver" autocomplete="off"><div id="drvOpts" class="opts"></div></div></div><div><label>Project</label><div class="search"><input id="proj" class="input" placeholder="Search project" autocomplete="off"><div id="projOpts" class="opts"></div></div></div><div><label>Months</label><input id="month" class="input" type="text" data-multimonth></div><div><label>Paid By</label><div class="search"><input id="paidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="paidByOpts" class="opts"></div></div></div><div><label>Status</label><select id="auditStatus" class="input"><option value="" selected>Non Selected</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></div><div><button id="auditApply" class="btn primary">Apply</button> <button id="auditClear" class="btn">Clear</button></div></div></div><div id="auditList" class="audit-list"><div class="empty">Apply filters to load trips.</div></div><div class="bulkbar"><span id="pendingChanges" class="muted">No unsaved changes</span><button id="selectAllAudit" class="btn">Select All</button><button id="saveAudit" class="btn">Save Changes</button><button id="approveAudit" class="btn primary">Approve Selected</button></div></div>
 <div id="summary" class="panel"><div class="card"><h2>Approved Summary</h2><div class="filters"><div><label>Engineer</label><div class="search"><input id="sEng" class="input" autocomplete="off" placeholder="Search or select engineer"><div id="sEngOpts" class="opts"></div></div></div><div><label>Driver</label><div class="search"><input id="sDrv" class="input" autocomplete="off" placeholder="Search or select driver"><div id="sDrvOpts" class="opts"></div></div></div><div><label>Project</label><div class="search"><input id="sProj" class="input" autocomplete="off" placeholder="Search or select project"><div id="sProjOpts" class="opts"></div></div></div><div><label>Months</label><input id="sMonth" class="input" type="text" data-multimonth></div><div><label>Paid By</label><div class="search"><input id="sPaidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="sPaidByOpts" class="opts"></div></div></div><div><button id="sApply" class="btn primary">Apply</button> <button id="sExport" class="btn">Export Excel</button></div></div></div><div id="summaryRows" class="card"><div class="empty">Load approved records.</div></div></div><div id="solfa" class="panel"><div class="card" style="max-width:700px"><h2>Add Solfa</h2><label>Engineer</label><div class="search"><input id="solfaEng" class="input" placeholder="Search or select engineer" autocomplete="off"><div id="solfaEngOpts" class="opts"></div></div><div class="grid2"><div><label>Date</label><input id="solfaDate" class="input" type="date"></div><div><label>Amount</label><input id="solfaAmount" class="input" type="number" min="0.01" step="0.01" placeholder="Enter amount"></div></div><button id="solfaUpload" class="btn primary" style="margin-top:16px">Upload Solfa</button></div></div>
-<div id="rent" class="panel"><div class="card" style="max-width:800px"><h2>Rent Payment</h2><label>Rent Trip</label><select id="rentTrip"><option value="">— Select Rent Trip —</option></select><div class="grid2"><div><label>Engineer</label><input id="rentEng" class="input" readonly></div><div><label>Benzine Amount</label><input id="benzine" class="input" readonly value="0"></div></div><div class="grid2"><div><label>Rent Amount</label><input id="rentAmount" class="input" type="number" min="0.01" step="0.01"></div><div><label>Rent Deduction</label><select id="deduction"><option value="">— Select —</option><option>On TMX</option><option>On Driver</option></select></div></div><label>Rent Deduction Driver</label><div class="search"><input id="deductionDriver" class="input" placeholder="Search or select driver (Optional)" autocomplete="off"><div id="deductionDriverOpts" class="opts"></div></div><button id="sum" class="btn" style="margin-top:14px">Sum</button><div class="totalcard"><div>Total Amount to Pay</div><div id="rentTotal" class="v">0.00 EGP</div></div><button id="rentUpload" class="btn primary">Upload Rent</button></div></div>
+<div id="rent" class="panel">
+ <div class="rent-title"><div><h1>Pay Cars Rent</h1><p>Select a completed trip with an outstanding rent payment.</p></div><button id="refreshRent" class="btn" type="button">Refresh trips</button></div>
+ <p id="rentNotice" role="status" aria-live="polite"></p>
+ <div class="rent-layout"><section class="card rent-entry">
+  <h2>Payment details</h2>
+  <label for="rentTrip">Unpaid rent trip</label><select id="rentTrip"></select>
+  <div class="rent-pair"><div><label for="rentAmount">Rent amount (EGP)</label><input id="rentAmount" class="input" type="number" min="0.01" step="0.01" placeholder="0.00"></div>
+   <div><label for="deduction">Rent deduction</label><select id="deduction"><option value="">Choose deduction</option><option>On TMX</option><option>On Driver</option></select></div></div>
+  <div id="rentDriverField" hidden><label for="deductionDriver">Deduction driver</label><div class="search"><input id="deductionDriver" class="input" placeholder="Search or select driver" autocomplete="off"><div id="deductionDriverOpts" class="opts"></div></div></div>
+ </section><aside class="card rent-summary"><h2>Payment summary</h2>
+  <dl><div><dt>Engineer</dt><dd id="rentEng">—</dd></div><div><dt>Trip date</dt><dd id="rentDate">—</dd></div>
+   <div><dt>Benzine</dt><dd id="benzine">—</dd></div><div><dt>Rent</dt><dd id="rentPreview">—</dd></div></dl>
+  <div class="rent-total"><span>Total to pay</span><strong id="rentTotal">—</strong></div>
+  <button id="rentUpload" class="btn primary" disabled>Record payment</button>
+ </aside></div>
+</div>
+
 </section></main><div id="lightbox" class="lightbox"><img id="lbImg"><button id="lbClose" class="btn" style="position:absolute;top:20px;right:20px">Close</button></div><div id="toast" class="toast"></div>
 <script>
 
@@ -226,7 +261,7 @@ function hideBuffer(){hideLoginBuffer()}
 
 const URL='/_legacy/km', $=id=>document.getElementById(id);let managementToken=sessionStorage.getItem('tmx_km_admin_token')||sessionStorage.getItem('tmx_km_pm_token')||'', managementName=sessionStorage.getItem('tmx_km_admin_name')||sessionStorage.getItem('tmx_km_pm_name')||'', combos=[], engineers=[], drivers=[], rentTrips=[];
 function toast(s){$('toast').textContent=s;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2500)}async function post(action,x={}){let r=await TMX.fetch(URL,{method:'POST',body:JSON.stringify({action,managementToken,...x})}),t=await r.text(),d;try{d=JSON.parse(t)}catch(e){throw Error('bad-response')}if(!d.ok)throw Error(d.error||'server-error');return d}function money(n){return (Number(n)||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' EGP'}function today(){let d=new Date(),o=d.getTimezoneOffset();return new Date(d-o*60000).toISOString().slice(0,10)}
-function auth(on){$('login').style.display=on?'none':'block';$('dash').style.display=on?'block':'none';$('logout').style.display=on?'inline-block':'none';if(on){loadConfig();loadBalances();loadRent()}}async function login(){const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 4-digit PIN');showLoginBuffer('Logging in to Management Portal...');$('loginBtn').disabled=true;try{const d=await post('managementLogin',{name,pin,portalRole:'Admin'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_admin_token',managementToken);sessionStorage.setItem('tmx_km_admin_name',managementName);if(d.role==='PM'){sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName)}auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{$('loginBtn').disabled=false;hideLoginBuffer()}}$('loginBtn').onclick=login;$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')login()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_admin_token');sessionStorage.removeItem('tmx_km_admin_name');sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
+function auth(on){$('login').style.display=on?'none':'block';$('dash').style.display=on?'block':'none';$('logout').style.display=on?'inline-block':'none';if(on){loadRent()}}async function login(){const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 4-digit PIN');showLoginBuffer('Logging in to Management Portal...');$('loginBtn').disabled=true;try{const d=await post('managementLogin',{name,pin,portalRole:'Admin'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_admin_token',managementToken);sessionStorage.setItem('tmx_km_admin_name',managementName);if(d.role==='PM'){sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName)}auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{$('loginBtn').disabled=false;hideLoginBuffer()}}$('loginBtn').onclick=login;$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')login()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_admin_token');sessionStorage.removeItem('tmx_km_admin_name');sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===b.dataset.p));if(b.dataset.p==='audit')loadAudit();if(b.dataset.p==='rent')loadRent()});
 function openRequestedAdminView(){
  const v=new URLSearchParams(location.search).get('view');
@@ -327,7 +362,56 @@ let approvedRows=[];
 async function loadApproved(){showBuffer('Loading summary...');try{let d=await post('adminApprovedSummary',{filterEngineer:$('sEng').value.trim(),filterDriver:$('sDrv').value.trim(),filterProject:$('sProj').value.trim(),filterMonth:$('sMonth').value});let payer=String($('sPaidBy').value||'').trim().toLowerCase();approvedRows=(d.trips||[]).filter(t=>!payer||String(t.paidBy||'').trim().toLowerCase()===payer);$('summaryRows').innerHTML=approvedRows.length?'<table class="summary-table"><thead><tr><th>Date</th><th>Engineer</th><th>Driver</th><th>Vehicle</th><th>Project</th><th>Rate</th><th>Deduction</th><th>Final Amount</th></tr></thead><tbody>'+approvedRows.map(t=>`<tr><td>${esc(t.date)}</td><td>${esc(t.engineer)}</td><td>${esc(t.driver)}</td><td>${esc(t.vehicle||'—')}</td><td>${esc(t.projectName)}</td><td>${esc(t.rateDisplay)}</td><td>${money(t.deduction)}</td><td>${money(t.finalAmount)}</td></tr>`).join('')+'</tbody></table>':'<div class="empty">No fully approved records.</div>'}finally{hideBuffer()}}
 $('sApply').onclick=loadApproved;$('sExport').onclick=()=>exportApprovedXlsx(approvedRows);
 $('solfaDate').value=today();$('solfaUpload').onclick=async()=>{let engineer=$('solfaEng').value.trim(),date=$('solfaDate').value,amount=$('solfaAmount').value;if(!engineer||!date||!amount)return toast('Complete Solfa fields');try{await post('adminSolfa',{engineer,date,amount});$('solfaAmount').value='';toast('Solfa uploaded');loadBalances()}catch(e){toast('Could not upload Solfa')}};
-async function loadRent(){try{let d=await post('adminRentTrips');rentTrips=d.trips||[];$('rentTrip').innerHTML='<option value="">— Select Rent Trip —</option>'+rentTrips.map(t=>`<option value="${esc(t.tripId)}">${esc(t.date)} · ${esc(t.engineer)} · ${esc(t.area)} · ${esc(t.task)}</option>`).join('')}catch(e){toast('Could not load Rent trips')}}$('rentTrip').onchange=()=>{let t=rentTrips.find(x=>String(x.tripId)===String($('rentTrip').value));$('rentEng').value=t?.engineer||'';$('benzine').value=t?.benzineAmount||0;$('rentAmount').value='';$('deduction').value='';$('deductionDriver').value='';sumRent()};function sumRent(){$('rentTotal').textContent=money((+$('benzine').value||0)+(+ $('rentAmount').value||0))}$('sum').onclick=sumRent;$('rentAmount').oninput=sumRent;$('rentUpload').onclick=async()=>{let tripId=$('rentTrip').value,rent=$('rentAmount').value,rentDeduction=$('deduction').value,rentDeductionDriver=$('deductionDriver').value.trim();if(!tripId||!rent||!rentDeduction)return toast('Complete Rent fields');try{await post('adminRent',{tripId,rent,rentDeduction,rentDeductionDriver});toast('Rent uploaded');$('rentTrip').value='';$('rentEng').value='';$('benzine').value='0';$('rentAmount').value='';$('deduction').value='';$('deductionDriver').value='';sumRent();loadRent();loadBalances()}catch(e){toast('Could not upload Rent')}};
+let rentLoading=false,rentSaving=false,rentSequence=0;
+const rentAdmin=()=>JSON.parse(sessionStorage.getItem('telecomax.web.session.v1')||'null')?.user?.roles?.some(r=>['admin','super_admin'].includes(r));
+function rentSummary(){
+ const trip=rentTrips.find(t=>t.tripId===$('rentTrip').value);
+ const amount=Number($('rentAmount').value),onDriver=$('deduction').value==='On Driver';
+ $('rentEng').textContent=trip?.engineer||'—';$('rentDate').textContent=trip?.date||'—';
+ $('benzine').textContent=trip?money(trip.benzineAmount):'—';$('rentPreview').textContent=amount>0?money(amount):'—';
+ $('rentTotal').textContent=trip?money(Number(trip.benzineAmount||0)+(amount>0?amount:0)):'—';
+ $('rentDriverField').hidden=!onDriver;
+ $('rentUpload').disabled=!rentAdmin()||rentSaving||rentLoading||!trip||amount<=0||!$('rentAmount').validity.valid||!$('deduction').value||(onDriver&&!drivers.includes($('deductionDriver').value.trim()));
+ $('refreshRent').disabled=rentSaving||rentLoading;
+ for(const id of ['rentTrip','rentAmount','deduction','deductionDriver'])$(id).disabled=rentSaving||rentLoading||(!trip&&id!=='rentTrip')||(!rentTrips.length&&id==='rentTrip');
+}
+function clearRentFields(){
+ $('rentAmount').value='';$('deduction').value='';$('deductionDriver').value='';rentSummary();
+}
+async function loadRent(success=''){
+ const sequence=++rentSequence;rentLoading=true;rentSummary();$('rentNotice').textContent='Loading unpaid trips…';
+ try{
+  const [list,cfg]=await Promise.all([post('adminRentTrips'),post('adminPortalConfig')]);
+  if(sequence!==rentSequence)return;
+  rentTrips=list.trips||[];drivers=cfg.drivers||[];
+  $('rentTrip').replaceChildren(new Option(rentTrips.length?'Choose an unpaid trip':'No unpaid rent trips',''),
+   ...rentTrips.map(t=>new Option([t.date,t.engineer,t.projectName,t.area,t.task].filter(Boolean).join(' · '),t.tripId)));
+  $('rentNotice').textContent=[success,rentTrips.length?rentTrips.length+(rentTrips.length===1?' unpaid trip.':' unpaid trips.'):'No completed trips are awaiting rent payment.',rentAdmin()?'':'View only.'].filter(Boolean).join(' ');
+ }catch(e){if(sequence===rentSequence){rentTrips=[];$('rentTrip').replaceChildren(new Option('List unavailable',''));$('rentNotice').textContent=[success,e.message||'Could not load trips.','Use Refresh trips to retry.'].filter(Boolean).join(' ')}}
+ finally{if(sequence===rentSequence){rentLoading=false;clearRentFields()}}
+}
+$('rentTrip').onchange=clearRentFields;$('rentAmount').oninput=rentSummary;$('deductionDriver').oninput=rentSummary;
+$('deduction').onchange=()=>{if($('deduction').value!=='On Driver')$('deductionDriver').value='';rentSummary()};
+const driverInput=$('deductionDriver'),driverList=$('deductionDriverOpts');
+function showRentDrivers(){
+ driverList.replaceChildren(...drivers.filter(n=>n.toLowerCase().includes(driverInput.value.trim().toLowerCase())).map(n=>{
+  const opt=document.createElement('button');opt.type='button';opt.className='opt';opt.textContent=n;
+  opt.onclick=()=>{driverInput.value=n;driverList.style.display='none';rentSummary()};return opt}));
+ driverList.style.display=driverList.children.length?'block':'none';
+}
+driverInput.onfocus=showRentDrivers;driverInput.oninput=()=>{showRentDrivers();rentSummary()};
+document.addEventListener('click',e=>{if(!driverInput.parentElement.contains(e.target))driverList.style.display='none'});
+$('refreshRent').onclick=()=>loadRent();
+$('rentUpload').onclick=async()=>{
+ if($('rentUpload').disabled)return;
+ const tripId=$('rentTrip').value,rent=Number($('rentAmount').value),rentDeduction=$('deduction').value;
+ rentSaving=true;rentSummary();$('rentNotice').textContent='Recording payment…';
+ try{await post('adminRent',{tripId,rent,rentDeduction,rentDeductionDriver:rentDeduction==='On Driver'?driverInput.value.trim():''});
+  await loadRent('Payment recorded.');
+ }catch(e){$('rentNotice').textContent=e.message||'Payment could not be confirmed. Refresh trips to check its status.'}
+ finally{rentSaving=false;rentSummary()}
+};
+
 if(managementToken){$('name').value=managementName;post('adminSummary',{}).then(()=>auth(true)).catch(()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_admin_token');sessionStorage.removeItem('tmx_km_admin_name');auth(false)})}else auth(false);
 
 function exportApprovedXlsx(rows){
