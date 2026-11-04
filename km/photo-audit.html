@@ -62,6 +62,27 @@ document.addEventListener('DOMContentLoaded',()=>{['month','sMonth'].forEach(id=
 
 .audit-actions,.bulkbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 14px}.audit-actions{border-top:1px solid var(--line)}.bulkbar{position:sticky;bottom:8px;background:#fff;border:1px solid var(--line);border-radius:12px;justify-content:flex-end}.summary-table{width:100%;border-collapse:collapse}.summary-table th,.summary-table td{padding:9px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}.danger{border-color:#e6b4b4;color:#a52a2a}.audit[data-dirty="1"]{outline:2px solid #d29b2d}.deduction-note{font-weight:700;color:#a35a00}
 .photo-title{display:flex!important;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.photo-km{font-weight:900;color:#172b43;background:#fff;border:1px solid #d9e1e8;border-radius:8px;padding:3px 9px}.edited-km{display:block;font-size:11px;color:#147a45;margin-top:3px;font-weight:800}.audit-dialog-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}.audit-dialog-bg.open{display:flex}.audit-dialog{width:min(100%,440px);background:#fff;border-radius:18px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}.audit-dialog h3{margin:0 0 8px}.audit-dialog p{color:#667085;margin:0 0 15px}.audit-dialog .dlg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.audit-dialog input,.audit-dialog textarea{width:100%;box-sizing:border-box;padding:11px;border:1px solid #d6dde5;border-radius:10px;margin:5px 0 10px}.audit-dialog textarea{min-height:80px;resize:vertical}.audit-dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:8px}
+
+/* Match Finance month selector alignment, preserving the dark palette. */
+body #dash .tmx-mm-pop .tmx-mm-list { text-align:left !important; }
+body #dash .tmx-mm-pop .tmx-mm-item {
+  display:flex !important; align-items:center !important; justify-content:flex-start !important;
+  gap:10px !important; margin:0 !important; padding:9px 7px !important;
+  font-size:13px !important; font-weight:500 !important; line-height:1.4 !important;
+  text-transform:none !important; text-align:left !important; letter-spacing:normal !important;
+  text-shadow:none !important;
+}
+body #dash .tmx-mm-pop .tmx-mm-item input[type="checkbox"] {
+  flex:0 0 14px !important; width:14px !important; height:14px !important;
+  margin:0 !important; padding:0 !important; position:static !important;
+  transform:none !important; box-shadow:none !important;
+}
+body #dash .tmx-mm-pop .tmx-mm-item span {
+  display:inline !important; flex:1 1 auto !important; width:auto !important;
+  margin:0 !important; padding:0 !important; text-align:left !important;
+  font-size:13px !important; font-weight:500 !important; line-height:1.4 !important;
+  text-shadow:none !important; letter-spacing:normal !important;
+}
 </style>
 <style id="v7UnifiedTheme">
 :root{--bg:#050b14;--panel:#0b1421;--panel2:#0f1a29;--line:#233044;--text:#f4f7fb;--muted:#8f9bad;--brand:#ec008c;--soft:#221326;--good:#56c58a;--warn:#e0a64b;--shadow:0 12px 32px rgba(0,0,0,.22)}
@@ -546,7 +567,7 @@ function toast(s){$('toast').textContent=s;$('toast').style.display='block';setT
 function auth(on){
  $('login').style.display='none';
  $('dash').style.display=on?'block':'none';
- $('logout').style.display='none';
+ $('logout').style.display=on?'inline-flex':'none';
  if(on){$('auditStatus').value='';Promise.resolve(loadConfig());$('auditList').innerHTML='<div class="empty">Choose filters, then click Apply to load trips.</div>';}
 }
 async function login(){const name=$('name').value.trim(),pin=$('pin').value.trim();if(!name||!pin)return toast('Enter your name and 4-digit PIN');showLoginBuffer('Logging in to Management Portal...');$('loginBtn').disabled=true;try{const d=await post('managementLogin',{name,pin,portalRole:'Admin'});managementToken=d.token;managementName=d.name||name;sessionStorage.setItem('tmx_km_admin_token',managementToken);sessionStorage.setItem('tmx_km_admin_name',managementName);if(d.role==='PM'){sessionStorage.setItem('tmx_km_pm_token',managementToken);sessionStorage.setItem('tmx_km_pm_name',managementName)}auth(true);toast('Logged in as '+managementName)}catch(e){managementToken='';toast(e.message||'Could not log in')}finally{$('loginBtn').disabled=false;hideLoginBuffer()}}$('loginBtn').onclick=login;$('name').onkeydown=e=>{if(e.key==='Enter')$('pin').focus()};$('pin').onkeydown=e=>{if(e.key==='Enter')login()};$('logout').onclick=()=>{managementToken='';managementName='';sessionStorage.removeItem('tmx_km_admin_token');sessionStorage.removeItem('tmx_km_admin_name');sessionStorage.removeItem('tmx_km_pm_token');sessionStorage.removeItem('tmx_km_pm_name');$('name').value='';$('pin').value='';auth(false)};
