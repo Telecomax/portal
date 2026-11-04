@@ -481,7 +481,45 @@ body #audit .stats{margin-top:16px!important}
 @media(max-width:1500px){body #audit .filters{grid-template-columns:repeat(3,minmax(0,1fr))!important}body #summary .filters{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:850px){body #audit .filters,body #summary .filters{grid-template-columns:repeat(2,minmax(0,1fr))!important}body #dash>.audit-topbar .btn{width:108px!important;min-width:108px!important;height:46px!important;min-height:46px!important}body #dash>.audit-topbar .audit-page-title{font-size:20px!important}}
 @media(max-width:520px){body #audit .filters,body #summary .filters{grid-template-columns:1fr!important}body #audit .filters label,body #summary .filters label{text-align:left!important;font-size:14px!important}body #dash>.audit-topbar .audit-page-title{width:100%}body #dash>.audit-topbar .audit-topbar-actions{width:100%;gap:6px}body #dash>.audit-topbar .btn{flex:1!important;width:auto!important;min-width:0!important;font-size:11px!important}}
-</style></head><body>
+</style><style id="tmxAdminPmMonthTypography">
+/* TMX: month picker typography refinement (Admin/PM dark theme only). */
+.tmx-mm-pop,
+.tmx-mm-pop .tmx-mm-head,
+.tmx-mm-pop .tmx-mm-item,
+.tmx-mm-pop .tmx-mm-item span,
+.tmx-mm-pop .tmx-mm-btn {
+  font-family: Inter, system-ui, "Segoe UI", Arial, sans-serif !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: 0 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+.tmx-mm-pop .tmx-mm-head,
+.tmx-mm-pop .tmx-mm-head b {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+.tmx-mm-pop .tmx-mm-item {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  justify-content: flex-start !important;
+  text-shadow: none !important;
+}
+.tmx-mm-pop .tmx-mm-item span {
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  text-shadow: none !important;
+}
+.tmx-mm-pop .tmx-mm-btn {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  text-shadow: none !important;
+}
+</style>
+</head><body>
 
 <div id="loginBuffer" class="login-buffer-overlay" aria-hidden="true">
   <div class="login-buffer-box" role="status" aria-live="polite">
