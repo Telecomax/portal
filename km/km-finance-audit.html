@@ -198,9 +198,9 @@ html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{conten
 <style id="tmxPhotoAuditReference20261104">
 /* Photo Audit / Summary: reference layout shared with Admin/PM */
 body #dash>.finance-audit-topbar{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;margin-bottom:10px!important;min-height:62px}
-body #dash>.finance-audit-topbar .audit-page-title{font-size:22px!important;font-weight:850!important;color:#fff!important;margin:0 2px 0 0!important;white-space:nowrap}
+body #dash>.finance-audit-topbar .audit-page-title{font-size:22px!important;font-weight:850!important;color:#1e293b!important;margin:0 2px 0 0!important;white-space:nowrap}
 body #dash>.finance-audit-topbar .audit-topbar-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-body #dash>.finance-audit-topbar .btn{box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;width:118px!important;min-width:118px!important;height:56px!important;min-height:56px!important;padding:8px!important;margin:0!important;font-size:13px!important;font-weight:800!important;white-space:nowrap}
+body #dash>.finance-audit-topbar .btn{box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;width:118px!important;min-width:118px!important;height:52px!important;min-height:52px!important;padding:8px!important;margin:0!important;font-size:13px!important;font-weight:800!important;white-space:nowrap}
 body #dash>.finance-audit-topbar #photosBtn{background:#101b2a!important;color:#fff!important;border:1px solid #3a4b62!important}
 body #dash:has(#summaryView:not([style*="display: none"]):not([style*="display:none"])) .audit-title-photo{display:none}
 body #dash:not(:has(#summaryView:not([style*="display: none"]):not([style*="display:none"]))) .audit-title-summary{display:none}
@@ -208,14 +208,58 @@ body #photoView>.heading,body #summaryView>.heading{display:none!important}
 body #photoView>.filters{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr)) auto!important;gap:12px!important;align-items:end!important}
 body #summaryView>.filters{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr)) auto!important;gap:12px!important;align-items:end!important}
 body #photoView>.filters .field,body #summaryView>.filters .field{min-width:0!important}
-body #photoView>.filters label,body #summaryView>.filters label{font-size:17px!important;font-weight:850!important;color:#f5f7fb!important;text-transform:uppercase!important;letter-spacing:.015em!important;text-align:center!important;display:block!important;margin-bottom:7px!important;text-shadow:0 0 13px rgba(255,255,255,.32)}
+body #photoView>.filters label,body #summaryView>.filters label{font-size:13px!important;font-weight:800!important;color:#334155!important;text-transform:uppercase!important;letter-spacing:.025em!important;text-align:center!important;display:block!important;margin-bottom:7px!important;text-shadow:none!important}
 body #photoView>.filters .input,body #summaryView>.filters .input{width:100%!important;min-width:0!important;height:44px!important;box-sizing:border-box!important}
 body #photoView>.filters .filter-buttons,body #summaryView>.filters .filter-buttons{display:flex!important;gap:6px!important;align-items:center!important;white-space:nowrap!important}
 body #photoView>.filters .filter-buttons .btn,body #summaryView>.filters .filter-buttons .btn{min-height:38px!important;padding:7px 10px!important}
 @media(max-width:1500px){body #photoView>.filters,body #summaryView>.filters{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:850px){body #photoView>.filters,body #summaryView>.filters{grid-template-columns:repeat(2,minmax(0,1fr))!important}body #dash>.finance-audit-topbar .btn{width:108px!important;min-width:108px!important;height:46px!important;min-height:46px!important}}
 @media(max-width:520px){body #photoView>.filters,body #summaryView>.filters{grid-template-columns:1fr!important}body #photoView>.filters label,body #summaryView>.filters label{text-align:left!important;font-size:14px!important}body #dash>.finance-audit-topbar .audit-page-title{width:100%}body #dash>.finance-audit-topbar .audit-topbar-actions{width:100%;gap:6px}body #dash>.finance-audit-topbar .btn{flex:1!important;width:auto!important;min-width:0!important;font-size:11px!important}}
-</style></head>
+</style><style id="tmxFinanceMonthTypographyFix20261104">
+/* Finance only: restore the original light-portal month picker typography. */
+body #dash .tmx-mm-pop,
+body #dash .tmx-mm-pop *:not(input) {
+  font-family: Inter, system-ui, "Segoe UI", Arial, sans-serif !important;
+  text-shadow: none !important;
+  -webkit-text-stroke: 0 !important;
+  letter-spacing: normal !important;
+}
+body #dash .tmx-mm-pop .tmx-mm-head,
+body #dash .tmx-mm-pop .tmx-mm-head b {
+  color: #243042 !important;
+  font-size: 13px !important;
+  font-weight: 750 !important;
+  text-transform: none !important;
+}
+body #dash .tmx-mm-pop .tmx-mm-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 9px 7px !important;
+  color: #344054 !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  text-transform: none !important;
+  text-align: left !important;
+}
+body #dash .tmx-mm-pop .tmx-mm-item span {
+  color: #344054 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  text-transform: none !important;
+}
+body #dash .tmx-mm-pop .tmx-mm-btn {
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  text-transform: none !important;
+}
+</style>
+</head>
 <body>
 
 <div id="loginBuffer" class="login-buffer-overlay" aria-hidden="true">
