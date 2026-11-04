@@ -1,3 +1,5 @@
+import {installAuditExport} from './audit-export.js';
+installAuditExport();
 import {op} from './client.js';
 
 // The list remains usable while thumbnails are replaced by the stored evidence.

@@ -64,6 +64,7 @@ async function auditBatch(action,q){
  for(const id of body.approvals){await send('km.review',{tripId:id,side,status:'Approved'});updated++}
  sessionStorage.removeItem(batchKey);return {ok:true,updated};
 }
+import {rememberAuditResults} from './audit-export.js';
 async function readTrips(action,q){
  if(action==='adminRentTrips'){
   const {trips}=await collect('km.list',{},'trips');
@@ -77,6 +78,7 @@ async function readTrips(action,q){
  if(q.filterAuditStatus&&q.filterAuditStatus!=='All'){
   const field=action==='financeTrips'?'financeStatus':'pmStatus';selected=selected.filter(t=>equal(t[field],q.filterAuditStatus));
  }
+ if(action==='adminTrips'||action==='financeTrips')rememberAuditResults(()=>selected);
  return {...page(selected,q.offset===undefined?{...q,loadAll:true}:q),totals:totals(selected)};
 }
 async function custodyQueue(action,q){
