@@ -1,3 +1,4 @@
+import {rememberAuditResults} from './audit-export.js';
 import {op,write,login,logout,session,today,digest} from './client.js';
 import {config,collect,kmRows,expenseRows,engineers,allUsers,memo,invalidate,filterTrips,trip,expense,page,totals,combos,summary,custodyFilter,split,equal} from './records.js';
 import {jpeg,base64,submitTrip,jobs,retry,drain} from './photos.js';
@@ -64,7 +65,6 @@ async function auditBatch(action,q){
  for(const id of body.approvals){await send('km.review',{tripId:id,side,status:'Approved'});updated++}
  sessionStorage.removeItem(batchKey);return {ok:true,updated};
 }
-import {rememberAuditResults} from './audit-export.js';
 async function readTrips(action,q){
  if(action==='adminRentTrips'){
   const {trips}=await collect('km.list',{},'trips');
