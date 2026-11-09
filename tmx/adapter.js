@@ -1,3 +1,4 @@
+import {payrollNames} from './export-names.js';
 import {rememberAuditResults} from './audit-export.js';
 import {op,write,login,logout,session,today,digest} from './client.js';
 import {config,collect,kmRows,expenseRows,engineers,allUsers,memo,invalidate,filterTrips,trip,expense,page,totals,combos,summary,custodyFilter,split,equal} from './records.js';
@@ -156,7 +157,8 @@ export async function dispatch(kind,action,q={}){
   const {rows}=await transferRows({status:'Ready'}),amounts=new Map();
   for(const row of rows)amounts.set(row.engineer,(amounts.get(row.engineer)||0)+Number(row.amount));
   const csvCell=value=>'"'+String(value).replaceAll('"','""')+'"';
-  return {ok:true,csv:'Engineer,Amount,Reference\r\n'+[...amounts].map(([name,amount])=>[csvCell(name),amount.toFixed(2),''].join(',')).join('\r\n')};
+  const fullName=await payrollNames([...amounts.keys()]);
+  return {ok:true,csv:'Engineer,Amount,Reference\r\n'+[...amounts].map(([name,amount])=>[csvCell(fullName(name)),amount.toFixed(2),''].join(',')).join('\r\n')};
  }
  if(action==='getEngineers'||action==='getManagementUsers'){
   const list=await allUsers();return {ok:true,engineers:list.filter(u=>u.roles.includes('engineer')).map(u=>({name:u.engineer_name||u.display_name,active:u.status==='active',limit:u.custody_limit})),

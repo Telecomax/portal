@@ -536,7 +536,10 @@ $('photoTab').onclick=()=>setFinanceTab('photo');$('summaryTab').onclick=()=>{se
  }else setAuthed(false);
 })();
 
-function exportApprovedXlsx(rows){
+async function exportApprovedXlsx(rows){
+ try { const {payrollNames}=await import('/tmx/export-names.js'); const fullName=await payrollNames((rows||[]).map(t=>t.engineer),(rows||[]).map(t=>t.paidBy)); rows=rows.map(t=>({...t,engineer:fullName(t.engineer),paidBy:fullName(t.paidBy)})); }
+ catch(e){toast('Export failed: '+e.message);return;}
+
  if(!rows||!rows.length)return toast('No fully approved rows to export');
  let g={};rows.forEach(t=>{let rate=Number(t.ratePerKm)||Number(String(t.rateDisplay||'').match(/[\d.]+/)?.[0])||0;let k=t.engineer+'|'+t.projectName+'|'+rate;if(!g[k])g[k]=[t.engineer,0,rate,t.projectName];g[k][1]+=Number(t.finalAmount)||0});
  let cover=[['Engineer name','Amount','Rate','Project'],...Object.values(g)],

@@ -1,3 +1,4 @@
+import {payrollNames} from './export-names.js';
 import {collect} from './records.js';
 import {rentWorkbook} from './rent-workbook.js';
 
@@ -81,7 +82,7 @@ el('rhReset').onclick=()=>{el('rhEngineer').value=el('rhProject').value=el('rhDe
 el('rhExport').onclick=async()=>{
  const btn=el('rhExport');btn.disabled=true;
  try{
-  const details=applied.map(values);const blob=rentWorkbook([['Rent History','Value'],['Trips',details.length],...headings.slice(3).map((h,i)=>[h+' (EGP)',details.reduce((s,row)=>s+row[i+3],0)])],[headings,...details]);
+  const fullName=await payrollNames(applied.map(t=>t.engineer_name));const details=applied.map(t=>{const row=values(t);row[1]=fullName(t.engineer_name);return row});const blob=rentWorkbook([['Rent History','Value'],['Trips',details.length],...headings.slice(3).map((h,i)=>[h+' (EGP)',details.reduce((s,row)=>s+row[i+3],0)])],[headings,...details]);
   if(native){const data=await new Promise((res,rej)=>{const f=new FileReader();f.onload=()=>res(f.result.split(',')[1]);f.onerror=()=>rej(f.error);f.readAsDataURL(blob)});await window.auditCall('saveAuditWorkbook',{data})}
   else{const a=document.createElement('a');a.href=window.URL.createObjectURL(blob);a.download='Rent-History.xlsx';a.click();setTimeout(()=>window.URL.revokeObjectURL(a.href),60000)}
  }catch(e){el('rhNote').textContent='Export failed: '+e.message}finally{btn.disabled=!applied.length}

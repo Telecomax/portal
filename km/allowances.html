@@ -146,10 +146,11 @@ function makeZip(files){
  const csize=central.reduce((a,b)=>a+b.length,0),end=new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(csize),...u32(offset),...u16(0)]);
  return new Blob([...parts,...central,end],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
 }
-$('exportExcel').onclick=()=>{
+$('exportExcel').onclick=async()=>{
  try{
   const rows=(data.records||[]).filter(r=>(typeView==='All'||r.type===typeView)&&r.status==='Approved');
   if(!rows.length){toast('No approved allowances to export for the current filters.');return}
+  const {payrollNames}=await import('/tmx/export-names.js');const fullName=await payrollNames(rows.filter(r=>r.type==='Engineer').map(r=>r.name));
   const groups={};
   rows.forEach(r=>(r.projects&&r.projects.length?r.projects:['—']).forEach(pr=>{
    const k=r.type+'|'+r.name+'|'+pr;if(!groups[k])groups[k]={name:r.name,project:pr,total:0};groups[k].total+=Number(r.amount)||0;
@@ -159,7 +160,7 @@ $('exportExcel').onclick=()=>{
    const target=r.type==='Engineer'?engGroups:drvGroups;
    const k=r.name+'|'+pr;if(!target[k])target[k]={name:r.name,project:pr,total:0};target[k].total+=Number(r.amount)||0;
   }));
-  const engCover=[['Engineer Name','Total Amount','Project'],...Object.values(engGroups).map(x=>[x.name,x.total,x.project])];
+  const engCover=[['Engineer Name','Total Amount','Project'],...Object.values(engGroups).map(x=>[fullName(x.name),x.total,x.project])];
   const drvCover=[['Driver Name','Total Amount','Project'],...Object.values(drvGroups).map(x=>[x.name,x.total,x.project])];
   const engDetails=[['Engineer Name','Date','Day','Area','Base City','Project','Allowance Amount','Status'],
    ...rows.filter(r=>r.type==='Engineer').flatMap(r=>(r.projects&&r.projects.length?r.projects:['—']).map(pr=>[r.name,r.date,r.day,r.area,r.baseCity||'',pr,Number(r.amount)||0,r.status]))];

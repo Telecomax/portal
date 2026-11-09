@@ -294,7 +294,10 @@ function setFinanceTab(tab){const photo=tab==='photo';$('photoView').style.displ
 $('photoTab').onclick=()=>setFinanceTab('photo');$('summaryTab').onclick=()=>{setFinanceTab('summary');loadApproved()};$('sApply').onclick=loadApproved;$('sExport').onclick=()=>exportApprovedXlsx(approvedRows);
 (async()=>{if(managementToken){$('name').value=managementName;try{await post('financeFilterOptions');setAuthed(true)}catch(e){managementToken='';managementName='';sessionStorage.removeItem('tmx_km_finance_token');sessionStorage.removeItem('tmx_km_finance_name');setAuthed(false)}}else setAuthed(false)})();
 
-function exportApprovedXlsx(rows){
+async function exportApprovedXlsx(rows){
+ try { const {payrollNames}=await import('/tmx/export-names.js'); const fullName=await payrollNames((rows||[]).map(t=>t.engineer),(rows||[]).map(t=>t.paidBy)); rows=rows.map(t=>({...t,engineer:fullName(t.engineer),paidBy:fullName(t.paidBy)})); }
+ catch(e){toast('Export failed: '+e.message);return;}
+
  if(!rows||!rows.length)return toast('No fully approved rows to export');
  const E=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'),C=n=>{let s='';while(n){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s};
  const sh=rs=>'<?xml version="1.0" encoding="UTF-8"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>'+rs.map((r,i)=>'<row>'+r.map((v,j)=>typeof v==='number'?'<c r="'+C(j+1)+(i+1)+'"><v>'+v+'</v></c>':'<c r="'+C(j+1)+(i+1)+'" t="inlineStr"><is><t>'+E(v)+'</t></is></c>').join('')+'</row>').join('')+'</sheetData></worksheet>';

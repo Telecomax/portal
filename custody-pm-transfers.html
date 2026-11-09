@@ -1763,6 +1763,8 @@ async function exportCombinedRowsExcel(rows,label){
   if(typeof ExcelJS==='undefined')return msg('transferViewMsg','Excel library did not load.','err');
   try{
     const wb=new ExcelJS.Workbook();
+    const {payrollNames}=await import('/tmx/export-names.js'); const fullName=await payrollNames(rows.map(x=>x.engineer));
+    rows=rows.map(x=>({...x,engineer:fullName(x.engineer)}));
     const ws=wb.addWorksheet('Transfer Expenses');
     ws.columns=[
       {header:'Batch Number',key:'batch',width:23},{header:'Engineer',key:'engineer',width:26},
@@ -1841,6 +1843,7 @@ async function exportEngineerExcel(engineer){
 
   msg('transferViewMsg','Preparing Excel for '+engineer+'...');
   try{
+    const {payrollNames}=await import('/tmx/export-names.js'); const fullName=(await payrollNames([engineer]))(engineer);
     const binary=atob(EXPENSE_TEMPLATE_B64);
     const bytes=new Uint8Array(binary.length);
     for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
@@ -1852,7 +1855,7 @@ async function exportEngineerExcel(engineer){
     // Header fields from the attached Telecomax template.
     ws.getCell('P3').value=new Date();
     ws.getCell('P3').numFmt='dd/mm/yyyy';
-    ws.getCell('E6').value=engineer;
+    ws.getCell('E6').value=fullName;
 
     const projects=[...new Set(rows.map(x=>String(x.project||'').trim()).filter(Boolean))];
     ws.getCell('K8').value=projects.length===1 ? projects[0] : (projects.length ? projects.join(' / ') : '');
@@ -1909,7 +1912,7 @@ async function exportEngineerExcel(engineer){
     const a=document.createElement('a');
     const url=URL.createObjectURL(blob);
     a.href=url;
-    a.download=excelSafeName_(engineer)+'_'+excelSafeName_(status)+'.xlsx';
+    a.download=excelSafeName_(fullName)+'_'+excelSafeName_(status)+'.xlsx';
     document.body.appendChild(a);a.click();a.remove();
     setTimeout(()=>URL.revokeObjectURL(url),1000);
     msg('transferViewMsg','Excel exported for '+engineer+' ('+rows.length+' expense(s)).','ok');
