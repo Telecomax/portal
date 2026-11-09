@@ -15,7 +15,7 @@ function form(d){
  editing=d||null;$('driverName').value=d?.name||'';$('driverName').disabled=!!d;
  $('driverVehicles').value=(d?.vehicles?.length?d.vehicles:d?[d.vehicle_id]:[]).join('\n');
  $('driverDefault').value=d?.vehicle_id||'';$('driverCity').value=d?.base_city||'';
- $('driverFb').value=d?.default_fb_km??0;$('driverActive').checked=d?.active??true;
+ $('driverFb').value=d?.default_fb_km??'';$('driverActive').checked=d?.active??true;
  $('oldVehicle').value='';$('newVehicle').value='';$('driverCorrection').hidden=!d;
  $('driverEditor').hidden=false;
 }
@@ -26,7 +26,7 @@ $('driverForm').onsubmit=async event=>{
  let vehicles=$('driverVehicles').value.split('\n').map(x=>x.trim()).filter(Boolean),vehicleId=$('driverDefault').value.trim();
  const oldVehicleId=$('oldVehicle').value.trim(),newVehicleId=$('newVehicle').value.trim();
  if(oldVehicleId&&newVehicleId){vehicles=vehicles.map(x=>x===oldVehicleId?newVehicleId:x);if(vehicleId===oldVehicleId)vehicleId=newVehicleId;}
- const data={name:$('driverName').value.trim(),vehicles,vehicleId:vehicleId||vehicles[0],baseCity:$('driverCity').value.trim(),defaultFbKm:Number($('driverFb').value),active:$('driverActive').checked,oldVehicleId,newVehicleId};
+ const data={name:$('driverName').value.trim(),vehicles,vehicleId:vehicleId||vehicles[0],baseCity:$('driverCity').value.trim(),defaultFbKm:$('driverFb').value.trim()===''?null:Number($('driverFb').value),active:$('driverActive').checked,oldVehicleId,newVehicleId};
  if(editing){data.id=editing.id;data.expected=editing;}
  busy=true;$('driverSave').disabled=true;$('message').textContent='Saving driver…';
  try{const out=await write('drivers.save',data);await loadDrivers();$('driverEditor').hidden=true;$('message').textContent='Driver saved. '+out.correctedTrips+' historical trips corrected.';}
