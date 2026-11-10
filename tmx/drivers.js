@@ -12,6 +12,7 @@ function render(){
  }
 }
 function form(d){
+ $('driverDelete').hidden=!d;
  editing=d||null;$('driverName').value=d?.name||'';$('driverName').disabled=!!d;
  $('driverVehicles').value=(d?.vehicles?.length?d.vehicles:d?[d.vehicle_id]:[]).join('\n');
  $('driverDefault').value=d?.vehicle_id||'';$('driverCity').value=d?.base_city||'';
@@ -32,4 +33,13 @@ $('driverForm').onsubmit=async event=>{
  try{const out=await write('drivers.save',data);await loadDrivers();$('driverEditor').hidden=true;$('message').textContent='Driver saved. '+out.correctedTrips+' historical trips corrected.';}
  catch(e){$('message').textContent=e.message;}
  finally{busy=false;$('driverSave').disabled=false;}
+};
+
+$('driverDelete').onclick=async()=>{
+ if(busy||!editing)return;
+ if(!confirm('Delete '+editing.name+' from driver registration? Historical trips, photos and payments will remain available.'))return;
+ busy=true;$('driverDelete').disabled=$('driverSave').disabled=true;
+ try{await write('drivers.delete',{id:editing.id,expected:editing});editing=null;$('driverEditor').hidden=true;await loadDrivers();$('message').textContent='Driver deleted. Historical records preserved.';}
+ catch(e){$('message').textContent=e.message;}
+ finally{busy=false;$('driverDelete').disabled=$('driverSave').disabled=false;}
 };
