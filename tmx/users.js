@@ -3,7 +3,7 @@ import {session,write} from './client.js';
 import {allUsers,invalidate} from './records.js';
 const $=id=>document.getElementById(id);
 let users=[],editing=null;
-const roles=['engineer','pm','finance','admin'];
+const roles=['engineer','rigger','pm','finance','admin'];
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function message(text){$('message').textContent=text}
 function form(user){

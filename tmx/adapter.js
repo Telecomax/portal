@@ -33,7 +33,7 @@ async function auth(action,q){
  const info=await identity();
  if(action==='adminLogin'&&!administrator())throw Error('Admin access required');
  if(['pmLogin','financeLogin','managementLogin'].includes(action)&&!manager())throw Error('Management access required');
- if(['login','engineerLogin'].includes(action)&&!session().user.roles.some(r=>['engineer','super_admin'].includes(r)))throw Error('Engineer access required');
+ if(['login','engineerLogin'].includes(action)&&!session().user.roles.some(r=>['engineer','rigger','super_admin'].includes(r)))throw Error('Engineer access required');
  info.engineerToken=info.token;info.engineer=info.name;seed(info);dispatchEvent(new Event('tmx-login'));return info;
 }
 async function balances(q){
