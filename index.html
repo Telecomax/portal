@@ -737,6 +737,7 @@ function renderQuickActions(u){
      h+=actionCard('Custody Transfer','Track approved expenses.',moduleUrls.custodyPMTransfers);
    }
  }else{
+   if(u.role==='Admin') h+=actionCard('App Rates','Project KM rates and Engineer / Driver allowances.','app-rates.html');
    if(u.km){
      h+=actionCard('Engineer Balances','Solfa and engineer KM balances.',moduleUrls.kmBalances);
      h+=actionCard('KM Odometer Audit','Review trip evidence.',moduleUrls.kmPhotoAudit);

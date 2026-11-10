@@ -28,9 +28,9 @@
 .sso-status-box{max-width:430px;width:100%;padding:24px;border-radius:20px;background:#0b1020;border:1px solid rgba(255,255,255,.15);color:#fff;text-align:center}
 .sso-status-box b{display:block;font-size:20px;margin-bottom:8px}.sso-status-box span{color:#aab4c4}
 </style>
- <style>[hidden]{display:none!important}.user-tabs{display:flex;gap:8px;margin-bottom:18px}.user-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.check{display:inline-flex;gap:8px;align-items:center;margin-right:20px;text-transform:none}.table-wrap{overflow:auto}#message{margin:16px 0}fieldset{border:1px solid var(--line);border-radius:10px;margin:16px 0}dialog{border:1px solid var(--line)}@media(max-width:700px){.user-fields{grid-template-columns:1fr}}</style></head><body>
+ <style>[hidden]{display:none!important}.user-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:nowrap}.user-tabs .btn{white-space:nowrap}.driver-name{grid-column:1/-1}.driver-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.driver-fields textarea{height:88px!important}.driver-row{display:flex;justify-content:space-between;align-items:center;gap:16px}@media(max-width:550px){.wrap{padding:14px}.user-tabs{gap:4px}.user-tabs .btn{flex:1;padding:10px 3px;font-size:11px}}.user-fields{display:grid;grid-template-columns:1fr 1fr;gap:16px}.check{display:inline-flex;gap:8px;align-items:center;margin-right:20px;text-transform:none}.table-wrap{overflow:auto}#message{margin:16px 0}fieldset{border:1px solid var(--line);border-radius:10px;margin:16px 0}dialog{border:1px solid var(--line)}@media(max-width:700px){.user-fields{grid-template-columns:1fr}}</style></head><body>
  <header class="top"><div class="brand">TELECOMAX <small>Admin Portal</small></div><div class="actions"><a class="btn" href="index.html">Portal</a></div></header>
- <main class="wrap"><h1>Users Managements</h1><div class="user-tabs"><button id="editTab" class="btn primary">Edit Users</button><button id="addTab" class="btn">Add Users</button><button id="driverTab" class="btn">Add Driver</button></div>
+ <main class="wrap"><h1>Users Managements</h1><div class="user-tabs" role="tablist"><button id="addTab" class="btn primary" role="tab">Add Users</button><button id="editTab" class="btn" role="tab">Edit Users</button><button id="driverTab" class="btn" role="tab">Add Driver</button><button id="editDriverTab" class="btn" role="tab">Edit Driver</button></div>
  <p id="message" role="status" aria-live="polite"></p>
  <section id="list" class="card"><label for="userSearch">Users Name</label><div class="search"><input id="userSearch" class="input" role="combobox" aria-controls="userOptions" aria-expanded="false" placeholder="Search or select user" autocomplete="off"><div id="userOptions" class="opts" role="listbox"></div></div>
  <div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Role</th><th>Accessibility</th><th>Status</th><th>Edit / Reset</th></tr></thead><tbody id="rows"></tbody></table></div></section>
@@ -43,13 +43,13 @@
  <fieldset><legend>Roles</legend><label class="check"><input type="checkbox" id="role-engineer">Engineer</label><label class="check"><input type="checkbox" id="role-rigger">Rigger</label><label class="check"><input type="checkbox" id="role-pm">PM</label><label class="check"><input type="checkbox" id="role-finance">Finance</label><label class="check"><input type="checkbox" id="role-admin">Admin</label></fieldset>
  <fieldset><legend>Accessibility</legend><label class="check"><input id="kmAccess" type="checkbox">KM</label><label class="check"><input id="custodyAccess" type="checkbox">Custody</label></fieldset>
  <button id="save" type="submit" class="btn primary">Save User</button> <button id="cancel" type="button" class="btn">Cancel</button></form></section>
-<section id="drivers" hidden><div class="card"><input id="driverSearch" class="input" placeholder="Search driver"><button id="newDriver" class="btn primary">Add Driver</button></div>
-<section id="driverEditor" class="card" hidden><form id="driverForm"><div class="user-fields">
-<div><label>Driver name</label><input id="driverName" class="input" required></div>
-<div><label>Vehicle IDs — one per line</label><textarea id="driverVehicles" class="input" style="height:100px" required></textarea></div>
-<div><label>Default vehicle ID (blank = first)</label><input id="driverDefault" class="input"></div>
-<div><label>Base city</label><input id="driverCity" class="input"></div>
-<div><label>Default Forth &amp; Back KM (blank = 40 KM)</label><input id="driverFb" class="input" type="number" min="0" max="10000" step="0.01" placeholder="Blank = 40 KM"></div>
-<div><label><input id="driverActive" type="checkbox"> Active</label></div></div>
+<section id="drivers" hidden><div id="driverFilters" class="card"><label for="driverSearch">Driver name</label><div class="search"><input id="driverSearch" class="input" role="combobox" aria-controls="driverOptions" aria-expanded="false" placeholder="Choose / search driver" autocomplete="off"><div id="driverOptions" class="opts" role="listbox"></div></div></div>
+<section id="driverEditor" class="card" hidden><h2 id="driverTitle">Add Driver</h2><form id="driverForm"><div class="driver-fields">
+<div class="driver-name"><label for="driverName">Driver name</label><input id="driverName" class="input" required></div>
+<div><label for="driverCity">Base city</label><input id="driverCity" class="input" placeholder="Base city"></div>
+<div><label for="driverFb">Forth &amp; Back KM</label><input id="driverFb" class="input" type="number" min="0" max="10000" step="0.01" placeholder="Blank = 40 KM"></div>
+<div><label for="driverVehicles">Vehicle IDs — one per line</label><textarea id="driverVehicles" class="input" required></textarea></div>
+<div><label for="driverDefault">Default vehicle ID</label><input id="driverDefault" class="input" placeholder="Blank = first vehicle ID"></div>
+</div><label class="check"><input id="driverActive" type="checkbox"> Active</label>
 <fieldset id="driverCorrection"><legend>Correct a mistyped ID, including historical trips</legend><p>To add another vehicle, add a line above and leave these fields empty.</p><div class="user-fields"><input id="oldVehicle" class="input" placeholder="Old vehicle ID"><input id="newVehicle" class="input" placeholder="Correct vehicle ID"></div></fieldset>
 <button id="driverSave" class="btn primary" type="submit">Save Driver</button> <button id="driverCancel" class="btn" type="button">Cancel</button> <button id="driverDelete" class="btn danger" type="button" hidden>Delete Driver</button></form></section><div id="driverRows"></div></section></main><script type="module" src="/tmx/users.js"></script></body></html>

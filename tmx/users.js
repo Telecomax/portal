@@ -1,4 +1,5 @@
-import {loadDrivers} from './drivers.js';
+import {openDrivers} from './drivers.js';
+import {progress,result} from './admin-feedback.js';
 import {session,write} from './client.js';
 import {allUsers,invalidate} from './records.js';
 const $=id=>document.getElementById(id);
@@ -45,9 +46,14 @@ function options(){
 $('userSearch').oninput=()=>{render();options()};$('userSearch').onfocus=options;$('userSearch').onclick=options;
 $('userSearch').onkeydown=event=>{if(event.key==='Escape')closeOptions();if(event.key==='ArrowDown'){event.preventDefault();$('userOptions').firstElementChild?.focus()}};
 document.addEventListener('click',event=>{if(!$('userSearch').parentElement.contains(event.target))closeOptions()});
-$('driverTab').onclick=()=>{ $('list').hidden=true;$('editor').hidden=true;$('drivers').hidden=false;$('editTab').classList.remove('primary');$('addTab').classList.remove('primary');$('driverTab').classList.add('primary');loadDrivers().catch(e=>message(e.message)); };
-$('editTab').onclick=()=>{ $('drivers').hidden=true;$('driverTab').classList.remove('primary'); $('list').hidden=false;$('editor').hidden=true;$('editTab').classList.add('primary');$('addTab').classList.remove('primary');message('') };
-$('addTab').onclick=()=>{ $('drivers').hidden=true;$('driverTab').classList.remove('primary'); $('list').hidden=true;$('editTab').classList.remove('primary');$('addTab').classList.add('primary');form(null);message('') };
+function tab(id){
+ for(const name of ['addTab','editTab','driverTab','editDriverTab']){$(name).classList.toggle('primary',id===name);$(name).setAttribute('aria-selected',String(id===name))}
+ $('list').hidden=id!=='editTab';$('editor').hidden=true;$('drivers').hidden=!['driverTab','editDriverTab'].includes(id);message('');closeOptions();
+}
+$('driverTab').onclick=()=>{tab('driverTab');openDrivers(false).catch(e=>message(e.message))};
+$('editDriverTab').onclick=()=>{tab('editDriverTab');openDrivers(true).catch(e=>message(e.message))};
+$('editTab').onclick=()=>{tab('editTab');load().catch(e=>message(e.message))};
+$('addTab').onclick=()=>{tab('addTab');form(null)};
 $('cancel').onclick=()=>{$('editor').hidden=true;$('editTab').click()};
 $('generate').onclick=()=>{const value=crypto.getRandomValues(new Uint32Array(1))[0];$('pin').value=String(value%10000).padStart(4,'0');$('pin').type='text'};
 $('userForm').onsubmit=async event=>{
@@ -58,9 +64,9 @@ $('userForm').onsubmit=async event=>{
   roles:[...selected,...(editing?.roles.filter(r=>!roles.includes(r))||[])],baseCity:$('baseCity').value.trim(),custodyLimit:Number($('custodyLimit').value),kmAccess:$('kmAccess').checked,custodyAccess:$('custodyAccess').checked};
  if(editing){data.id=editing.id;data.version=editing.credential_version}
  if($('pin').value)data.pin=$('pin').value;
- $('save').disabled=true;message('Saving user…');
- try{await write('users.save',data);invalidate();await load();$('editor').hidden=true;$('editTab').click();message('User saved successfully.');$('pin').value='';$('pin').type='password'}
- catch(error){message(error.message)}finally{$('save').disabled=false}
+ $('save').disabled=true;message('Saving user…');progress('Saving user…');
+ try{await write('users.save',data);invalidate();await load();tab('editTab');message('User saved successfully.');result('User saved successfully.');$('pin').value='';$('pin').type='password'}
+ catch(error){message(error.message);result(error.message,false)}finally{$('save').disabled=false}
 };
 if(!session()?.user.roles.some(r=>['admin','super_admin'].includes(r))){document.querySelector('main').replaceChildren(document.createTextNode('Admin access required.'));}
-else load().catch(error=>message(error.message));
+else $('addTab').click();
