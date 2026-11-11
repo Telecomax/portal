@@ -1,0 +1,40 @@
+/* Only audit toolbar shapes, theme colors and back-to-top. Original layout retained. */
+html body #dash>.audit-topbar .btn{border-radius:12px!important;border:1px solid #46556b!important;background:#152338!important;color:#eaf0f8!important;box-shadow:0 3px 0 #030a15!important;transition:transform .16s,background .16s,box-shadow .16s,border-color .16s!important}
+html body #dash>.audit-topbar .btn.active,html body #dash>.audit-topbar .btn.primary{background:linear-gradient(120deg,#b61b73,#792e9e)!important;border-color:#d35caa!important;color:white!important}
+@media(hover:hover){html body #dash>.audit-topbar .btn:hover{transform:translateY(-2px);border-color:#e164b1!important;box-shadow:0 5px 12px #0004!important;background:#263953!important}}
+html body #dash>.audit-topbar .btn:active{transform:translateY(1px) scale(.98);box-shadow:none!important}
+html body #dash>.audit-topbar .btn:disabled{opacity:.55;transform:none;cursor:wait}
+.audit-theme-toggle,.audit-back-top{border:1px solid #52647c!important;background:#152338!important;color:#fff!important;border-radius:10px!important;padding:9px 13px!important;min-height:40px;font:600 13px system-ui;cursor:pointer}
+.audit-theme-toggle{margin-inline-start:10px}
+.audit-back-top{position:fixed;bottom:88px;right:20px;z-index:80;box-shadow:0 4px 14px #0003}
+.audit-back-top[hidden]{display:none!important}
+html body :is(.audit-theme-toggle,.audit-back-top,.audit-topbar .btn):focus-visible{outline:3px solid #41bddd!important;outline-offset:3px}
+/* Light mode changes colors only; geometry and business controls remain unchanged. */
+html[data-audit-theme=light] body{--bg:#f3f5f8;--panel:#fff;--panel2:#f5f7fa;--line:#d5deea;--text:#20314a;--muted:#586b83;--brand:#ac216f;background:#f3f5f8!important;color:#20314a!important}
+html[data-audit-theme=light] body :is(.top,.card,.stat,.audit-dialog,.opts,.summary-table,.bulkbar){background:#fff!important;color:#20314a!important;border-color:#d5deea!important}
+html[data-audit-theme=light] body .brand,html[data-audit-theme=light] body #dash>.audit-topbar .audit-page-title{color:#20314a!important}
+html[data-audit-theme=light] body .brand small{color:#586b83!important}
+html[data-audit-theme=light] body #audit .filters label,html[data-audit-theme=light] body #summary .filters label{color:#41556e!important;text-shadow:none!important}
+html[data-audit-theme=light] body :is(input,select,textarea,.input){background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important}
+html[data-audit-theme=light] body input::placeholder{color:#667990!important}
+html[data-audit-theme=light] body :is(.muted,.stat .k){color:#586b83!important}
+html[data-audit-theme=light] body .stat .v{color:#20314a!important}
+html[data-audit-theme=light] body .stat.accent .v{color:#ac216f!important}
+html[data-audit-theme=light] body #auditList :is(.audit,.summary,.cell,.metrics,.metric,.photos,.frame,.audit-actions){background:#fff!important;color:#20314a!important;border-color:#d5deea!important}
+html[data-audit-theme=light] body #auditList :is(.metrics,.frame){background:#f5f7fa!important}
+html[data-audit-theme=light] body #auditList :is(.cell b,.metric b,.gps){color:#586b83!important}
+html[data-audit-theme=light] body #auditList :is(.photo-title,.photo-km){color:#20314a!important;background:transparent!important;border-color:#c5d1e1!important}
+html[data-audit-theme=light] body #auditList .metric:last-child{color:#187548!important}
+html[data-audit-theme=light] body #audit .bulkbar{background:#fff!important;border-color:#d5deea!important}
+html[data-audit-theme=light] body #audit .bulkbar .muted{color:#586b83!important}
+html[data-audit-theme=light] body .btn{background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important}
+html[data-audit-theme=light] body .btn.primary{background:#ac216f!important;color:#fff!important}
+html[data-audit-theme=light] body #dash>.audit-topbar .btn{background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important;box-shadow:0 3px 0 #d9e1eb!important}
+html[data-audit-theme=light] body #dash>.audit-topbar .btn.active,html[data-audit-theme=light] body #dash>.audit-topbar .btn.primary{background:linear-gradient(120deg,#b61b73,#792e9e)!important;color:white!important}
+html[data-audit-theme=light] body :is(.audit-theme-toggle,.audit-back-top){background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important}
+html[data-audit-theme=light] body .tmx-mm-pop{background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important}
+html[data-audit-theme=light] body .tmx-mm-pop :is(label,small,.muted){color:#41556e!important}
+html[data-audit-theme=light] body .summary-table :is(th,td){color:#20314a!important;border-color:#d5deea!important}
+@media(prefers-reduced-motion:reduce){html body #dash>.audit-topbar .btn{transition:none!important;transform:none!important}}
+html[data-audit-theme=light] body #dash>.audit-topbar .btn:not(.active):not(.primary){background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important;box-shadow:0 3px 0 #d9e1eb!important}
+@media(hover:hover){html[data-audit-theme=light] body #dash>.audit-topbar .btn:not(.active):not(.primary):hover{background:#f8eaf3!important;border-color:#ac216f!important}}
