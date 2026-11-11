@@ -1,0 +1,20 @@
+/* Final shared controls for Admin, PM and Finance. */
+html[data-audit-theme] body #dash>.audit-topbar .btn,
+html[data-audit-theme] body #dash>.audit-topbar .btn:not(.active):not(.primary),
+html[data-audit-theme] body #dash>.finance-audit-topbar #photosBtn{
+box-sizing:border-box!important;width:118px!important;min-width:118px!important;flex:0 0 118px!important;height:37px!important;min-height:37px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:8px!important;font-size:13px!important;font-weight:800!important;white-space:nowrap!important;border-radius:12px!important;border:1px solid #46556b!important;background:#4a6895!important;color:#eaf0f8!important;box-shadow:0 3px 0 #030a15!important;transition:transform .16s,background .16s,box-shadow .16s,border-color .16s!important}
+html[data-audit-theme] body #dash>.audit-topbar .btn[hidden]{display:none!important}
+html[data-audit-theme] body #dash>.audit-topbar .btn.active,html[data-audit-theme] body #dash>.audit-topbar .btn.primary{background:#4a6895!important;color:#eaf0f8!important;outline:2px solid #df62b3;outline-offset:2px}
+html body .top .actions{display:flex!important;align-items:center;gap:10px;margin-left:auto!important}
+html body .top .btn.logout:not([style*="none"]){display:inline-flex!important;align-items:center;justify-content:center;order:10}
+html body .audit-actions :is(.edit-km,.deduct,.reject){transition:transform .16s,box-shadow .16s,border-color .16s!important}
+@media(hover:hover){html body .audit-actions :is(.edit-km,.deduct,.reject):hover{transform:translateY(-2px);box-shadow:0 4px 10px #0003;border-color:#c44f9c!important}html[data-audit-theme] body #dash>.audit-topbar .btn:hover{background:#587bac!important;transform:translateY(-2px)}}
+html body .audit-actions :is(.edit-km,.deduct,.reject):active{transform:translateY(1px);box-shadow:none}
+html[data-audit-theme=light] body :is(.opts,.opt,.tmx-mm-pop,.tmx-mm-head,.tmx-mm-list,.tmx-mm-actions,.tmx-mm-item){background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important;text-shadow:none!important}
+html[data-audit-theme=light] body .tmx-mm-pop :is(b,span,label,small){color:#20314a!important;text-shadow:none!important}
+html[data-audit-theme=light] body :is(#audit,#photoView,#summary,#summaryView) .tmx-mm-pop label{color:#20314a!important;text-shadow:none!important}
+html[data-audit-theme=light] body .opts .opt:hover,html[data-audit-theme=light] body .opts .opt.active,html[data-audit-theme=light] body .tmx-mm-item:hover{background:#eef2f8!important;color:#20314a!important}
+html[data-audit-theme=light] body .tmx-mm-pop .tmx-mm-btn{background:#f1f4f9!important;color:#20314a!important;border-color:#c5d1e1!important}
+html[data-audit-theme=light] body .tmx-mm-pop .tmx-mm-btn.primary{background:#ac216f!important;color:white!important}
+html[data-audit-theme=light] body .tmx-mm-pop input[type=checkbox]{accent-color:#ac216f;color-scheme:light}
+@media(prefers-reduced-motion:reduce){html body .audit-actions :is(.edit-km,.deduct,.reject),html[data-audit-theme] body #dash>.audit-topbar .btn{transition:none!important;transform:none!important}}
