@@ -1,4 +1,4 @@
-<!doctype html><html><head><script src="/tmx/compat.js"></script>
+<!doctype html><html lang="en" dir="ltr"><head><script src="/tmx/compat.js"></script>
 <script id="tmxRouteGuardV826">
 (function(){
   const hasSso=/(?:^|[&#])sso=/.test(location.hash);
@@ -37,7 +37,7 @@ function v8311MonthRelation(prefix=''){
  kinds.forEach((k,i)=>{const el=$(ids[i]);if(el&&el.value.trim()&&!related(k,prefix).some(v=>String(v).toLowerCase()===el.value.trim().toLowerCase()))el.value='';});
 }
 document.addEventListener('DOMContentLoaded',()=>{['month','sMonth'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>v8311MonthRelation(id==='sMonth'?'s':''));});});
-</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Telecomax Admin Portal</title><link rel="icon" href="icon-192.png"><style>
+</script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Telecomax | Photo Audit &amp; Summary</title><meta name="description" content="Telecomax management portal for trip photo audit, approvals, and financial summary."><meta property="og:type" content="website"><meta property="og:title" content="Telecomax Photo Audit & Summary"><meta property="og:description" content="Review trip evidence, audit distances, approve records and export summaries."><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23101c32'/%3E%3Cpath d='M12 21h40v9H36v22H27V30H12Z' fill='%23ec008c'/%3E%3C/svg%3E"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>
 :root{--bg:#f4f6f8;--panel:#fff;--panel2:#f8fafc;--line:#d9dee7;--text:#243042;--muted:#6f7b8c;--brand:#b52d7b;--soft:#f8eaf2;--good:#2f855a;--warn:#a66b18;--shadow:0 4px 16px rgba(31,45,61,.055)}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,Segoe UI,Arial,sans-serif}.top{height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;z-index:20}.brand{font-size:22px;font-weight:850}.brand:before{content:"";display:inline-block;width:6px;height:24px;background:var(--brand);margin-right:12px;vertical-align:-5px;border-radius:4px}.brand small{font-size:14px;font-weight:500;color:var(--muted);margin-left:10px}.actions{margin-left:auto}.wrap{max-width:1540px;margin:auto;padding:26px}.login{max-width:440px;margin:90px auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:var(--shadow)}.dash{display:none}.btn{border:1px solid var(--line);background:#fff;color:#344054;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:750}.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}.btn.logout{background:var(--soft);border-color:#e7bdd4;color:#9c286a}.input,select{width:100%;height:44px;background:#fff;border:1px solid #ccd3dd;border-radius:10px;padding:0 12px;color:var(--text)}label{display:block;color:#697586;font-size:12px;font-weight:800;text-transform:uppercase;margin:12px 0 6px}.muted{color:var(--muted)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.tab{padding:11px 16px}.tab.active{background:var(--brand);color:#fff;border-color:var(--brand)}.panel{display:none}.panel.active{display:block}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}.filters{display:grid;grid-template-columns:repeat(4,minmax(170px,1fr)) auto;gap:12px;align-items:end}.search{position:relative}.opts{display:none;position:absolute;left:0;right:0;top:48px;max-height:260px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;z-index:30;box-shadow:0 12px 30px #0002}.opt{padding:10px 12px;cursor:pointer}.opt:hover{background:var(--soft)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:16px 0}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}.stat .k{font-size:11px;text-transform:uppercase;color:var(--muted);font-weight:800}.stat .v{font-size:24px;font-weight:850;margin-top:4px}.accent .v{color:var(--brand)}.audit-list{display:flex;flex-direction:column;gap:18px}.audit{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}.summary{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid var(--line)}.cell{padding:12px;border-right:1px solid #edf0f3}.cell b{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}.metrics{display:grid;grid-template-columns:repeat(6,1fr);background:var(--panel2)}.metric{text-align:center;padding:12px}.metric b{display:block;font-size:10px;color:var(--muted);text-transform:uppercase}.photos{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:24px}.photo{text-align:center}.frame{height:390px;background:#eef1f5;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}.frame img{width:100%;height:100%;object-fit:contain;cursor:zoom-in}.empty{text-align:center;color:var(--muted);padding:35px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left}.table th{font-size:11px;text-transform:uppercase;color:var(--muted)}.totalcard{padding:18px;border-radius:14px;background:var(--soft);text-align:center;margin:14px 0}.totalcard .v{font-size:28px;font-weight:900;color:var(--brand)}.lightbox{display:none;position:fixed;inset:0;background:#111d;z-index:100;align-items:center;justify-content:center;padding:30px}.lightbox.open{display:flex}.lightbox img{max-width:94vw;max-height:90vh}.toast{display:none;position:fixed;right:20px;bottom:20px;background:#273142;color:#fff;padding:12px 16px;border-radius:10px;z-index:120}@media(max-width:900px){.filters,.grid2,.grid3,.photos{grid-template-columns:1fr}.stats{grid-template-columns:1fr}.summary,.metrics{grid-template-columns:repeat(2,1fr)}.frame{height:320px}}
 
 /* Login buffering overlay */
@@ -540,7 +540,116 @@ body #audit .stats{margin-top:16px!important}
   text-shadow: none !important;
 }
 </style>
-</head><body>
+<style id="tmxPremiumDesign20261111">
+/* THEME TOKENS — change colors here; original business logic remains untouched */
+:root,[data-tmx-theme="dark"]{
+ --bg:#080e19;--panel:#111b2b;--panel2:#152235;--line:#2c3b51;
+ --text:#f2f6fd;--muted:#a9bad0;--brand:#ec008c;--soft:#32152d;
+ --good:#62db9d;--warn:#efbf68;--field:#101d30;--border:#31445c;
+ --tmx-glow:rgba(236,0,140,.14);--tmx-photo:#080f1b;
+ --shadow:0 12px 36px rgba(0,0,0,.20);color-scheme:dark;
+}
+[data-tmx-theme="light"]{
+ --bg:#f5f7fc;--panel:#ffffff;--panel2:#f1f5fb;--line:#dce4ef;
+ --text:#1b2c45;--muted:#52657d;--brand:#b6006c;--soft:#fce7f3;
+ --good:#147e4e;--warn:#94610e;--field:#ffffff;--border:#ccd8e7;
+ --tmx-glow:rgba(182,0,108,.08);--tmx-photo:#eaf0f7;
+ --shadow:0 12px 35px rgba(30,51,82,.08);color-scheme:light;
+}
+html{scroll-behavior:smooth;scroll-padding-top:85px}
+html,body{max-width:100%;overflow-x:clip}
+html body{background:radial-gradient(ellipse at 7% 0%,var(--tmx-glow),transparent 37%),var(--bg)!important;color:var(--text)!important;font-family:Inter,Cairo,system-ui,sans-serif!important;line-height:1.55!important;transition:background .3s,color .3s}
+button,input,select,textarea{font-family:inherit!important}
+button,a,input,select,textarea{touch-action:manipulation}
+:focus-visible{outline:3px solid #e83b9d!important;outline-offset:3px!important}
+.top{height:76px!important;padding:0 clamp(14px,3vw,42px)!important;background:color-mix(in srgb,var(--panel) 94%,transparent)!important;border-bottom:1px solid var(--line)!important;backdrop-filter:blur(16px);box-shadow:0 4px 20px rgba(0,0,0,.05);gap:12px}
+.brand{color:var(--text)!important;font-size:clamp(18px,2vw,24px)!important;letter-spacing:.045em;font-weight:900!important}
+.brand:before{background:linear-gradient(180deg,#ff4db2,var(--brand))!important;width:7px!important;height:29px!important}
+.brand small{color:var(--muted)!important;letter-spacing:0;font-weight:650!important}
+.actions{display:flex;align-items:center;gap:10px}
+.tmx-theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:41px;padding:8px 14px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--text);font-size:12px;font-weight:800;cursor:pointer;transition:transform .2s,border-color .2s}
+.tmx-theme-toggle:hover{transform:translateY(-2px);border-color:var(--brand)}
+.tmx-theme-toggle span:first-child{font-size:18px}
+body .btn{border:1px solid var(--border)!important;background:var(--panel2)!important;color:var(--text)!important;border-radius:12px!important;padding:10px 15px!important;font-size:13px!important;font-weight:750!important;line-height:1.4;min-height:42px;transition:transform .22s,box-shadow .22s,background .22s,border-color .22s}
+body .btn:hover{transform:translateY(-2px);border-color:var(--brand)!important;box-shadow:0 8px 22px var(--tmx-glow)}
+body .btn.primary,body .tab.active,body .tmx-mm-btn.primary,body .tmx-mm-pop .tmx-mm-btn.primary{background:linear-gradient(125deg,var(--brand),#c01787)!important;border-color:var(--brand)!important;color:#fff!important}
+body .btn.logout{display:inline-flex!important;background:var(--soft)!important;color:var(--brand)!important;border-color:var(--line)!important}
+body .btn.logout[style*="display: none"],body .btn.logout[style*="display:none"]{display:none!important}
+body .wrap{max-width:1720px!important;padding:25px clamp(12px,2.4vw,38px) 90px!important}
+body #dash>.audit-topbar{gap:14px!important;margin-bottom:20px!important;min-height:64px!important}
+body #dash>.audit-topbar .audit-page-title{color:var(--text)!important;font-size:clamp(21px,2.2vw,29px)!important;font-weight:850!important;letter-spacing:-.04em!important}
+body #dash>.audit-topbar .audit-topbar-actions{gap:10px!important}
+body #dash>.audit-topbar .btn{width:auto!important;min-width:126px!important;height:48px!important;min-height:48px!important;padding:10px 17px!important;font-size:13px!important;border-radius:13px!important}
+body #dash>.audit-topbar .photo-toggle-btn{background:var(--panel2)!important;border-color:var(--border)!important;color:var(--text)!important}
+body .card,body .stat,body .audit,body .login,body .bulkbar,body #summaryRows{background:var(--panel)!important;color:var(--text)!important;border:1px solid var(--line)!important;border-radius:20px!important;box-shadow:var(--shadow)!important}
+body #audit>.card:first-of-type,body #summary>.card:first-of-type{padding:clamp(15px,2vw,26px)!important}
+body #audit .filters,body #summary .filters{gap:15px!important}
+body #audit .filters label,body #summary .filters label{font-size:12px!important;font-weight:800!important;color:var(--muted)!important;text-align:left!important;text-transform:none!important;letter-spacing:.01em!important;text-shadow:none!important;margin:0 0 8px!important}
+body .input,body select,body .audit-dialog input,body .audit-dialog textarea{background:var(--field)!important;color:var(--text)!important;border:1px solid var(--border)!important;border-radius:12px!important;min-height:46px!important;transition:border-color .2s,box-shadow .2s}
+body .input:focus,body select:focus,body .audit-dialog input:focus{border-color:var(--brand)!important;box-shadow:0 0 0 3px var(--tmx-glow)!important}
+body .input::placeholder{color:var(--muted)!important;opacity:.85}
+body .opts{background:var(--panel)!important;border-color:var(--line)!important;border-radius:13px!important;box-shadow:var(--shadow)!important}
+body .opt:hover{background:var(--soft)!important}
+body .stats{gap:16px!important;margin:18px 0 22px!important}
+body .stat{padding:19px 21px!important;min-width:0;position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+body .stat:hover{transform:translateY(-4px);box-shadow:0 16px 35px var(--tmx-glow)!important}
+body .stat:before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:linear-gradient(var(--brand),#e887c3)}
+body .stat .k{color:var(--muted)!important;font-size:11px!important;letter-spacing:.04em}
+body .stat .v{color:var(--text)!important;font-size:clamp(20px,2vw,29px)!important;overflow-wrap:anywhere}
+body .stat.accent .v{color:var(--brand)!important}
+body #auditList .audit{background:var(--panel)!important;border:1px solid var(--line)!important;border-radius:20px!important;margin-bottom:19px!important;transition:box-shadow .3s,transform .3s}
+body #auditList .audit:hover{box-shadow:0 17px 40px var(--tmx-glow)!important}
+body #auditList .summary{background:var(--panel)!important;border-color:var(--line)!important}
+body #auditList .cell{color:var(--text)!important;border-color:var(--line)!important;font-size:13px!important;padding:12px 13px!important;overflow-wrap:anywhere}
+body #auditList .cell b,body #auditList .metric b{color:var(--muted)!important;font-size:10px!important;letter-spacing:.02em!important}
+body #auditList .metrics{background:var(--panel2)!important;border-color:var(--line)!important}
+body #auditList .metric{color:var(--text)!important;font-size:14px!important}
+body #auditList .metric:last-child{color:var(--good)!important}
+body #auditList .audit-actions{background:var(--panel)!important;border-color:var(--line)!important;padding:12px 16px!important;gap:9px!important}
+body #auditList .audit-actions .btn,body #audit .bulkbar .btn{min-height:40px!important;border-radius:10px!important}
+body #auditList .status-badge{background:var(--panel2)!important;color:var(--text)!important;border-color:var(--border)!important}
+body #auditList .status-pending{color:var(--warn)!important;background:color-mix(in srgb,var(--warn) 12%,var(--panel))!important}
+body #auditList .status-approved{color:var(--good)!important;background:color-mix(in srgb,var(--good) 12%,var(--panel))!important}
+body #auditList .status-rejected{color:#ef7890!important;background:color-mix(in srgb,#ef7890 12%,var(--panel))!important}
+body #auditList .photos{background:var(--panel)!important;gap:18px!important;padding:18px!important}
+body #auditList .photo-title{color:var(--text)!important;font-size:14px!important}
+body #auditList .photo-km{background:var(--panel2)!important;color:var(--text)!important;border-color:var(--border)!important}
+body #auditList .frame{height:clamp(240px,27vw,390px)!important;background:var(--tmx-photo)!important;border:1px solid var(--border)!important;border-radius:15px!important;overflow:hidden!important}
+body #auditList .frame img{object-fit:contain!important;transition:transform .25s}
+body #auditList .frame img:hover{transform:scale(1.025)}
+body #auditList .gps{color:var(--muted)!important;font-size:11px!important}
+body #audit .bulkbar{background:color-mix(in srgb,var(--panel) 95%,transparent)!important;border-color:var(--line)!important;backdrop-filter:blur(14px)!important;box-shadow:var(--shadow)!important;padding:11px 14px!important;gap:10px!important}
+body #audit .bulkbar .muted{color:var(--muted)!important}
+body .tmx-mm-input{background:var(--field)!important;color:var(--text)!important;border-color:var(--border)!important;color-scheme:inherit!important}
+body .tmx-mm-input::placeholder{color:var(--muted)!important}
+body .tmx-mm-pop{background:var(--panel)!important;color:var(--text)!important;border-color:var(--border)!important;box-shadow:var(--shadow)!important;max-width:min(360px,calc(100vw - 35px))!important;min-width:min(285px,calc(100vw - 35px))!important}
+body .tmx-mm-pop .tmx-mm-head,body .tmx-mm-pop .tmx-mm-head b,body .tmx-mm-pop .tmx-mm-item,body .tmx-mm-pop .tmx-mm-item span{color:var(--text)!important;-webkit-text-fill-color:var(--text)!important;text-shadow:none!important}
+body .tmx-mm-pop .tmx-mm-list{border-color:var(--line)!important}
+body .tmx-mm-pop .tmx-mm-btn{background:var(--panel2)!important;color:var(--text)!important;border-color:var(--border)!important}
+body .tmx-mm-pop .tmx-mm-item input[type="checkbox"]{border-color:var(--border)!important;background:var(--panel2)!important}
+body .tmx-mm-pop .tmx-mm-item input[type="checkbox"]:checked{background:var(--brand)!important;border-color:var(--brand)!important}
+body .audit-dialog{background:var(--panel)!important;color:var(--text)!important;border:1px solid var(--line);max-height:90dvh;overflow-y:auto}
+body .audit-dialog p{color:var(--muted)!important}
+body .lightbox{background:rgba(3,8,18,.94)!important;backdrop-filter:blur(8px)}
+body .toast{background:var(--panel2)!important;color:var(--text)!important;border:1px solid var(--border)!important;box-shadow:var(--shadow)!important}
+body .login{background:var(--panel)!important;padding:30px!important}
+body .login-buffer-box{background:var(--panel)!important;color:var(--text)!important}
+body .login-buffer-overlay{background:rgba(0,0,0,.55)!important}
+body .v7-sso{background:var(--bg)!important;color:var(--text)!important}
+body .v7-sso span{color:var(--muted)!important}
+body .v830-pager .v830-count{color:var(--muted)!important}
+body .table th,body .table td,body .summary-table th,body .summary-table td{border-color:var(--line)!important;color:var(--text)!important}
+body .table th,body .summary-table th{background:var(--panel2)!important;color:var(--muted)!important}
+body #summaryRows{overflow-x:auto;max-width:100%}
+.tmx-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:22px clamp(15px,3vw,42px);color:var(--muted);border-top:1px solid var(--line);font-size:12px}
+.tmx-backtop{position:fixed;bottom:22px;left:22px;z-index:75;width:46px;height:46px;display:grid;place-items:center;border:1px solid var(--border);border-radius:14px;background:var(--brand);color:#fff;font-size:23px;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .25s,transform .25s,visibility .25s}
+.tmx-backtop.visible{opacity:1;visibility:visible;transform:translateY(0)}
+.tmx-reveal{animation:tmxEnter .55s ease both}@keyframes tmxEnter{from{opacity:.2;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:1050px){body #audit .filters,body #summary .filters{grid-template-columns:repeat(3,minmax(0,1fr))!important}body #auditList .summary{grid-template-columns:repeat(3,minmax(0,1fr))!important}body #auditList .metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:720px){.top{height:auto!important;min-height:68px!important;padding:12px 15px!important;flex-wrap:wrap}.brand small{display:block;margin:0!important;font-size:10px!important}.actions{gap:7px}.tmx-theme-label{display:none}body .wrap{padding:16px 12px 80px!important}body #dash>.audit-topbar .audit-page-title{width:100%;font-size:23px!important}body #dash>.audit-topbar .audit-topbar-actions{width:100%;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px!important}body #dash>.audit-topbar .btn{width:100%!important;min-width:0!important;font-size:11px!important;padding:8px!important;height:46px!important}body #audit .filters,body #summary .filters{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}body #audit .filters>div:last-child,body #summary .filters>div:last-child{grid-column:1/-1;flex-wrap:wrap}body #audit .filters>div:last-child .btn,body #summary .filters>div:last-child .btn{flex:1}body #auditList .summary,body #auditList .metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}body #auditList .metric:last-child{grid-column:auto!important}body #auditList .photos{grid-template-columns:1fr!important;padding:12px!important}body #auditList .frame{height:clamp(235px,65vw,340px)!important}body #audit .bulkbar{position:sticky!important;bottom:6px!important;justify-content:center!important}body #audit .bulkbar .btn{flex:1 1 110px}body .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}body .stat{padding:14px!important}.tmx-footer{justify-content:center;text-align:center}}
+@media(max-width:420px){body #audit .filters,body #summary .filters{grid-template-columns:1fr!important}body #auditList .cell{font-size:12px!important;padding:9px!important}body .stat .v{font-size:20px!important}.brand{font-size:17px!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}.tmx-reveal{animation:none!important}}
+</style></head><body>
 
 <div id="loginBuffer" class="login-buffer-overlay" aria-hidden="true">
   <div class="login-buffer-box" role="status" aria-live="polite">
@@ -548,14 +657,14 @@ body #audit .stats{margin-top:16px!important}
     <div id="loginBufferText" class="login-buffer-text">Logging in...</div>
   </div>
 </div>
-<header class="top"><div class="brand">TELECOMAX <small>Admin Portal</small></div><div class="actions"><button id="logout" class="btn logout" style="display:none">Log out</button></div></header><main class="wrap">
+<header class="top"><div class="brand">TELECOMAX <small>Admin Portal</small></div><div class="actions"><button id="tmxThemeToggle" class="tmx-theme-toggle" type="button" aria-label="Switch to light mode" title="Toggle light and dark theme"><span aria-hidden="true">☀</span><span class="tmx-theme-label">Light mode</span></button><button id="logout" class="btn logout" style="display:none">Log out</button></div></header><main class="wrap">
 <section id="login" class="login" style="display:none"><h1>Management Login</h1><div class="muted">Admin and PM users can access this portal using their management Name + 4-digit PIN.</div><label>Name</label><input id="name" class="input" autocomplete="username" placeholder="Enter your name"><label>PIN</label><input id="pin" class="input" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="4-digit PIN"><button id="loginBtn" class="btn primary" style="width:100%;margin-top:16px">Login</button></section>
 <section id="dash" class="dash"><div class="tabs audit-topbar"><h1 class="audit-page-title"><span class="audit-title-photo">Photo Audit</span><span class="audit-title-summary">Summary</span></h1><div class="audit-topbar-actions"><button class="btn tab active" data-p="audit">Photo Audit</button><button class="btn tab" data-p="summary">Summary</button><button id="toggleAllPhotosBtn" class="btn photo-toggle-btn" type="button" onclick="toggleAllAuditPhotos()">Hide Photos</button></div></div>
 <div id="balances" class="panel"><div class="card"><h2>Balances</h2><div class="grid3"><div><label>Engineer</label><div class="search"><input id="balEng" class="input" placeholder="Search or select engineer" autocomplete="off"><div id="balEngOpts" class="opts"></div></div></div><div><label>Months</label><input id="balMonth" class="input" type="text" data-multimonth></div><div><button id="balApply" class="btn primary">Apply</button> <button id="balClear" class="btn">Clear</button></div></div></div><div class="stats"><div class="stat"><div class="k">Total Received</div><div id="received" class="v">0.00 EGP</div></div><div class="stat"><div class="k">Total Spent</div><div id="spent" class="v">0.00 EGP</div></div><div class="stat accent"><div class="k">Total Balance</div><div id="balance" class="v">0.00 EGP</div></div></div><div class="card"><h3>Engineer Balances</h3><div id="balanceRows" class="empty">Load balances to view records.</div></div></div>
 <div id="audit" class="panel active"><div class="card"><h2>Photo Audit</h2><div class="filters"><div><label>Engineer</label><div class="search"><input id="eng" class="input" placeholder="Search engineer" autocomplete="off"><div id="engOpts" class="opts"></div></div></div><div><label>Driver</label><div class="search"><input id="drv" class="input" placeholder="Search driver" autocomplete="off"><div id="drvOpts" class="opts"></div></div></div><div><label>Project</label><div class="search"><input id="proj" class="input" placeholder="Search project" autocomplete="off"><div id="projOpts" class="opts"></div></div></div><div><label>Months</label><input id="month" class="input" type="text" data-multimonth></div><div><label>Paid By</label><div class="search"><input id="paidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="paidByOpts" class="opts"></div></div></div><div><label>Status</label><select id="auditStatus" class="input"><option value="" selected>Non Selected</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></div><div><button id="auditApply" class="btn primary">Apply</button> <button id="auditClear" class="btn">Clear</button></div></div></div><div class="stats v832-kpis"><div class="stat"><div class="k">Trips found</div><div id="pmTripCount" class="v">0</div></div><div class="stat"><div class="k">Trip KM</div><div id="pmTripKm" class="v">0</div></div><div class="stat"><div class="k">Total KM</div><div id="pmTotalKm" class="v">0</div></div><div class="stat accent"><div class="k">Amount Spent</div><div id="pmAmountSpent" class="v">0.00 EGP</div></div></div><div id="auditList" class="audit-list"><div class="empty">Apply filters to load trips.</div></div><div class="bulkbar"><span id="pendingChanges" class="muted">No unsaved changes</span><button id="selectAllAudit" class="btn">Select All</button><button id="saveAudit" class="btn">Save Changes</button><button id="approveAudit" class="btn primary">Approve Selected</button></div></div>
 <div id="summary" class="panel"><div class="card"><h2>Approved Summary</h2><div class="filters"><div><label>Engineer</label><div class="search"><input id="sEng" class="input" autocomplete="off" placeholder="Search or select engineer"><div id="sEngOpts" class="opts"></div></div></div><div><label>Driver</label><div class="search"><input id="sDrv" class="input" autocomplete="off" placeholder="Search or select driver"><div id="sDrvOpts" class="opts"></div></div></div><div><label>Project</label><div class="search"><input id="sProj" class="input" autocomplete="off" placeholder="Search or select project"><div id="sProjOpts" class="opts"></div></div></div><div><label>Months</label><input id="sMonth" class="input" type="text" data-multimonth></div><div><label>Paid By</label><div class="search"><input id="sPaidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="sPaidByOpts" class="opts"></div></div></div><div><button id="sApply" class="btn primary">Apply</button> <button id="sExport" class="btn">Export Excel</button></div></div></div><div id="summaryRows" class="card"><div class="empty">Load approved records.</div></div></div><div id="solfa" class="panel"><div class="card" style="max-width:700px"><h2>Add Solfa</h2><label>Engineer</label><div class="search"><input id="solfaEng" class="input" placeholder="Search or select engineer" autocomplete="off"><div id="solfaEngOpts" class="opts"></div></div><div class="grid2"><div><label>Date</label><input id="solfaDate" class="input" type="date"></div><div><label>Amount</label><input id="solfaAmount" class="input" type="number" min="0.01" step="0.01" placeholder="Enter amount"></div></div><button id="solfaUpload" class="btn primary" style="margin-top:16px">Upload Solfa</button></div></div>
 <div id="rent" class="panel"><div class="card" style="max-width:800px"><h2>Rent Payment</h2><label>Rent Trip</label><select id="rentTrip"><option value="">— Select Rent Trip —</option></select><div class="grid2"><div><label>Engineer</label><input id="rentEng" class="input" readonly></div><div><label>Benzine Amount</label><input id="benzine" class="input" readonly value="0"></div></div><div class="grid2"><div><label>Rent Amount</label><input id="rentAmount" class="input" type="number" min="0.01" step="0.01"></div><div><label>Rent Deduction</label><select id="deduction"><option value="">— Select —</option><option>On TMX</option><option>On Driver</option></select></div></div><label>Rent Deduction Driver</label><div class="search"><input id="deductionDriver" class="input" placeholder="Search or select driver (Optional)" autocomplete="off"><div id="deductionDriverOpts" class="opts"></div></div><button id="sum" class="btn" style="margin-top:14px">Sum</button><div class="totalcard"><div>Total Amount to Pay</div><div id="rentTotal" class="v">0.00 EGP</div></div><button id="rentUpload" class="btn primary">Upload Rent</button></div></div>
-</section></main><div id="lightbox" class="lightbox"><img id="lbImg"><button id="lbClose" class="btn" style="position:absolute;top:20px;right:20px">Close</button></div><div id="toast" class="toast"></div>
+</section></main><footer class="tmx-footer"><span>TELECOMAX · Photo Audit &amp; Summary</span><span>© <span id="tmxYear"></span> Telecomax</span></footer><button id="tmxBackTop" class="tmx-backtop" type="button" aria-label="Back to top" title="Back to top">↑</button><div id="lightbox" class="lightbox"><img id="lbImg" alt="Expanded trip audit evidence"><button id="lbClose" class="btn" style="position:absolute;top:20px;right:20px">Close</button></div><div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script>
 
 function showLoginBuffer(message='Logging in...'){
@@ -1180,4 +1289,39 @@ window.addEventListener('pageshow',applyAuditPhotoVisibility);
  },true);
 })();
 </script>
-<script type="module" src="/tmx/audit-originals.js"></script><script src="/tmx/tail.js"></script></body></html>
+<script type="module" src="/tmx/audit-originals.js"></script><script src="/tmx/tail.js"></script><script id="tmxPremiumEnhancements20261111">
+/* Presentation-only enhancements. Do not change auth, API calls or audit handlers. */
+(function(){
+ const root=document.documentElement;
+ const toggle=document.getElementById('tmxThemeToggle');
+ const topButton=document.getElementById('tmxBackTop');
+ const year=document.getElementById('tmxYear');
+ if(year)year.textContent=new Date().getFullYear();
+ let saved=null;try{saved=localStorage.getItem('tmx-photo-audit-theme')}catch(e){}
+ function setTheme(value){
+  const theme=value==='light'?'light':'dark';root.setAttribute('data-tmx-theme',theme);
+  if(toggle){toggle.querySelector('span').textContent=theme==='dark'?'☀':'☾';toggle.querySelector('.tmx-theme-label').textContent=theme==='dark'?'Light mode':'Dark mode';toggle.setAttribute('aria-label',theme==='dark'?'Switch to light mode':'Switch to dark mode')}
+  try{localStorage.setItem('tmx-photo-audit-theme',theme)}catch(e){}
+ }
+ setTheme(saved==='light'?'light':'dark');
+ if(toggle)toggle.addEventListener('click',()=>setTheme(root.getAttribute('data-tmx-theme')==='dark'?'light':'dark'));
+ const updateScroll=()=>{if(topButton)topButton.classList.toggle('visible',window.scrollY>300)};
+ window.addEventListener('scroll',updateScroll,{passive:true});updateScroll();
+ if(topButton)topButton.addEventListener('click',()=>window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));
+ const nav=document.createElement('nav');nav.className='tmx-a11y-nav';nav.setAttribute('aria-label','Audit page navigation');nav.style.display='none';
+ const dash=document.getElementById('dash');if(dash)dash.prepend(nav);
+ document.querySelectorAll('#audit .filters label,#summary .filters label,#login label').forEach(label=>{
+  const group=label.parentElement;const input=group&&group.querySelector('input,select');if(input&&input.id){label.htmlFor=input.id}
+ });
+ document.querySelectorAll('.tab[data-p]').forEach(button=>{button.setAttribute('type','button');button.setAttribute('role','tab');button.setAttribute('aria-controls',button.dataset.p)});
+ document.querySelectorAll('.tabs.audit-topbar').forEach(bar=>bar.setAttribute('aria-label','Photo audit views'));
+ document.addEventListener('click',event=>{
+  const button=event.target.closest('.tab[data-p]');if(!button)return;
+  document.querySelectorAll('.tab[data-p]').forEach(el=>el.setAttribute('aria-selected',String(el===button)));
+ });
+ const observer='IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion: reduce)').matches?new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('tmx-reveal');observer.unobserve(entry.target)}})},{threshold:.05}):null;
+ if(observer){const watched=new WeakSet();function observeCards(){document.querySelectorAll('#auditList .audit,#summaryRows .card').forEach(el=>{if(!watched.has(el)){watched.add(el);observer.observe(el)}})}observeCards();const list=document.getElementById('auditList');if(list)new MutationObserver(observeCards).observe(list,{childList:true});}
+ const lb=document.getElementById('lightbox');const close=document.getElementById('lbClose');if(lb){lb.setAttribute('role','dialog');lb.setAttribute('aria-modal','true');lb.setAttribute('aria-label','Trip evidence photo');document.addEventListener('keydown',event=>{if(event.key==='Escape'&&lb.classList.contains('open')){lb.classList.remove('open');}});}
+ if(close)close.setAttribute('aria-label','Close expanded photo');
+})();
+</script></body></html>
