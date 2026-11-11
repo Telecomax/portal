@@ -540,7 +540,7 @@ body #audit .stats{margin-top:16px!important}
   text-shadow: none !important;
 }
 </style>
-</head><body>
+<script>try{document.documentElement.dataset.auditTheme=localStorage.getItem("tmx.audit.theme")||"dark"}catch{}</script></head><body>
 
 <div id="loginBuffer" class="login-buffer-overlay" aria-hidden="true">
   <div class="login-buffer-box" role="status" aria-live="polite">
@@ -1181,3 +1181,5 @@ window.addEventListener('pageshow',applyAuditPhotoVisibility);
 })();
 </script>
 <script type="module" src="/tmx/audit-originals.js"></script><script src="/tmx/tail.js"></script></body></html>
+
+<link rel="stylesheet" href="/tmx/audit-controls.css"><script src="/tmx/audit-controls.js"></script>
