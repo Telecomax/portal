@@ -38,3 +38,20 @@ html[data-audit-theme=light] body .summary-table :is(th,td){color:#20314a!import
 @media(prefers-reduced-motion:reduce){html body #dash>.audit-topbar .btn{transition:none!important;transform:none!important}}
 html[data-audit-theme=light] body #dash>.audit-topbar .btn:not(.active):not(.primary){background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important;box-shadow:0 3px 0 #d9e1eb!important}
 @media(hover:hover){html[data-audit-theme=light] body #dash>.audit-topbar .btn:not(.active):not(.primary):hover{background:#f8eaf3!important;border-color:#ac216f!important}}
+
+/* Six desktop metrics stay on one row across Admin, PM and Finance. */
+@media(min-width:901px){html body #auditList .metrics,html body #tableWrap .trip-metrics{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(230px,1.4fr) minmax(175px,1.1fr)!important}
+html body #auditList .metrics .metric,html body #tableWrap .trip-metrics .metric{grid-column:auto!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important;white-space:nowrap!important;min-width:0!important}
+html body #auditList .metrics .metric b,html body #tableWrap .trip-metrics .k,html body #tableWrap .trip-metrics .v{margin:0!important;display:inline!important;white-space:nowrap!important}}
+@media(max-width:900px){html body #auditList .metrics,html body #tableWrap .trip-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}html body #auditList .metrics .metric,html body #tableWrap .trip-metrics .metric{grid-column:auto!important;min-width:0;overflow-wrap:anywhere}}
+html body.tmx-finance-audit{--audit-surface:#0b1728;--audit-soft:#101e30;--audit-ink:#f0f4fc;--audit-muted:#a8b8cf;--audit-line:#304159;background:#091321!important;color:var(--audit-ink)!important}
+html[data-audit-theme=light] body.tmx-finance-audit{--audit-surface:#fff;--audit-soft:#f5f7fa;--audit-ink:#20314a;--audit-muted:#586b83;--audit-line:#d5deea;background:#f3f5f8!important}
+html body.tmx-finance-audit :is(.topbar,.filters,.audit-card,.trip-summary,.summary-item,.trip-metrics,.metric,.photo-panel,.photo-frame,.bulkbar,.stat,.opts,.audit-dialog){background:var(--audit-surface)!important;color:var(--audit-ink)!important;border-color:var(--audit-line)!important}
+html body.tmx-finance-audit :is(.brand,.brand small,.audit-page-title,.summary-value,.photo-title,.photo-km,.stat .v){color:var(--audit-ink)!important}
+html body.tmx-finance-audit :is(label,.summary-label,.metric .k,.gps,.muted,.stat .k){color:var(--audit-muted)!important}
+html body.tmx-finance-audit :is(input:not([type=checkbox]),select,textarea,.input){background:var(--audit-soft)!important;color:var(--audit-ink)!important;border-color:var(--audit-line)!important}
+html body.tmx-finance-audit .metric.amount .v{color:#37ab78!important}
+html body.tmx-finance-audit #dash>.finance-audit-topbar #photosBtn{background:#152338!important;color:#eaf0f8!important;border-color:#46556b!important}
+html[data-audit-theme=light] body.tmx-finance-audit #dash>.finance-audit-topbar #photosBtn{background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important}
+html body.tmx-finance-audit #dash .filters .input,html body.tmx-finance-audit #dash .filters select{background:var(--audit-soft)!important;color:var(--audit-ink)!important;border-color:var(--audit-line)!important}
+html body.tmx-finance-audit #dash .filters .input::placeholder{color:var(--audit-muted)!important;opacity:1}
