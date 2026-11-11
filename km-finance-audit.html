@@ -4,37 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Telecomax Operations — KM Finance Audit</title>
 <link rel="icon" href="icon-192.png">
-<style>
-:root{--bg:#f4f6f8;--panel:#ffffff;--panel2:#f8fafc;--line:#d9dee7;--text:#243042;--muted:#6f7b8c;--brand:#b52d7b;--brand2:#c83a8b;--brand-soft:#f8eaf2;--good:#2f855a;--good-soft:#e8f5ed;--warn:#a66b18;--warn-soft:#fff5df;--shadow:0 4px 16px rgba(31,45,61,.055)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,Segoe UI,Arial,sans-serif}.shell{min-height:100vh}.topbar{height:72px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);z-index:10;box-shadow:0 1px 8px rgba(31,45,61,.04)}.brand{font-weight:850;font-size:22px;letter-spacing:.3px;color:#202b3a}.brand:before{content:"";display:inline-block;width:6px;height:24px;background:var(--brand);margin-right:12px;vertical-align:-5px;border-radius:4px}.brand small{font-weight:500;color:var(--muted);font-size:14px;margin-left:10px}.top-actions{margin-left:auto;display:flex;gap:10px;align-items:center}.btn{border:1px solid var(--line);background:#fff;color:#344054;border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:750;box-shadow:0 1px 2px rgba(31,45,61,.03);transition:.15s ease}.btn:hover{border-color:#c7a1b8;background:#fffafd}.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}.btn.primary:hover{background:#a52670}.btn.logout{background:var(--brand-soft);border-color:#e7bdd4;color:#9c286a}.wrap{max-width:1540px;margin:auto;padding:26px}.login{max-width:440px;margin:90px auto;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:28px;box-shadow:var(--shadow)}.login h1{margin:0 0 6px;font-size:24px}.muted{color:var(--muted)}label{display:block;color:#697586;font-size:12px;font-weight:800;text-transform:uppercase;margin:14px 0 7px}.input{width:100%;height:44px;background:#fff;border:1px solid #ccd3dd;color:var(--text);border-radius:10px;padding:0 12px;outline:none;transition:.15s ease}.input:hover{border-color:#b8c0cc}.input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(181,45,123,.10)}.input::placeholder{color:#98a2b3}.dashboard{display:none}.heading{display:flex;align-items:flex-end;gap:16px;margin-bottom:20px}.heading h1{font-size:26px;margin:0;color:#202b3a}.filters{display:grid;grid-template-columns:minmax(190px,1fr) minmax(190px,1fr) minmax(170px,.8fr) 180px auto;gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;align-items:end;box-shadow:var(--shadow)}.field label{margin:0 0 7px}.search{position:relative}.opts{display:none;position:absolute;top:48px;left:0;right:0;max-height:260px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;z-index:20;box-shadow:0 12px 30px rgba(31,45,61,.14)}.opt{padding:10px 12px;cursor:pointer;color:var(--text)}.opt:hover{background:var(--brand-soft);color:#812157}.filter-buttons{display:flex;gap:8px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0}.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}.stat .k{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase}.stat .v{font-size:24px;font-weight:850;margin-top:4px;color:#26364a}.stat.accent{border-color:#ebcade;background:#fffafd}.stat.accent .v{color:var(--brand2)}.audit-head{display:flex;align-items:center;margin:22px 0 10px}.audit-head h2{margin:0;font-size:19px;color:#202b3a}.audit-head .right{margin-left:auto;display:flex;gap:8px}.table-wrap{background:transparent}.audit-list{display:flex;flex-direction:column;gap:20px}.audit-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}.audit-card:hover{border-color:#c7ced8;box-shadow:0 7px 20px rgba(31,45,61,.07)}.trip-summary{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:0;border-bottom:1px solid var(--line);background:#fff}.summary-item{padding:13px 15px;border-right:1px solid #e7eaf0;min-height:72px}.summary-item:last-child{border-right:0}.summary-label{color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;margin-bottom:5px}.summary-value{font-size:14px;font-weight:700;word-break:break-word;color:#26364a}.trip-metrics{display:grid;grid-template-columns:repeat(6,1fr);background:#f8fafc;border-bottom:1px solid var(--line)}.metric{padding:12px 15px;text-align:center;border-right:1px solid #e3e7ed}.metric:last-child{border-right:0}.metric .k{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase}.metric .v{font-size:16px;font-weight:850;margin-top:4px;color:#26364a}.metric.amount .v{color:var(--brand2)}.badge{display:inline-block;padding:4px 9px;border-radius:99px;background:var(--good-soft);color:var(--good);font-size:11px;font-weight:800}.badge.open{background:var(--warn-soft);color:var(--warn)}.photo-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px;padding:26px;background:#fbfcfd;align-items:start}.photo-panel{text-align:center;min-width:0}.photo-title{font-size:13px;font-weight:850;text-transform:uppercase;color:#7b4865;margin-bottom:10px;letter-spacing:.2px}.photo-frame{width:100%;height:440px;display:flex;align-items:center;justify-content:center;background:#eef1f5;border:1px solid #d7dce4;border-radius:14px;overflow:hidden}.audit-photo{width:100%;height:100%;object-fit:contain;cursor:zoom-in;display:block}.photo-missing{color:var(--muted);font-size:14px}.gps{font-size:12px;color:var(--muted);margin-top:9px;word-break:break-word;text-align:center}.empty{text-align:center;color:var(--muted);padding:55px;border:1px solid var(--line);border-radius:15px;background:var(--panel);box-shadow:var(--shadow)}.count{color:var(--muted);margin-left:8px}.lightbox{display:none;position:fixed;inset:0;background:rgba(22,28,36,.88);z-index:100;align-items:center;justify-content:center;padding:30px}.lightbox.open{display:flex}.lightbox img{max-width:94vw;max-height:90vh;border-radius:12px;background:#fff;box-shadow:0 18px 60px rgba(0,0,0,.28)}.lightbox button{position:absolute;top:20px;right:24px}.toast{position:fixed;right:22px;bottom:22px;background:#273142;color:#fff;border:1px solid #39475c;padding:12px 16px;border-radius:10px;display:none;z-index:120;box-shadow:0 8px 24px rgba(31,45,61,.18)}.hide-photos .photo-pair{display:none}@media(max-width:1100px){.trip-summary{grid-template-columns:repeat(3,1fr)}.trip-metrics{grid-template-columns:repeat(3,1fr)}.photo-frame{height:360px}}@media(max-width:900px){.filters{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.wrap{padding:16px}.brand small{display:none}.photo-pair{grid-template-columns:1fr}.photo-frame{height:420px}}@media(max-width:600px){.trip-summary,.trip-metrics{grid-template-columns:1fr 1fr}.photo-frame{height:320px}}
 
-/* Login buffering overlay */
-.login-buffer-overlay{
-  position:fixed;inset:0;z-index:99999;display:none;
-  align-items:center;justify-content:center;
-  background:rgba(15,23,42,.38);backdrop-filter:blur(2px);
-}
-.login-buffer-overlay.show{display:flex}
-.login-buffer-box{
-  min-width:220px;max-width:86vw;padding:24px 28px;border-radius:18px;
-  background:#fff;box-shadow:0 18px 55px rgba(15,23,42,.22);
-  text-align:center;color:#1f2937;font-weight:800;
-}
-.login-buffer-spinner{
-  width:42px;height:42px;margin:0 auto 14px;border-radius:50%;
-  border:4px solid #e5e7eb;border-top-color:#2563eb;
-  animation:loginSpin .75s linear infinite;
-}
-.login-buffer-text{font-size:15px}
-@keyframes loginSpin{to{transform:rotate(360deg)}}
-
-.audit-actions,.bulkbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 14px}.audit-actions{border-top:1px solid var(--line)}.bulkbar{position:sticky;bottom:8px;background:#fff;border:1px solid var(--line);border-radius:12px;justify-content:flex-end;z-index:5}.summary-table{width:100%;border-collapse:collapse;background:#fff}.summary-table th,.summary-table td{padding:9px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}.danger{border-color:#e6b4b4;color:#a52a2a}.audit[data-dirty="1"]{outline:2px solid #d29b2d}.deduction-note{font-weight:700;color:#a35a00}
-.photo-title{display:flex!important;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.photo-km{font-weight:900;color:#172b43;background:#fff;border:1px solid #d9e1e8;border-radius:8px;padding:3px 9px}.edited-km{display:block;font-size:11px;color:#147a45;margin-top:3px;font-weight:800}.audit-dialog-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}.audit-dialog-bg.open{display:flex}.audit-dialog{width:min(100%,440px);background:#fff;border-radius:18px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.25)}.audit-dialog h3{margin:0 0 8px}.audit-dialog p{color:#667085;margin:0 0 15px}.audit-dialog .dlg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.audit-dialog input,.audit-dialog textarea{width:100%;box-sizing:border-box;padding:11px;border:1px solid #d6dde5;border-radius:10px;margin:5px 0 10px}.audit-dialog textarea{min-height:80px;resize:vertical}.audit-dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:8px}
-
-.sso-status{position:fixed;inset:0;z-index:999999;background:rgba(2,8,23,.92);display:flex;align-items:center;justify-content:center;padding:24px}
-.sso-status-box{max-width:430px;width:100%;padding:24px;border-radius:20px;background:#0b1020;border:1px solid rgba(255,255,255,.15);color:#fff;text-align:center}
-.sso-status-box b{display:block;font-size:20px;margin-bottom:8px}.sso-status-box span{color:#aab4c4}
-</style>
 <script>
 if(location.hash.indexOf('sso=')>=0){
  document.documentElement.classList.add('portal-sso-pending');
@@ -46,36 +16,9 @@ function v8311FinanceMonthRelation(prefix=''){
 }
 document.addEventListener('DOMContentLoaded',()=>{['month','sMonth'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',()=>v8311FinanceMonthRelation(id==='sMonth'?'s':''));});});
 </script>
-<style>
-html.portal-sso-pending body{visibility:hidden!important}
-html.portal-sso-pending body::before{content:none!important;display:none!important}
-</style>
-<style id="telecomaxFinanceAuditV81">
-:root{--ws:#F4F6F8;--card:#FFFFFF;--ink:#1E293B;--muted:#64748B;--line:#D8DEE6;--soft:#E9EEF3;--magenta:#D60072;--blue:#1597D4}
-html,body{background:var(--ws)!important;color:var(--ink)!important}
-body{background:var(--ws)!important}
-header,.topbar,.header{background:#fff!important;color:var(--ink)!important;border-color:var(--line)!important;box-shadow:0 1px 0 rgba(15,23,42,.05)!important}
-h1,h2,h3,strong{color:var(--ink)!important}.muted,label{color:var(--muted)!important}
-.card,.panel{background:var(--card)!important;color:var(--ink)!important;border:1px solid var(--line)!important;box-shadow:0 5px 18px rgba(15,23,42,.04)!important}
-input,select,.input{background:#fff!important;color:var(--ink)!important;border:1px solid #CBD5E1!important;box-shadow:none!important}
-input::placeholder{color:#94A3B8!important}
-button,.btn,.secondary{background:#fff!important;color:var(--ink)!important;border:1px solid #CBD5E1!important;box-shadow:none!important}
-button.primary,.btn.primary{background:var(--magenta)!important;color:#fff!important;border-color:var(--magenta)!important}
-table{background:#fff!important;color:var(--ink)!important}th{background:var(--soft)!important;color:var(--ink)!important;border-color:var(--line)!important}td{color:var(--ink)!important;border-color:var(--line)!important}tbody tr:nth-child(even){background:#F8FAFC!important}
-/* Audit photos remain large on desktop for inspection */
-.audit-photos img,.photo-pair img,.photo-grid img{max-height:none!important;object-fit:contain!important}
-html.portal-sso-pending body{visibility:visible!important}html.portal-sso-pending body::before{content:none!important;display:none!important}
-@media(max-width:700px){body{font-size:15px!important}.card,.panel{border-radius:16px!important}h1{font-size:24px!important}h2{font-size:21px!important}label{font-size:14px!important;font-weight:800!important}input,select{font-size:16px!important;min-height:50px!important}button,.btn{font-size:15px!important;font-weight:800!important;min-height:46px!important}}
-</style><style id="financeBootGateV812">
-/* Login is never rendered while saved-session validation or Portal SSO is resolving. */
-#loginView{display:none!important}
-html.finance-unauthenticated #loginView{display:block!important}
-html.finance-unauthenticated #dash{display:none!important}
-</style>
-<style id="tmxUniversalAuthResolveV8221">
-html.tmx-auth-resolving body{visibility:hidden!important}
-html.tmx-auth-resolving body::before{content:none!important;display:none!important}
-</style>
+
+
+
 <script id="tmxUniversalAuthResolveStartV8221">
 (function(){
   if(/(?:^|[&#])sso=/.test(location.hash) || sessionStorage.getItem('tmx_km_finance_token')){
@@ -84,193 +27,19 @@ html.tmx-auth-resolving body::before{content:none!important;display:none!importa
 })();
 </script>
 
-<style id="v832FinancePaging">
-.v832-pager{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:18px 0 28px}.v832-pager .countx{color:#64748b;font-weight:700}.v832-pager button{min-width:140px}
-</style><style id="v834SilentSso">
-html.portal-sso-pending #portalSsoStatus,
-html.tmx-auth-resolving #portalSsoStatus,
-html.portal-sso-pending .sso-status,
-html.tmx-auth-resolving .sso-status{display:none!important}
-</style>
-<style id="v837MultiMonthTheme">
-.tmx-mm-wrap{position:relative}
-.tmx-mm-input{cursor:pointer!important;background:var(--field,#0b1725)!important;color:var(--text,#f5f6fa)!important;border-color:var(--border,#263b55)!important}
-.tmx-mm-input::placeholder{color:var(--muted,#8992a8)!important;opacity:1}
-.tmx-mm-pop{display:none;position:absolute;z-index:9999;top:calc(100% + 6px);left:0;min-width:285px;max-width:360px;background:var(--panel,#0b1725)!important;color:var(--text,#f5f6fa)!important;border:1px solid var(--border,#263b55)!important;border-radius:12px;box-shadow:0 14px 35px #0008;padding:10px}
-.tmx-mm-pop.open{display:block}
-.tmx-mm-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;color:var(--text,#f5f6fa)!important}
-.tmx-mm-list{max-height:260px;overflow:auto;border-top:1px solid var(--border,#263b55)!important;border-bottom:1px solid var(--border,#263b55)!important;padding:5px 0}
-.tmx-mm-item{display:flex!important;align-items:center;gap:9px;padding:8px 6px;margin:0!important;text-transform:none!important;font-size:13px!important;color:var(--text,#f5f6fa)!important;cursor:pointer}
-.tmx-mm-item span{color:var(--text,#f5f6fa)!important}
-.tmx-mm-item input{width:auto!important;height:auto!important;accent-color:var(--brand,#ec008c)}
-.tmx-mm-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:9px}
-.tmx-mm-btn{border:1px solid var(--border,#263b55)!important;background:var(--field,#101c2b)!important;color:var(--text,#f5f6fa)!important;border-radius:8px;padding:7px 10px;font-weight:700;cursor:pointer}
-.tmx-mm-btn.primary{background:var(--brand,#ec008c)!important;color:#fff!important;border-color:var(--brand,#ec008c)!important}
-.tmx-mm-list::-webkit-scrollbar{width:8px}.tmx-mm-list::-webkit-scrollbar-thumb{background:#667085;border-radius:8px}.tmx-mm-list::-webkit-scrollbar-track{background:transparent}
-</style>
-<style id="v838SilentSession">
-#portalSsoStatus,.sso-status,.portal-transition,.frame-loading{display:none!important}
-html.portal-sso-pending body::before,html.tmx-auth-resolving body::before{content:none!important;display:none!important}
-</style><style id="v8312AuditFilterTheme">
-.tmx-mm-input{background:#fff!important;color:#26364a!important;border-color:#ccd3dd!important}
-.tmx-mm-pop{background:#fff!important;color:#26364a!important;border-color:#d8dee6!important}
-.tmx-mm-head,.tmx-mm-item,.tmx-mm-item span{color:#26364a!important}
-.tmx-mm-list{border-color:#e5e7eb!important}
-.tmx-mm-btn{background:#fff!important;color:#344054!important;border-color:#d8dee6!important}
-.tmx-mm-btn.primary{background:var(--brand,#d60072)!important;color:#fff!important;border-color:var(--brand,#d60072)!important}
-</style>
-<style id="v8317MultiMonthThemeFix">
-/* V8.3.17: multi-month filter must match Telecomax dark audit theme */
-.tmx-mm-input{
-  background:var(--field,#0b1725)!important;
-  color:var(--text,#f5f6fa)!important;
-  border:1px solid var(--border,#263b55)!important;
-  color-scheme:dark!important;
-}
-.tmx-mm-input::placeholder{color:var(--muted,#8992a8)!important;opacity:1!important}
-.tmx-mm-pop{
-  background:var(--panel,#0b1725)!important;
-  color:var(--text,#f5f6fa)!important;
-  border:1px solid var(--border,#263b55)!important;
-  box-shadow:0 18px 40px rgba(0,0,0,.38)!important;
-}
-.tmx-mm-pop *{color:inherit}
-.tmx-mm-pop input,.tmx-mm-pop select{
-  background:var(--field,#0b1725)!important;
-  color:var(--text,#f5f6fa)!important;
-  border-color:var(--border,#263b55)!important;
-  color-scheme:dark!important;
-}
-.tmx-mm-pop label,.tmx-mm-pop .muted,.tmx-mm-pop small{color:var(--muted,#8992a8)!important}
-.tmx-mm-btn{
-  background:var(--field,#0b1725)!important;
-  color:var(--text,#f5f6fa)!important;
-  border-color:var(--border,#263b55)!important;
-}
-.tmx-mm-btn.primary{
-  background:var(--brand,#ec008c)!important;
-  color:#fff!important;
-  border-color:var(--brand,#ec008c)!important;
-}
-</style>
-
-<style id="v8319MonthPickerLightTheme">
-/* Finance Photo Audit + Summary: light audit theme */
-.tmx-mm-input{
-  background:#ffffff!important;color:#1e293b!important;
-  border-color:#cbd5e1!important;
-}
-.tmx-mm-input::placeholder{color:#64748b!important;opacity:1!important}
-.tmx-mm-pop{
-  background:#ffffff!important;color:#1e293b!important;
-  border:1px solid #94a3b8!important;box-shadow:0 18px 42px rgba(15,23,42,.20)!important;
-}
-.tmx-mm-pop,.tmx-mm-pop *{color:#1e293b!important}
-.tmx-mm-pop .tmx-mm-title,.tmx-mm-pop b,.tmx-mm-pop strong{color:#1e293b!important}
-.tmx-mm-pop label{color:#1e293b!important}
-.tmx-mm-pop input[type="checkbox"]{accent-color:#d60072!important}
-.tmx-mm-pop .tmx-mm-btn{
-  background:#ffffff!important;color:#1e293b!important;border-color:#cbd5e1!important;
-}
-.tmx-mm-pop .tmx-mm-btn.primary{
-  background:#d60072!important;color:#ffffff!important;border-color:#d60072!important;
-}
-.tmx-mm-pop hr{border-color:#d8dee6!important}
-</style>
 
 
-<style id="v8323FinanceMonthCheckboxes">
-/* Keep Finance light theme; make month checkbox boxes clearly white */
-.tmx-mm-pop .tmx-mm-item input[type="checkbox"]{
-  appearance:none!important;-webkit-appearance:none!important;
-  width:14px!important;height:14px!important;min-width:14px!important;
-  border:1px solid #64748b!important;border-radius:2px!important;
-  background:#ffffff!important;display:inline-grid!important;place-content:center!important;
-}
-.tmx-mm-pop .tmx-mm-item input[type="checkbox"]:checked{
-  background:#d60072!important;border-color:#d60072!important;
-}
-.tmx-mm-pop .tmx-mm-item input[type="checkbox"]:checked::after{
-  content:"✓";color:#ffffff!important;font-size:11px!important;font-weight:900!important;line-height:1!important;
-}
-</style>
-<style id="tmx-inline-finance-audit-20261010">
-/* Desktop: compact one-line label + value, matching approved visual reference. */
-@media (min-width:1101px){
- .trip-summary,.trip-metrics{grid-template-columns:repeat(6,minmax(0,1fr))!important}
- .trip-summary .summary-item,.trip-metrics .metric{min-width:0;min-height:0!important;padding:9px 10px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:9px!important;text-align:left!important}
- .trip-summary .summary-label,.trip-metrics .k{flex:0 0 auto!important;margin:0!important;font-size:10px!important;white-space:nowrap!important}
- .trip-summary .summary-value,.trip-metrics .v{min-width:0!important;margin:0!important;font-size:14px!important;line-height:1.25!important;overflow-wrap:anywhere}
- .trip-summary .summary-value .muted{display:inline!important;margin-left:6px}
- .trip-summary .summary-value br{display:none!important}
-}
-</style>
-<style id="tmxPhotoAuditReference20261104">
-/* Photo Audit / Summary: reference layout shared with Admin/PM */
-body #dash>.finance-audit-topbar{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important;margin-bottom:10px!important;min-height:62px}
-body #dash>.finance-audit-topbar .audit-page-title{font-size:22px!important;font-weight:850!important;color:#1e293b!important;margin:0 2px 0 0!important;white-space:nowrap}
-body #dash>.finance-audit-topbar .audit-topbar-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-body #dash>.finance-audit-topbar .btn{box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;width:118px!important;min-width:118px!important;height:52px!important;min-height:52px!important;padding:8px!important;margin:0!important;font-size:13px!important;font-weight:800!important;white-space:nowrap}
-body #dash>.finance-audit-topbar #photosBtn{background:#101b2a!important;color:#fff!important;border:1px solid #3a4b62!important}
-body #dash:has(#summaryView:not([style*="display: none"]):not([style*="display:none"])) .audit-title-photo{display:none}
-body #dash:not(:has(#summaryView:not([style*="display: none"]):not([style*="display:none"]))) .audit-title-summary{display:none}
-body #photoView>.heading,body #summaryView>.heading{display:none!important}
-body #photoView>.filters{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr)) auto!important;gap:12px!important;align-items:end!important}
-body #summaryView>.filters{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr)) auto!important;gap:12px!important;align-items:end!important}
-body #photoView>.filters .field,body #summaryView>.filters .field{min-width:0!important}
-body #photoView>.filters label,body #summaryView>.filters label{font-size:13px!important;font-weight:800!important;color:#334155!important;text-transform:uppercase!important;letter-spacing:.025em!important;text-align:center!important;display:block!important;margin-bottom:7px!important;text-shadow:none!important}
-body #photoView>.filters .input,body #summaryView>.filters .input{width:100%!important;min-width:0!important;height:44px!important;box-sizing:border-box!important}
-body #photoView>.filters .filter-buttons,body #summaryView>.filters .filter-buttons{display:flex!important;gap:6px!important;align-items:center!important;white-space:nowrap!important}
-body #photoView>.filters .filter-buttons .btn,body #summaryView>.filters .filter-buttons .btn{min-height:38px!important;padding:7px 10px!important}
-@media(max-width:1500px){body #photoView>.filters,body #summaryView>.filters{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
-@media(max-width:850px){body #photoView>.filters,body #summaryView>.filters{grid-template-columns:repeat(2,minmax(0,1fr))!important}body #dash>.finance-audit-topbar .btn{width:108px!important;min-width:108px!important;height:46px!important;min-height:46px!important}}
-@media(max-width:520px){body #photoView>.filters,body #summaryView>.filters{grid-template-columns:1fr!important}body #photoView>.filters label,body #summaryView>.filters label{text-align:left!important;font-size:14px!important}body #dash>.finance-audit-topbar .audit-page-title{width:100%}body #dash>.finance-audit-topbar .audit-topbar-actions{width:100%;gap:6px}body #dash>.finance-audit-topbar .btn{flex:1!important;width:auto!important;min-width:0!important;font-size:11px!important}}
-</style><style id="tmxFinanceMonthTypographyFix20261104">
-/* Finance only: restore the original light-portal month picker typography. */
-body #dash .tmx-mm-pop,
-body #dash .tmx-mm-pop *:not(input) {
-  font-family: Inter, system-ui, "Segoe UI", Arial, sans-serif !important;
-  text-shadow: none !important;
-  -webkit-text-stroke: 0 !important;
-  letter-spacing: normal !important;
-}
-body #dash .tmx-mm-pop .tmx-mm-head,
-body #dash .tmx-mm-pop .tmx-mm-head b {
-  color: #243042 !important;
-  font-size: 13px !important;
-  font-weight: 750 !important;
-  text-transform: none !important;
-}
-body #dash .tmx-mm-pop .tmx-mm-item {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  gap: 10px !important;
-  margin: 0 !important;
-  padding: 9px 7px !important;
-  color: #344054 !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  line-height: 1.4 !important;
-  text-transform: none !important;
-  text-align: left !important;
-}
-body #dash .tmx-mm-pop .tmx-mm-item span {
-  color: #344054 !important;
-  font-size: 13px !important;
-  font-weight: 600 !important;
-  line-height: 1.4 !important;
-  text-transform: none !important;
-}
-body #dash .tmx-mm-pop .tmx-mm-btn {
-  font-size: 12px !important;
-  font-weight: 700 !important;
-  line-height: 1.4 !important;
-  text-transform: none !important;
-}
-</style>
+
+
+
+
+
+
+
+
+
 <script>try{document.documentElement.dataset.auditTheme=localStorage.getItem("tmx.audit.theme")||"dark"}catch{}</script></head>
-<body class="tmx-finance-audit">
+<body class="finance-shared-layout">
 
 <div id="loginBuffer" class="login-buffer-overlay" aria-hidden="true">
   <div class="login-buffer-box" role="status" aria-live="polite">
@@ -279,14 +48,14 @@ body #dash .tmx-mm-pop .tmx-mm-btn {
   </div>
 </div>
 
-<div class="shell"><header class="topbar"><div class="brand">TELECOMAX <small>Finance Audit Portal</small></div><div class="top-actions"><span id="sessionLabel" class="muted"></span><button id="logoutBtn" class="btn logout" style="display:none">Log out</button></div></header>
+<div class="shell"><header class="topbar top"><div class="brand">TELECOMAX <small>Finance Audit Portal</small></div><div class="top-actions actions"><span id="sessionLabel" class="muted"></span><button id="logoutBtn" class="btn logout" style="display:none">Log out</button></div></header>
 <main class="wrap">
 <section id="loginView" class="login"><h1>Finance Login</h1><div class="muted">Use your management Name + 4-digit PIN.</div><label>Name</label><input id="name" class="input" autocomplete="username" placeholder="Enter your name"><label>PIN</label><input id="pin" class="input" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="4-digit PIN"><button id="loginBtn" class="btn primary" style="width:100%;margin-top:16px">Login to Finance</button></section>
-<section id="dash" class="dashboard"><div class="finance-audit-topbar audit-topbar"><h1 class="audit-page-title"><span class="audit-title-photo">Photo Audit</span><span class="audit-title-summary">Summary</span></h1><div class="audit-topbar-actions"><button id="photoTab" class="btn primary">Photo Audit</button><button id="summaryTab" class="btn">Summary</button><button id="photosBtn" class="btn">Hide Photos</button></div></div><div id="photoView"><div class="heading"><div><h1>Photo Audit</h1><div class="muted">Desktop workspace for reviewing trip odometers, large photos and GPS.</div></div></div>
-<div class="filters"><div class="field"><label>Engineer</label><div class="search"><input id="engineer" class="input" autocomplete="off" placeholder="Search or select engineer"><div id="engineerOpts" class="opts"></div></div></div><div class="field"><label>Driver</label><div class="search"><input id="driver" class="input" autocomplete="off" placeholder="Search or select driver"><div id="driverOpts" class="opts"></div></div></div><div class="field"><label>Project</label><div class="search"><input id="project" class="input" autocomplete="off" placeholder="Search or select project"><div id="projectOpts" class="opts"></div></div></div><div class="field"><label>Months</label><input id="month" class="input" type="text" data-multimonth></div><div class="field"><label>Paid By</label><div class="search"><input id="paidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="paidByOpts" class="opts"></div></div></div><div class="field"><label>Status</label><select id="auditStatus" class="input"><option value="" selected>Non Selected</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></div><div class="filter-buttons"><button id="apply" class="btn primary">Apply Filters</button><button id="clear" class="btn">Clear</button></div></div>
-<div class="stats"><div class="stat"><div class="k">Trips found</div><div id="tripCount" class="v">0</div></div><div class="stat"><div class="k">Trip KM</div><div id="tripKm" class="v">0</div></div><div class="stat"><div class="k">Total KM</div><div id="totalKm" class="v">0</div></div><div class="stat accent"><div class="k">Amount Spent</div><div id="amount" class="v">0.00 EGP</div></div></div>
+<section id="dash" class="dashboard"><div class="finance-audit-topbar audit-topbar"><h1 class="audit-page-title"><span class="audit-title-photo">Photo Audit</span><span class="audit-title-summary">Summary</span></h1><div class="audit-topbar-actions"><button id="photoTab" class="btn primary">Photo Audit</button><button id="summaryTab" class="btn">Summary</button><button id="photosBtn" class="btn">Hide Photos</button></div></div><div id="photoView">
+<div class="filters card"><div class="field"><label>Engineer</label><div class="search"><input id="engineer" class="input" autocomplete="off" placeholder="Search or select engineer"><div id="engineerOpts" class="opts"></div></div></div><div class="field"><label>Driver</label><div class="search"><input id="driver" class="input" autocomplete="off" placeholder="Search or select driver"><div id="driverOpts" class="opts"></div></div></div><div class="field"><label>Project</label><div class="search"><input id="project" class="input" autocomplete="off" placeholder="Search or select project"><div id="projectOpts" class="opts"></div></div></div><div class="field"><label>Months</label><input id="month" class="input" type="text" data-multimonth></div><div class="field"><label>Paid By</label><div class="search"><input id="paidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="paidByOpts" class="opts"></div></div></div><div class="field"><label>Status</label><select id="auditStatus" class="input"><option value="" selected>Non Selected</option><option>Pending</option><option>Approved</option><option>Rejected</option></select></div><div class="filter-buttons"><button id="apply" class="btn primary">Apply</button> <button id="clear" class="btn">Clear</button></div></div>
+<div class="stats v832-kpis"><div class="stat"><div class="k">Trips found</div><div id="tripCount" class="v">0</div></div><div class="stat"><div class="k">Trip KM</div><div id="tripKm" class="v">0</div></div><div class="stat"><div class="k">Total KM</div><div id="totalKm" class="v">0</div></div><div class="stat accent"><div class="k">Amount Spent</div><div id="amount" class="v">0.00 EGP</div></div></div>
 <div class="audit-head"><h2>Audit Records <span id="matched" class="count"></span></h2><div class="right"><button id="refreshBtn" class="btn">Refresh</button></div></div>
-<div id="tableWrap" class="table-wrap"><div class="empty">Apply filters or refresh to load trips.</div></div><div class="bulkbar"><span id="pendingChanges" class="muted">No unsaved changes</span><button id="selectAllAudit" class="btn">Select All</button><button id="saveAudit" class="btn">Save Changes</button><button id="approveAudit" class="btn primary">Approve Selected</button></div></div><div id="summaryView" style="display:none"><div class="heading"><h1>Approved Summary</h1></div><div class="filters"><div class="field"><label>Engineer</label><div class="search"><input id="sEngineer" class="input" autocomplete="off" placeholder="Search or select engineer"><div id="sEngineerOpts" class="opts"></div></div></div><div class="field"><label>Driver</label><div class="search"><input id="sDriver" class="input" autocomplete="off" placeholder="Search or select driver"><div id="sDriverOpts" class="opts"></div></div></div><div class="field"><label>Project</label><div class="search"><input id="sProject" class="input" autocomplete="off" placeholder="Search or select project"><div id="sProjectOpts" class="opts"></div></div></div><div class="field"><label>Months</label><input id="sMonth" class="input" type="text" data-multimonth></div><div class="field"><label>Paid By</label><div class="search"><input id="sPaidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="sPaidByOpts" class="opts"></div></div></div><div class="filter-buttons"><button id="sApply" class="btn primary">Apply</button><button id="sExport" class="btn">Export Excel</button></div></div><div id="summaryRows" style="margin-top:16px"></div></div></section>
+<div id="tableWrap" class="table-wrap"><div class="empty">Apply filters or refresh to load trips.</div></div><div class="bulkbar"><span id="pendingChanges" class="muted">No unsaved changes</span><button id="selectAllAudit" class="btn">Select All</button><button id="saveAudit" class="btn">Save Changes</button><button id="approveAudit" class="btn primary">Approve Selected</button></div></div><div id="summaryView" style="display:none"><div class="heading"><h1>Approved Summary</h1></div><div class="filters card"><div class="field"><label>Engineer</label><div class="search"><input id="sEngineer" class="input" autocomplete="off" placeholder="Search or select engineer"><div id="sEngineerOpts" class="opts"></div></div></div><div class="field"><label>Driver</label><div class="search"><input id="sDriver" class="input" autocomplete="off" placeholder="Search or select driver"><div id="sDriverOpts" class="opts"></div></div></div><div class="field"><label>Project</label><div class="search"><input id="sProject" class="input" autocomplete="off" placeholder="Search or select project"><div id="sProjectOpts" class="opts"></div></div></div><div class="field"><label>Months</label><input id="sMonth" class="input" type="text" data-multimonth></div><div class="field"><label>Paid By</label><div class="search"><input id="sPaidBy" class="input" autocomplete="off" placeholder="Search or select payer"><div id="sPaidByOpts" class="opts"></div></div></div><div class="filter-buttons"><button id="sApply" class="btn primary">Apply</button> <button id="sExport" class="btn">Export Excel</button></div></div><div id="summaryRows" style="margin-top:16px"></div></div></section>
 </main></div>
 <div id="lightbox" class="lightbox"><button id="closeLightbox" class="btn">Close</button><img id="lightboxImg" alt="Odometer photo"></div><div id="toast" class="toast"></div>
 <script>
@@ -398,16 +167,16 @@ function render(totalMatched){
   $('amount').textContent=Number(z.amountSpent||0).toFixed(2)+' EGP';
   $('matched').textContent=totalMatched>trips.length?`(${trips.length} of ${totalMatched})`:`(${trips.length})`;
   if(!trips.length){$('tableWrap').innerHTML='<div class="empty">No trips match these filters.</div>';return}
-  const cards=trips.map(t=>`<article class="audit-card" data-audit-trip="${esc(t.tripId)}">
-    <div class="trip-summary">
-      ${summary('Date',esc(t.date)+(t.day?'<br><span class="muted">'+esc(t.day)+'</span>':''))}
+  const cards=trips.map(t=>`<article class="audit-card audit" data-audit-trip="${esc(t.tripId)}">
+    <div class="trip-summary summary compact-trip-info">
+      ${summary('Date',esc(t.date))}
       ${summary('Engineer',esc(t.engineer||'—'))}
       ${summary('Driver',esc(t.driver||'—'))}
       ${summary('Project',esc(t.projectName||'—'))}
-      ${summary('Area / Task',esc(t.area||'—')+'<br><span class="muted">'+esc(t.task||'—')+'</span>')}
-      ${summary('Status','<span class="badge '+(t.status==='Completed'?'':'open')+'">'+esc(t.status||'—')+'</span>')}
+      ${summary('Area',esc(t.area||'—'))}
+      ${summary('Task',esc(t.task||'—'))}
     </div>
-    <div class="trip-metrics">
+    <div class="trip-metrics metrics compact-trip-metrics">
       
       ${metric('Trip KM',num(t.tripKm).toFixed(0))}
       ${metric('F&B',num(t.forthBack).toFixed(0))}
@@ -415,8 +184,8 @@ function render(totalMatched){
       ${metric('Static Hours',num(t.staticHours)+' h')}
       ${metric('Rate',esc(t.rateDisplay||'22.25 EGP / 10 KM'))}${metric('Amount',num(t.amountSpent).toFixed(2)+' EGP','amount')}
     </div>
-    <div class="audit-actions"><input class="audit-check" type="checkbox" data-trip="${esc(t.tripId)}" ${t.financeStatus==='Approved'||t.financeStatus==='Rejected'?'disabled':''}><b>Finance: ${esc(t.financeStatus||'Pending')}</b><span>PM: ${esc(t.pmStatus||'Pending')}</span><button class="btn edit-km" data-trip="${esc(t.tripId)}" data-start="${t.startKm}" data-finish="${t.finishKm}">Edit KM</button><button class="btn deduct" data-trip="${esc(t.tripId)}">Deduct</button><button class="btn danger reject" data-trip="${esc(t.tripId)}">Reject</button></div>
-    <div class="photo-pair">
+    <div class="audit-actions"><input class="audit-check" type="checkbox" data-trip="${esc(t.tripId)}" ${t.financeStatus==='Approved'||t.financeStatus==='Rejected'?'disabled':''}><span class="status-badge status-${String(t.pmStatus||'Pending').toLowerCase()}">PM: ${esc(t.pmStatus||'Pending')}</span><span class="status-badge status-${String(t.financeStatus||'Pending').toLowerCase()}">Finance: ${esc(t.financeStatus||'Pending')}</span><button class="btn edit-km" data-trip="${esc(t.tripId)}" data-start="${t.startKm}" data-finish="${t.finishKm}">Edit KM</button><button class="btn deduct" data-trip="${esc(t.tripId)}">Deduct</button><button class="btn danger reject" data-trip="${esc(t.tripId)}">Reject</button></div>
+    <div class="photo-pair photos">
       ${photoPanel(t.startPhotoThumb,t.startPhoto,t.startLatitude,t.startLongitude,'Start Photo',t.startKm,'start')}
       ${photoPanel(t.finishPhotoThumb,t.finishPhoto,t.finishLatitude,t.finishLongitude,'Finish Photo',t.finishKm,'finish')}
     </div>
@@ -505,13 +274,13 @@ function applyPhotos(){
 }
 
 
-function summary(label,value){return `<div class="summary-item"><div class="summary-label">${label}</div><div class="summary-value">${value}</div></div>`}
-function metric(label,value,cls=''){return `<div class="metric ${cls}"><div class="k">${label}</div><div class="v">${value}</div></div>`}
+function summary(label,value){return `<div class="cell summary-item"><b>${label}</b><span>${value}</span></div>`}
+function metric(label,value,cls=''){return `<div class="metric ${cls}"><b>${label}</b>${value}</div>`}
 function photoPanel(thumb,full,lat,lng,label,km,kind){
   const src=thumb||full||'';
   const fullSrc=full||thumb||'';
   const media=src?`<img class="audit-photo" src="${esc(src)}" data-full="${esc(fullSrc)}" alt="${esc(label)}">`:'<div class="photo-missing">No photo available</div>';
-  return `<section class="photo-panel"><div class="photo-title">${esc(label)} <span class="photo-km" data-photo-km="${kind}">${esc(km||'—')}</span></div><div class="photo-frame" data-evidence-side="${kind}">${media}</div><div class="gps">GPS: ${lat!==''&&lat!=null&&lng!==''&&lng!=null?esc(lat)+', '+esc(lng):'—'}</div></section>`;
+  return `<section class="photo-panel photo"><div class="photo-title">${esc(label)} <span class="photo-km" data-photo-km="${kind}">${esc(km||'—')}</span></div><div class="photo-frame frame" data-evidence-side="${kind}">${media}</div><div class="gps">GPS: ${lat!==''&&lat!=null&&lng!==''&&lng!=null?esc(lat)+', '+esc(lng):'—'}</div></section>`;
 }
 $('tableWrap').addEventListener('click',async e=>{
  let b=e.target.closest('button');if(!b)return;let id=b.dataset.trip,c=auditCard(id);if(!c)return;
@@ -589,7 +358,7 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
 })();
 </script>
 
-<button type="button" onclick="location.href='./'" style="position:fixed;right:12px;bottom:12px;z-index:9998;border:1px solid #CBD5E1;border-radius:10px;background:#fff;color:#1E293B;padding:8px 11px;font-weight:800">← Operations</button>
+
 
 <script id="tmxUniversalAuthResolveEndV8221">
 (function(){
@@ -676,4 +445,4 @@ function portalSSOStatus_(title,detail){ document.documentElement.classList.remo
 </script>
 <script type="module" src="/tmx/audit-originals.js"></script><script src="/tmx/tail.js"></script></body></html>
 
-<link rel="stylesheet" href="/tmx/audit-controls.css"><script src="/tmx/audit-controls.js"></script>
+<link rel="stylesheet" href="/tmx/finance-shared-audit.css"><script src="/tmx/audit-controls.js"></script>
