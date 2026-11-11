@@ -18,3 +18,21 @@ html[data-audit-theme=light] body .tmx-mm-pop .tmx-mm-btn{background:#f1f4f9!imp
 html[data-audit-theme=light] body .tmx-mm-pop .tmx-mm-btn.primary{background:#ac216f!important;color:white!important}
 html[data-audit-theme=light] body .tmx-mm-pop input[type=checkbox]{accent-color:#ac216f;color-scheme:light}
 @media(prefers-reduced-motion:reduce){html body .audit-actions :is(.edit-km,.deduct,.reject),html[data-audit-theme] body #dash>.audit-topbar .btn{transition:none!important;transform:none!important}}
+/* Restore original toolbar palette, retaining compact dimensions. */
+html[data-audit-theme] body #dash>.audit-topbar .btn,
+html[data-audit-theme] body #dash>.audit-topbar .btn:not(.active):not(.primary),
+html[data-audit-theme] body #dash>.finance-audit-topbar #photosBtn{background:#152338!important;color:#eaf0f8!important;outline:none!important}
+html[data-audit-theme=light] body #dash>.audit-topbar .btn,
+html[data-audit-theme=light] body #dash>.audit-topbar .btn:not(.active):not(.primary),
+html[data-audit-theme=light] body #dash>.finance-audit-topbar #photosBtn{background:#fff!important;color:#20314a!important;border-color:#c5d1e1!important;box-shadow:0 3px 0 #d9e1eb!important}
+html[data-audit-theme] body #dash>.audit-topbar .btn.active,
+html[data-audit-theme] body #dash>.audit-topbar .btn.primary{background:linear-gradient(120deg,#b61b73,#792e9e)!important;color:#fff!important;border-color:#d35caa!important;outline:none!important}
+@media(hover:hover){html[data-audit-theme=light] body #dash>.audit-topbar .btn:not(.active):not(.primary):hover{background:#f8eaf3!important}html[data-audit-theme=dark] body #dash>.audit-topbar .btn:not(.active):not(.primary):hover{background:#263953!important}}
+/* Chromium paints text-fill independently from color: override legacy white fill. */
+html[data-audit-theme=light] body .tmx-mm-pop,
+html[data-audit-theme=light] body .tmx-mm-pop *{ -webkit-text-fill-color:currentColor!important }
+html[data-audit-theme=light] body .tmx-mm-pop :is(.tmx-mm-head,.tmx-mm-head b,.tmx-mm-item,.tmx-mm-item span,.tmx-mm-btn){color:#20314a!important;opacity:1!important}
+html[data-audit-theme=light] body .tmx-mm-pop .tmx-mm-btn.primary{color:#fff!important}
+html[data-audit-theme=light] body .tmx-mm-pop .tmx-mm-item input[type=checkbox]{border-color:#71839a!important}
+html[data-audit-theme=light] body .tmx-mm-pop .tmx-mm-item input[type=checkbox]:checked{background:#ac216f!important;border-color:#ac216f!important}
+html[data-audit-theme=light] body .tmx-mm-pop .tmx-mm-item input[type=checkbox]:checked::after{color:#fff!important;-webkit-text-fill-color:#fff!important}
