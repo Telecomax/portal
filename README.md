@@ -2,7 +2,7 @@
 
 ## Repository contents
 
-These repositories use the original uploaded web HTML, CSS, tables, filters, receipt cards, photo audit pages, and embedded export templates. The connection layer in `tmx/` translates the original page requests into the unified DEV API.
+These repositories use the original uploaded web HTML, CSS, tables, filters, receipt cards, photo audit pages, and embedded export templates. The connection layer in `tmx/` translates the original page requests into the unified DEV API. 
 
 The Vercel rewrites in `vercel.json` point to `https://telecomax-api-dev.vercel.app`. Database access and authorization are handled by that backend. Sign in with the current unified login name and four-digit PIN.
 
